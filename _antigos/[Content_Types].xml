@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default ContentType="application/xml" PartName="/"/>
+<Override PartName="/AppxManifest.xml" ContentType="application/vnd.microsoft.msx-manifest"/>
+<Override PartName="/logo.png" ContentType="image/png"/>
+<Override PartName="/smalllogo.png" ContentType="image/png"/>
+<Override PartName="/html/FullAutoMensagensWhatsapp_v7.html" ContentType="text/html"/>
+</Types>

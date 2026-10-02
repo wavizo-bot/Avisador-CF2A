@@ -1,0 +1,85 @@
+iniciado 2026-10-02 15:36:45
+[15:36:45] certificado importado em LocalMachine\TrustedPeople
+[15:36:45] sideload habilitado (AllowAllTrustedApps = 1)
+[15:36:45] WACK reset
+[15:36:46] reset: Redefina com êxito a configuração do teste.
+[15:36:46] relatorio anterior removido: C:\Users\Maycon\Downloads\ManusIA\Avisador CF2A MSIX\build\wack-report.xml
+[15:36:46] WACK test iniciado: C:\Users\Maycon\Downloads\ManusIA\Avisador CF2A MSIX\build\AvisadorCF2A_1.0.0.0.msixbundle
+[15:36:46] test:     Iniciando execução da tarefa Detectar tipo de aplicativo do pacote.
+[15:36:46] test:     O resultado da execução da tarefa Detectar tipo de aplicativo do pacote foi bem-sucedido.
+[15:36:47] test:     Observação: Testar o tipo de aplicativo - Centennial.
+[15:36:47] test:     Observação: Executando testes sem uma implantação de aplicativo.
+[15:36:47] test:     Iniciando execução da tarefa Desmarcar a isenção de loopback de isolamento da rede.
+[15:36:47] test:     Iniciando execução da tarefa Extrair arquivos de pacote.
+[15:36:47] test:     O resultado da execução da tarefa Desmarcar a isenção de loopback de isolamento da rede foi bem-sucedido.
+[15:36:48] test:     O resultado da execução da tarefa Extrair arquivos de pacote foi bem-sucedido.
+[15:36:48] test:     Iniciando execução da tarefa Executa a implantação/limpeza do pacote do app no cenário IDE..
+[15:36:48] test:     Iniciando execução da tarefa Modificar o status do serviço TAEF.
+[15:36:48] test:     O resultado da execução da tarefa Modificar o status do serviço TAEF foi bem-sucedido.
+[15:36:48] test:     O resultado da execução da tarefa Executa a implantação/limpeza do pacote do app no cenário IDE. foi bem-sucedido.
+[15:36:48] test:     Iniciando execução da tarefa Inventário do programa.
+[15:36:48] test:     O resultado da execução da tarefa Inventário do programa foi bem-sucedido.
+[15:36:48] test:     Iniciando execução da tarefa Recursos do aplicativo.
+[15:36:48] test:     Iniciando execução da tarefa Verbos da associação de arquivo.
+[15:36:49] test:     O resultado da execução da tarefa Recursos do aplicativo foi bem-sucedido.
+[15:36:49] test:     O resultado da execução da tarefa Verbos da associação de arquivo foi bem-sucedido.
+[15:36:49] test:     Iniciando execução da tarefa Verificações do Registro.
+[15:36:49] test:     Iniciando execução da tarefa Descompactar arquivos de aplicativo.
+[15:36:49] test:     O resultado da execução da tarefa Descompactar arquivos de aplicativo foi bem-sucedido.
+[15:36:50] test:     O resultado da execução da tarefa Verificações do Registro foi bem-sucedido.
+[15:36:50] test:     Iniciando execução da tarefa Atributo ExclusiveTo.
+[15:36:50] test:     Iniciando execução da tarefa Localização de tipo.
+[15:36:51] test:     O resultado da execução da tarefa Localização de tipo foi bem-sucedido.
+[15:36:59] test:     O resultado da execução da tarefa Atributo ExclusiveTo foi bem-sucedido.
+[15:36:59] test:     Iniciando execução da tarefa Diferenciação de maiúsculas e minúsculas de nome de tipo.
+[15:36:59] test:     Iniciando execução da tarefa Correção de nome de tipo.
+[15:37:00] test:     O resultado da execução da tarefa Diferenciação de maiúsculas e minúsculas de nome de tipo foi bem-sucedido.
+[15:37:00] test:     O resultado da execução da tarefa Correção de nome de tipo foi bem-sucedido.
+[15:37:00] test:     Iniciando execução da tarefa Correção de metadados gerais.
+[15:37:00] test:     Iniciando execução da tarefa Propriedades.
+[15:37:01] test:     O resultado da execução da tarefa Propriedades foi bem-sucedido.
+[15:37:08] test:     O resultado da execução da tarefa Correção de metadados gerais foi bem-sucedido.
+[15:37:08] test:     Iniciando execução da tarefa Analisador de arquivos banidos.
+[15:37:08] test:     Iniciando execução da tarefa Pacotes de Recursos.
+[15:37:09] test:     O resultado da execução da tarefa Analisador de arquivos banidos foi bem-sucedido.
+[15:37:09] test:     O resultado da execução da tarefa Pacotes de Recursos foi bem-sucedido.
+[15:37:09] test:     Iniciando execução da tarefa Instale drivers assinados e arquivos executáveis.
+[15:37:09] test:     Iniciando execução da tarefa Recursos de uso especial.
+[15:37:10] test:     O resultado da execução da tarefa Recursos de uso especial foi bem-sucedido.
+[15:37:11] test:     O resultado da execução da tarefa Instale drivers assinados e arquivos executáveis foi bem-sucedido.
+[15:37:11] test:     Iniciando execução da tarefa Nível de execução de controle de conta de usuário.
+[15:37:12] test:     O resultado da execução da tarefa Nível de execução de controle de conta de usuário foi bem-sucedido.
+[15:37:12] test:     Iniciando execução da tarefa Uso de arquivo morto.
+[15:37:12] test:     Iniciando execução da tarefa Informações de dependência.
+[15:37:13] test:     O resultado da execução da tarefa Uso de arquivo morto foi bem-sucedido.
+[15:37:13] test:     O resultado da execução da tarefa Informações de dependência foi bem-sucedido.
+[15:37:13] test:     Iniciando execução da tarefa Arquivos adequados da plataforma.
+[15:37:14] test:     O resultado da execução da tarefa Arquivos adequados da plataforma foi bem-sucedido.
+[15:37:14] test:     Iniciando execução da tarefa Conta do aplicativo.
+[15:37:14] test:     Iniciando execução da tarefa Manifesto do aplicativo.
+[15:37:15] test:     O resultado da execução da tarefa Conta do aplicativo foi bem-sucedido.
+[15:37:15] test:     O resultado da execução da tarefa Manifesto do aplicativo foi bem-sucedido.
+[15:37:15] test:     Iniciando execução da tarefa Identidade visual.
+[15:37:15] test:     Iniciando execução da tarefa Configuração de depuração.
+[15:37:17] test:     O resultado da execução da tarefa Identidade visual foi bem-sucedido.
+[15:37:17] test:     O resultado da execução da tarefa Configuração de depuração foi bem-sucedido.
+[15:37:17] test:     Iniciando execução da tarefa Executáveis bloqueados.
+[15:37:17] test:     Iniciando execução da tarefa DPIAwarenessValidation.
+[15:37:18] test:     O resultado da execução da tarefa Executáveis bloqueados foi bem-sucedido.
+[15:37:18] test:     O resultado da execução da tarefa DPIAwarenessValidation foi bem-sucedido.
+[15:37:18] test:     Iniciando execução da tarefa Recursos Empresariais.
+[15:37:18] test:     Iniciando execução da tarefa Assinatura de código privado.
+[15:37:19] test:     O resultado da execução da tarefa Recursos Empresariais foi bem-sucedido.
+[15:37:19] test:     O resultado da execução da tarefa Assinatura de código privado foi bem-sucedido.
+[15:37:19] test:     Iniciando execução da tarefa Descompactar arquivos de aplicativo.
+[15:37:19] test:     Iniciando execução da tarefa Extrair arquivos de pacote.
+[15:37:19] test:     O resultado da execução da tarefa Descompactar arquivos de aplicativo foi bem-sucedido.
+[15:37:19] test:     O resultado da execução da tarefa Extrair arquivos de pacote foi bem-sucedido.
+[15:37:19] test:     Iniciando execução da tarefa Executa a implantação/limpeza do pacote do app no cenário IDE..
+[15:37:19] test:     Iniciando execução da tarefa Modificar o status do serviço TAEF.
+[15:37:19] test:     O resultado da execução da tarefa Modificar o status do serviço TAEF foi bem-sucedido.
+[15:37:19] test:     O resultado da execução da tarefa Executa a implantação/limpeza do pacote do app no cenário IDE. foi bem-sucedido.
+[15:37:19] test: Windows App Certification Kit concluiu o teste de seu aplicativo. Verifique os resultados gerados em C:\Users\Maycon\Downloads\ManusIA\Avisador CF2A MSIX\build\wack-report.xml antes de enviar seu aplicativo para a Microsoft Store.
+[15:37:19] WACK test finalizado (exit=0)
+[15:37:19] relatorio gerado: C:\Users\Maycon\Downloads\ManusIA\Avisador CF2A MSIX\build\wack-report.xml
+[15:37:19] concluido

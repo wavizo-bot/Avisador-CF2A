@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Mensagens - Clínica da Família II</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2a5298;
+            --primary-dark: #1e3c72;
+            --success-color: #25D366;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+            --canceled-color: #95a5a6;
+            --transferred-color: #e67e22;
+            
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-panel: #ffffff;
+            --text-primary: #1e3c72;
+            --text-secondary: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
+            --card-bg: #f8f9fa;
+            --card-hover: #eef2f7;
+            --message-bg: #ffffff;
+            --toast-bg: #333333;
+            --toast-text: #ffffff;
+            --footer-bg: rgba(0,0,0,0.05);
+            --footer-text: rgba(0,0,0,0.7);
+            --input-bg: #ffffff;
+            --input-border: #e0e0e0;
+        }
+
+        body.dark-mode {
+            --primary-color: #3a7dd8;
+            --primary-dark: #2a5298;
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-panel: #1a1a2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #d4d4d4;
+            --text-muted: #aaaaaa;
+            --border-color: #2a2a4a;
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-hover: 0 15px 40px rgba(0,0,0,0.4);
+            --card-bg: #2a2a4a;
+            --card-hover: #333355;
+            --message-bg: #2a2a4a;
+            --toast-bg: #444466;
+            --toast-text: #ffffff;
+            --footer-bg: rgba(255,255,255,0.05);
+            --footer-text: rgba(255,255,255,0.7);
+            --input-bg: #2a2a4a;
+            --input-border: #3a3a5a;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
+            color: var(--text-secondary);
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        .header {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left { flex: 1; min-width: 250px; }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            min-width: 100px;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-color);
+            background: var(--card-hover);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .panel:hover { box-shadow: var(--shadow-hover); }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .panel-title .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 12px;
+            flex: 1;
+            min-width: 140px;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .control-group input[type="number"],
+        .control-group select {
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .template-toggle-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .template-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .template-toggle-btn:hover {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .template-toggle-btn .arrow {
+            display: inline-block;
+            transition: transform 0.3s;
+            font-size: 12px;
+        }
+
+        .template-toggle-btn .arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .template-box {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+            margin-bottom: 0;
+            background: var(--card-bg);
+            padding: 0 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .template-box.open {
+            max-height: 400px;
+            opacity: 1;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        .template-box label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .template-box textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .template-box textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            outline: none;
+        }
+
+        .template-tags {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .template-tags b {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .template-hint {
+            font-size: 11px;
+            color: var(--warning-color);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 300px;
+            transition: all 0.3s;
+            line-height: 1.6;
+            background: var(--input-bg);
+            color: var(--text-secondary);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:active { transform: scale(0.98); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .btn-generate { background: var(--primary-color); }
+        .btn-generate:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(42, 82, 152, 0.4); }
+
+        .btn-clear { background: var(--danger-color); }
+        .btn-clear:hover:not(:disabled) { background: #c0392b; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); }
+
+
+
+        .btn-export { background: #9b59b6; }
+        .btn-export:hover:not(:disabled) { background: #8e44ad; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4); }
+
+        .btn-sm { padding: 8px 14px; font-size: 12px; min-width: auto; flex: 0 1 auto; }
+
+        .copy-order-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            align-self: center;
+        }
+
+        .copy-order-select {
+            padding: 7px 9px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            max-width: 170px;
+        }
+
+        .btn-copy-msg { background: var(--info-color); }
+        .btn-copy-msg:hover { background: #2980b9; }
+
+        .btn-copy-all { background: var(--info-color); }
+        .btn-copy-all:hover:not(:disabled) { background: #2980b9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); }
+
+        .btn-whatsapp-link { background: #128C7E; }
+        .btn-whatsapp-link:hover { background: #075E54; }
+
+        .btn-whatsapp-all { background: #128C7E; }
+        .btn-whatsapp-all:hover { background: #075E54; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(18, 140, 126, 0.4); }
+
+        .btn-phone { background: var(--success-color); }
+        .btn-phone:hover { background: #1da851; }
+
+        .stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 15px 0;
+            border-top: 2px solid var(--border-color);
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            min-width: 110px;
+            text-align: center;
+        }
+
+        .stat-item strong { color: var(--text-primary); font-size: 16px; display: block; }
+        .stat-item.warning { background: rgba(230, 126, 34, 0.1); border-color: var(--transferred-color); }
+        .stat-item.warning strong { color: var(--transferred-color); }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .search-clear {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .search-clear:hover {
+            background: var(--card-hover);
+            border-color: var(--primary-color);
+        }
+
+        .messages-container {
+            max-height: 700px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .message-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .message-item.sent {
+            border-left-color: var(--success-color);
+            opacity: 0.8;
+        }
+
+        .message-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .message-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--message-bg);
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .message-text {
+            display: none;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-actions-left {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .message-actions-right {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .history-list {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            font-size: 12px;
+        }
+
+        .history-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 700;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.2fr 1fr 1fr 1.2fr;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .history-row {
+            padding: 10px 15px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.2fr 1fr 1fr 1.2fr;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .history-row:hover {
+            background: var(--card-hover);
+        }
+
+        .history-row:last-child {
+            border-bottom: none;
+        }
+
+        .history-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .history-phone {
+            color: var(--success-color);
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .history-date {
+            color: var(--text-muted);
+        }
+
+        .history-time {
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+        }
+
+        .history-cadastro {
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+        }
+
+        .history-profissional {
+            color: var(--info-color);
+            font-weight: 600;
+        }
+
+        .empty-history {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .badge-sent {
+            background: rgba(37, 211, 102, 0.2);
+            color: var(--success-color);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-no-phone {
+            background: var(--danger-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--toast-bg);
+            color: var(--toast-text);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 90%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .empty-state {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 50px 20px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--footer-text);
+            font-size: 13px;
+            padding: 20px;
+            background: var(--footer-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            line-height: 1.6;
+        }
+
+        .footer strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            min-width: auto;
+            flex: 0 1 auto;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header, .panel { padding: 15px; }
+            h1 { font-size: 22px; }
+            textarea { min-height: 200px; font-size: 12px; }
+            button { font-size: 13px; padding: 10px 16px; min-width: 80px; }
+            .btn-sm { padding: 6px 12px; font-size: 11px; }
+            .message-text { font-size: 13px; }
+            .controls-row { flex-direction: column; }
+            .control-group { width: 100%; }
+            .header-top { flex-direction: column; gap: 15px; }
+            .main-grid { gap: 15px; }
+            .messages-container { max-height: 500px; }
+            .history-header, .history-row { grid-template-columns: 1.2fr 1fr 0.8fr 0.8fr 0.8fr 1fr; font-size: 11px; }
+            .history-header { padding: 8px 10px; }
+            .history-row { padding: 8px 10px; }
+            .message-actions { gap: 4px; }
+        }
+
+        @media (max-width: 600px) {
+            .history-header, .history-row { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; font-size: 10px; }
+            .history-header { padding: 6px 8px; }
+            .history-row { padding: 6px 8px; }
+            .message-actions { gap: 3px; }
+            .btn-sm { padding: 5px 10px; font-size: 10px; }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-item {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="header-left">
+                    <h1>🏥 Gerador de Mensagens - Clínica da Família II</h1>
+                    <p class="subtitle">Cole a tabela de agendamentos e gere mensagens personalizadas para cada paciente</p>
+                </div>
+                <div class="header-right">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema claro/escuro">
+                        <span class="icon" id="themeIcon">🌙</span>
+                        <span id="themeLabel">Escuro</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <div class="panel-title">📥 Dados da Agenda</div>
+
+                <div class="controls-row">
+                    <div class="control-group">
+                        <label for="timeAdjust">⏰ Antecipar:</label>
+                        <input type="number" id="timeAdjust" value="10" min="0" max="60" step="5">
+                        <label>min</label>
+                    </div>
+                    <div class="control-group">
+                        <label for="statusFilter">📋 Status:</label>
+                        <select id="statusFilter">
+                            <option value="all">Todos</option>
+                            <option value="agendado" selected>✅ Agendados</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="template-toggle-area">
+                    <button class="template-toggle-btn" onclick="toggleTemplate()" title="Expandir/Recolher personalização">
+                        <span class="arrow" id="templateArrow">▶</span>
+                        <span id="templateLabel">Personalizar mensagem</span>
+                    </button>
+                    <span style="font-size:11px;color:var(--text-muted);">(avançado)</span>
+                </div>
+
+                <div class="template-box" id="templateBox">
+                    <label for="messageTemplate">📝 Modelo da mensagem (use Enter para adicionar linha):</label>
+                    <textarea id="messageTemplate" placeholder="Use as tags: {nome}, {cadastro}, {data}, {horario}, {profissional}, {profissionalcompleto}">Olá, {nome}, cadastro {cadastro}, há um agendamento marcado para {data} às {horario}, na Clínica da Família II.</textarea>
+                    <div class="template-tags">Tags disponíveis: <b>{nome}</b> <b>{cadastro}</b> <b>{data}</b> <b>{horario}</b> <b>{profissional}</b> <b>{profissionalcompleto}</b></div>
+                    <div class="template-hint">💡 Use Enter para adicionar linha.</div>
+
+                    <label for="defaultDDD" style="margin-top: 12px;">📞 DDD Padrão:</label>
+                    <input type="text" id="defaultDDD" value="11" maxlength="2" style="width:100%;text-align:center;" placeholder="Ex: 11">
+
+                    <label for="openingTime" style="margin-top: 12px;">🕖 Horário de Abertura:</label>
+                    <input type="time" id="openingTime" value="07:00" style="width:100%;padding:10px;border:2px solid var(--border-color);border-radius:8px;background:var(--input-bg);color:var(--text-primary);">
+                </div>
+
+                <textarea id="inputData" placeholder="Cole aqui a tabela de agendamentos..." aria-label="Dados de entrada"></textarea>
+
+                <div class="button-group">
+                    <button class="btn-generate" onclick="generateMessages()" title="Gerar mensagens (Ctrl+Enter)">
+                        <span>🚀</span> Gerar
+                    </button>
+                    <button class="btn-clear" onclick="clearAll()" title="Limpar dados atuais">
+                        <span>🗑️</span> Limpar
+                    </button>
+                </div>
+
+                <div class="stats" id="statsArea">
+                    <span class="stat-item">📊 Total Sessão: <strong id="totalCount">0</strong></span>
+                    <span class="stat-item">✅ Gerados: <strong id="scheduledCount">0</strong></span>
+                    <span class="stat-item warning" title="Pacientes cancelados/transferidos">🚫 Cancel/Transf: <strong id="canceledCount">0</strong></span>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('messages')">💬 Geradas</button>
+                    <button class="tab-btn" onclick="switchTab('history')">📋 Histórico do Dia</button>
+                </div>
+
+                <div id="messages" class="tab-content active">
+                    <div class="panel-title">
+                        <span>Mensagens Geradas</span>
+                        <div class="btn-group">
+                            <button class="btn-sm btn-copy-all" onclick="copyAllMessages()" title="Copiar todas as mensagens">📋 Textos</button>
+                            <button class="btn-sm btn-whatsapp-all" onclick="copyAllWhatsAppLinks()" title="Copiar todos os links do WhatsApp">📱 Links</button>
+                        </div>
+                    </div>
+
+                    <div class="search-bar">
+                        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar por nome ou cadastro..." onkeyup="filterMessages()">
+                        <button class="search-clear" onclick="clearSearch()" title="Limpar busca">✕</button>
+                    </div>
+
+                    <div class="messages-container" id="messagesContainer">
+                        <div class="empty-state">Nenhuma mensagem gerada ainda.<br>Cole os dados e clique em "Gerar"</div>
+                    </div>
+                </div>
+
+                <div id="history" class="tab-content">
+                    <div class="panel-title">
+                        <span>Histórico da Sessão</span>
+                        <div class="btn-group">
+<label class="copy-order-label" for="copyOrder">Ordenar cópia por:</label>
+                            <select class="copy-order-select" id="copyOrder" title="Escolha a ordem da cópia do histórico">
+                                <option value="profissional-nome">Profissional e nome</option>
+                                <option value="dia-nome">Dia e nome</option>
+                                <option value="dia-profissional" selected>Dia e profissional</option>
+                            </select>
+                            <button class="btn-sm btn-copy-all" onclick="copyHistoryToClipboard()" title="Copiar histórico para bloco de notas">📋 Copiar</button>
+                            <button class="btn-sm btn-export" onclick="exportHistory()" title="Exportar histórico em CSV">📊 Exportar</button>
+                            <button class="btn-sm btn-clear" onclick="clearHistory()" title="Limpar histórico">🗑️ Limpar</button>
+                            <button class="btn-sm btn-clear" onclick="clearLocalData()" title="Apagar configurações e histórico deste navegador">🧹 Dados locais</button>
+                        </div>
+                    </div>
+
+                    <div class="search-bar">
+                        <input type="text" class="search-input" id="searchHistoryInput" placeholder="🔍 Buscar por nome, cadastro, telefone ou profissional..." onkeyup="filterHistory()">
+                        <button class="search-clear" onclick="clearHistorySearch()" title="Limpar busca">✕</button>
+                    </div>
+
+                    <div id="historyContainer">
+                        <div class="empty-history">Nenhum registro no histórico ainda.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            ⭐ Este programa é uma gentileza do agente comunitário de saúde <strong>Maycon</strong>, Clínica da Família II - WhatsApp para contato: <strong>11 978831938</strong>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let isDarkMode = false;
+        let sentStatus = {};
+        let templateOpen = false;
+        let allMessages = [];
+        let sessionHistory = [];
+        let currentTab = 'messages';
+        const CONFIG_STORAGE_KEY = 'mensagens-whatsapp-config-v1';
+        const HISTORY_STORAGE_KEY = 'mensagens-whatsapp-historico-v1';
+        const DEFAULT_MESSAGE_TEMPLATE = 'Olá, {nome}, cadastro {cadastro}, há um agendamento marcado para {data} às {horario}, na Clínica da Família II.';
+        const DEFAULT_CONFIG = {
+            theme: 'light',
+            timeAdjust: '10',
+            statusFilter: 'agendado',
+            messageTemplate: DEFAULT_MESSAGE_TEMPLATE,
+            defaultDDD: '11',
+            openingTime: '07:00',
+            copyOrder: 'dia-profissional'
+        };
+        let appConfig = { ...DEFAULT_CONFIG };
+        const ptBrCollator = new Intl.Collator('pt-BR', { sensitivity: 'base', numeric: true });
+
+        function loadLocalData() {
+            appConfig = { ...DEFAULT_CONFIG };
+            try {
+                const rawConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
+                if (rawConfig) {
+                    const parsedConfig = JSON.parse(rawConfig);
+                    if (parsedConfig && typeof parsedConfig === 'object' && !Array.isArray(parsedConfig)) {
+                        appConfig = { ...appConfig, ...parsedConfig };
+                    }
+                } else if (localStorage.getItem('theme') === 'dark') {
+                    // Compatibilidade com a preferência de tema de versões anteriores.
+                    appConfig.theme = 'dark';
+                }
+            } catch (error) {
+                appConfig = { ...DEFAULT_CONFIG };
+            }
+
+            try {
+                const rawHistory = localStorage.getItem(HISTORY_STORAGE_KEY);
+                if (rawHistory) {
+                    const parsedHistory = JSON.parse(rawHistory);
+                    sessionHistory = Array.isArray(parsedHistory)
+                        ? parsedHistory.filter(item => item && typeof item === 'object')
+                        : [];
+                } else {
+                    sessionHistory = [];
+                }
+            } catch (error) {
+                sessionHistory = [];
+            }
+        }
+
+        function saveConfig() {
+            appConfig = {
+                ...appConfig,
+                theme: isDarkMode ? 'dark' : 'light',
+                timeAdjust: document.getElementById('timeAdjust')?.value || DEFAULT_CONFIG.timeAdjust,
+                statusFilter: document.getElementById('statusFilter')?.value || DEFAULT_CONFIG.statusFilter,
+                messageTemplate: document.getElementById('messageTemplate')?.value || DEFAULT_CONFIG.messageTemplate,
+                defaultDDD: document.getElementById('defaultDDD')?.value || DEFAULT_CONFIG.defaultDDD,
+                openingTime: document.getElementById('openingTime')?.value || DEFAULT_CONFIG.openingTime,
+                copyOrder: document.getElementById('copyOrder')?.value || DEFAULT_CONFIG.copyOrder
+            };
+            try {
+                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(appConfig));
+            } catch (error) {}
+        }
+
+        function saveHistory() {
+            try {
+                localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(sessionHistory));
+            } catch (error) {}
+        }
+
+        function applyConfig() {
+            const fields = {
+                timeAdjust: appConfig.timeAdjust,
+                statusFilter: appConfig.statusFilter,
+                messageTemplate: appConfig.messageTemplate,
+                defaultDDD: appConfig.defaultDDD,
+                openingTime: appConfig.openingTime,
+                copyOrder: appConfig.copyOrder || DEFAULT_CONFIG.copyOrder
+            };
+            Object.entries(fields).forEach(([id, value]) => {
+                const element = document.getElementById(id);
+                if (element && value !== undefined && value !== null) element.value = value;
+            });
+
+            isDarkMode = appConfig.theme === 'dark';
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            updateThemeLabel();
+        }
+
+        function registerPersistenceListeners() {
+            ['timeAdjust', 'statusFilter', 'messageTemplate', 'defaultDDD', 'openingTime', 'copyOrder']
+                .map(id => document.getElementById(id))
+                .filter(Boolean)
+                .forEach(element => {
+                    element.addEventListener('input', saveConfig);
+                    element.addEventListener('change', saveConfig);
+                });
+        }
+
+        function initializeApp() {
+            loadLocalData();
+            applyConfig();
+            registerPersistenceListeners();
+            displayHistory();
+            updateSessionTotal();
+        }
+
+        function updateSessionTotal() {
+            const total = document.getElementById('totalCount');
+            if (total) total.textContent = sessionHistory.length;
+        }
+
+        function formatInstitutionalTime(value) {
+            if (value === undefined || value === null || value === '') return '';
+            const match = String(value).trim().match(/^(\d{1,2})\s*[:hH]\s*(\d{1,2})/);
+            if (!match) return String(value);
+            return `${String(Number(match[1])).padStart(2, '0')}h${String(Number(match[2])).padStart(2, '0')}`;
+        }
+
+        function compareTextMissingLast(a, b) {
+            const left = String(a || '').trim();
+            const right = String(b || '').trim();
+            if (!left && !right) return 0;
+            if (!left) return 1;
+            if (!right) return -1;
+            return ptBrCollator.compare(left, right);
+        }
+
+        function parseRecordDateTime(record) {
+            const dateParts = String(record.date || '').split('-').map(Number);
+            const timeMatch = String(record.time || '').match(/(\d{1,2})\s*[:hH]\s*(\d{1,2})/);
+            if (dateParts.length !== 3 || dateParts.some(Number.isNaN) || !timeMatch) return null;
+            return Date.UTC(dateParts[2], dateParts[1] - 1, dateParts[0], Number(timeMatch[1]), Number(timeMatch[2]));
+        }
+
+        function compareRecordDateTime(a, b) {
+            const left = parseRecordDateTime(a);
+            const right = parseRecordDateTime(b);
+            if (left === null && right === null) return 0;
+            if (left === null) return 1;
+            if (right === null) return -1;
+            return left - right;
+        }
+
+        function sortHistoryForCopy(records, order) {
+            const sorted = [...records];
+            sorted.sort((a, b) => {
+                let result = 0;
+                const professionalA = a.profissionalCompleto || a.profissional || '';
+                const professionalB = b.profissionalCompleto || b.profissional || '';
+
+                if (order === 'profissional-nome') {
+                    result = compareTextMissingLast(professionalA, professionalB);
+                    if (!result) result = compareTextMissingLast(a.user, b.user);
+                    if (!result) result = compareRecordDateTime(a, b);
+                } else if (order === 'dia-nome') {
+                    result = compareRecordDateTime(a, b);
+                    if (!result) result = compareTextMissingLast(a.user, b.user);
+                    if (!result) result = compareTextMissingLast(professionalA, professionalB);
+                } else {
+                    result = compareRecordDateTime(a, b);
+                    if (!result) result = compareTextMissingLast(professionalA, professionalB);
+                    if (!result) result = compareTextMissingLast(a.user, b.user);
+                }
+
+                if (!result) result = compareTextMissingLast(a.id, b.id);
+                return result;
+            });
+            return sorted;
+        }
+
+        function clearLocalData() {
+            const confirmed = confirm('Isso apagará apenas as configurações e o Histórico de Sessão salvos neste navegador para este programa. Continuar?');
+            if (!confirmed) return;
+            try {
+                localStorage.removeItem(CONFIG_STORAGE_KEY);
+                localStorage.removeItem(HISTORY_STORAGE_KEY);
+                localStorage.removeItem('theme');
+            } catch (error) {}
+            location.reload();
+        }
+
+
+        function initTheme() {
+            try {
+                if (localStorage.getItem('theme') === 'dark') {
+                    isDarkMode = true;
+                    document.body.classList.add('dark-mode');
+                    updateThemeLabel();
+                }
+            } catch (e) {}
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            updateThemeLabel();
+            saveConfig();
+        }
+
+        function updateThemeLabel() {
+            const label = document.getElementById('themeLabel');
+            const icon = document.getElementById('themeIcon');
+            if (isDarkMode) {
+                label.textContent = 'Claro';
+                icon.textContent = '☀️';
+            } else {
+                label.textContent = 'Escuro';
+                icon.textContent = '🌙';
+            }
+        }
+
+        function toggleTemplate() {
+            templateOpen = !templateOpen;
+            const box = document.getElementById('templateBox');
+            const arrow = document.getElementById('templateArrow');
+            const label = document.getElementById('templateLabel');
+            
+            if (templateOpen) {
+                box.classList.add('open');
+                arrow.classList.add('open');
+                label.textContent = 'Ocultar personalização';
+            } else {
+                box.classList.remove('open');
+                arrow.classList.remove('open');
+                label.textContent = 'Personalizar mensagem';
+            }
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function copyToClipboard(text, successMessage) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => showToast(successMessage));
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast(successMessage);
+                } catch (err) {
+                    showToast('⚠️ Falha ao copiar texto');
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        function formatName(name) {
+            const lowercaseWords = ['de', 'da', 'do', 'dos', 'das', 'e'];
+            return name.toLowerCase().split(' ').map((word, index) => {
+                if (index > 0 && lowercaseWords.includes(word)) return word;
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
+
+        function extractProfessional(lines, startIdx) {
+            for (let i = startIdx; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('PROFISSIONAL:')) {
+                    const name = line.replace('PROFISSIONAL:', '').trim();
+                    const parts = name.split(' ');
+                    return { completo: name, primeiro: parts[0] };
+                }
+                if (line.match(/^\d{2}-\d{2}-\d{4}/)) break;
+            }
+            return { completo: '', primeiro: '' };
+        }
+
+        function generateMessages() {
+            const input = document.getElementById('inputData').value;
+            if (!input.trim()) {
+                showToast('⚠️ Por favor, cole os dados da agenda');
+                return;
+            }
+
+            const timeAdjust = parseInt(document.getElementById('timeAdjust').value) || 0;
+            const defaultDDD = document.getElementById('defaultDDD').value.trim() || '11';
+            const template = document.getElementById('messageTemplate').value;
+            const openingTime = document.getElementById('openingTime').value || '07:00';
+            const [openHour, openMinute] = openingTime.split(':').map(Number);
+
+            const lines = input.split('\n');
+            const appointments = [];
+            let currentAppointment = null;
+            let waitingForName = false;
+            let currentProfessional = { completo: '', primeiro: '' };
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line || line === '—') continue;
+
+                // Buscar profissional no início da seção
+                if (line.startsWith('PROFISSIONAL:')) {
+                    const name = line.replace('PROFISSIONAL:', '').trim();
+                    const parts = name.split(' ');
+                    currentProfessional = { completo: name, primeiro: parts[0] };
+                    continue;
+                }
+
+                const dateMatch = line.match(/^(\d{2}-\d{2}-\d{4})\s+(\d{2}:\d{2})/);
+                if (dateMatch) {
+                    if (currentAppointment) appointments.push({ ...currentAppointment });
+                    currentAppointment = {
+                        date: dateMatch[1],
+                        time: dateMatch[2],
+                        status: '',
+                        user: '',
+                        record: '',
+                        phones: [],
+                        profissional: currentProfessional.primeiro,
+                        profissionalCompleto: currentProfessional.completo
+                    };
+                    waitingForName = false;
+                    continue;
+                }
+
+                if (!currentAppointment) continue;
+
+                if (line.includes('CANCELADO') || line.includes('TRANSFERIDO') || line.includes('AGENDADO') || line.includes('NÃO REALIZADO')) {
+                    if (!currentAppointment.status) currentAppointment.status = line;
+                } else if (line.includes('[CPF:]')) {
+                    waitingForName = true;
+                } else if (line.includes('[RES]') || line.includes('[CEL]')) {
+                    const phoneMatch = line.match(/\[(RES|CEL)\]\s*([\d\s-]+)/);
+                    if (phoneMatch) {
+                        const type = phoneMatch[1];
+                        let number = phoneMatch[2].replace(/\D/g, '');
+                        if (number.startsWith('0')) number = number.substring(1);
+                        if (number.length === 8 || number.length === 9) {
+                            number = defaultDDD + number;
+                        }
+                        currentAppointment.phones.push({ type, number });
+                    }
+                } else if (line.match(/^\d{5,7}$/) && !currentAppointment.record) {
+                    currentAppointment.record = line;
+                } else if (waitingForName && !currentAppointment.user) {
+                    if (!line.includes('[') && !line.includes(']') && line.length > 3) {
+                        const words = line.split(/\s+/);
+                        if (words.length >= 2 && words.every(w => /^[A-Za-zÀ-ÿ]+$/.test(w))) {
+                            currentAppointment.user = formatName(line);
+                            waitingForName = false;
+                        }
+                    }
+                }
+            }
+
+            if (currentAppointment) appointments.push({ ...currentAppointment });
+
+            const scheduled = appointments.filter(a => 
+                a.status && a.status.includes('AGENDADO') && 
+                a.user && a.user.trim() !== '' && 
+                a.record && a.record.trim() !== '' && a.record !== 'sem cadastro'
+            );
+            
+            const canceled = appointments.filter(a => a.status && a.status.includes('CANCELADO'));
+            const transferred = appointments.filter(a => a.status && a.status.includes('TRANSFERIDO'));
+
+            let messages = scheduled.map((app, idx) => {
+                const dateParts = app.date.split('-');
+                const formattedDate = `${dateParts[0]}/${dateParts[1]}`;
+
+                const timeParts = app.time.split(':');
+                let hours = parseInt(timeParts[0]);
+                let minutes = parseInt(timeParts[1]);
+                
+                // Não antecipar se for o horário de abertura
+                if (hours === openHour && minutes === openMinute) {
+                    // Mantém o horário original
+                } else {
+                    minutes -= timeAdjust;
+                    if (minutes < 0) {
+                        minutes += 60;
+                        hours -= 1;
+                    }
+                }
+                const adjustedTime = `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}`;
+
+                let phone = '';
+                let phoneType = '';
+                const celPhone = app.phones.find(p => p.type === 'CEL');
+                const resPhone = app.phones.find(p => p.type === 'RES');
+
+                if (celPhone) { phone = celPhone.number; phoneType = 'CEL'; } 
+                else if (resPhone) { phone = resPhone.number; phoneType = 'RES'; }
+
+                const userName = app.user;
+                const recordNumber = app.record;
+
+                let messageText = template
+                    .replace(/{nome}/g, userName)
+                    .replace(/{cadastro}/g, recordNumber)
+                    .replace(/{data}/g, formattedDate)
+                    .replace(/{horario}/g, adjustedTime)
+                    .replace(/{profissional}/g, app.profissional)
+                    .replace(/{profissionalcompleto}/g, app.profissionalCompleto);
+
+                const whatsappLink = phone ? `https://wa.me/55${phone}?text=${encodeURIComponent(messageText)}` : '';
+
+                return {
+                    id: `${app.date}_${app.time}_${recordNumber}`,
+                    user: userName,
+                    date: app.date,
+                    time: app.time,
+                    adjustedTime: adjustedTime,
+                    formattedDate: formattedDate,
+                    phone: phone,
+                    phoneType: phoneType,
+                    record: recordNumber,
+                    profissional: app.profissional,
+                    profissionalCompleto: app.profissionalCompleto,
+                    message: messageText,
+                    whatsappLink: whatsappLink
+                };
+            });
+
+            const filter = document.getElementById('statusFilter').value;
+            if (filter === 'agendado') messages = messages.filter(m => !m.isAdmitido);
+
+            allMessages = messages;
+            
+            messages.forEach(msg => {
+                const existingIndex = sessionHistory.findIndex(h => h.id === msg.id);
+                if (existingIndex === -1) {
+                    sessionHistory.push({...msg, addedAt: new Date().toLocaleTimeString('pt-BR')});
+                }
+            });
+            saveHistory();
+
+            displayMessages(messages);
+            updateStats(appointments, scheduled, messages, canceled, transferred);
+            
+            if (messages.length === 0) {
+                showToast('⚠️ Nenhuma mensagem gerada. Verifique se todos os pacientes têm nome e cadastro válidos.');
+            } else {
+                showToast(`✅ ${messages.length} mensagens geradas com sucesso!`);
+            }
+        }
+
+        function displayMessages(messages) {
+            const container = document.getElementById('messagesContainer');
+            if (messages.length === 0) {
+                container.innerHTML = `<div class="empty-state">Nenhum agendamento encontrado com os filtros selecionados.<br><small>Verifique se todos têm nome e cadastro válidos.</small></div>`;
+                return;
+            }
+
+            let html = '';
+            messages.forEach((msg, index) => {
+                const isSent = !!sentStatus[msg.id];
+
+                let phoneBadge = msg.phoneType === 'CEL' ?
+                    `<button class="btn-sm btn-phone" onclick="copyPhone(${index})" title="Copiar telefone">📱 ${msg.phone}</button>` :
+                    msg.phoneType === 'RES' ?
+                    `<button class="btn-sm btn-phone" onclick="copyPhone(${index})" title="Copiar telefone">🏠 ${msg.phone}</button>` :
+                    `<span class="badge-no-phone">⚠️ SEM TEL</span>`;
+
+                let sentBadge = isSent ? `<span class="badge-sent">✓ Processado</span>` : '';
+
+                const sentClass = isSent ? 'sent' : '';
+                const timeDisplay = `${formatInstitutionalTime(msg.adjustedTime)} (original: ${formatInstitutionalTime(msg.time)})`;
+
+                html += `
+                    <div class="message-item ${sentClass}" id="card_${index}">
+                        <div class="message-header">
+                            <span class="message-name">
+                                ${msg.user}
+                                ${sentBadge}
+                            </span>
+                            <span class="message-time">📅 ${msg.formattedDate} • ${timeDisplay}</span>
+                        </div>
+                        <div class="message-text">${msg.message}</div>
+                        <div class="message-actions">
+                            <div class="message-actions-left">
+                                ${phoneBadge}
+                                <button class="btn-sm btn-copy-msg" onclick="copyMessage(${index})">📋 Copiar</button>
+                            </div>
+                            <div class="message-actions-right">
+                                ${msg.whatsappLink ? `
+                                    <button class="btn-sm btn-whatsapp-link" onclick="copyWhatsAppLink(${index})" title="Copiar link do WhatsApp">📱 Link</button>
+                                    <button class="btn-sm btn-whatsapp-link" onclick="openWhatsApp(${index})">☎️ Abrir</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            window.generatedMessages = messages;
+        }
+
+        function displayHistory(historyToShow = sessionHistory) {
+            const container = document.getElementById('historyContainer');
+            
+            if (historyToShow.length === 0) {
+                container.innerHTML = `<div class="empty-history">Nenhum registro no histórico ainda.</div>`;
+                return;
+            }
+
+            let html = `
+                <div class="history-list">
+                    <div class="history-header">
+                        <div>Nome</div>
+                        <div>Cadastro</div>
+                        <div>Telefone</div>
+                        <div>Data</div>
+                        <div>Horário</div>
+                        <div>Profissional</div>
+                    </div>
+            `;
+
+            historyToShow.forEach(record => {
+                html += `
+                    <div class="history-row" onclick="copyToClipboard('${record.phone}', '📱 Telefone copiado!')">
+                        <div class="history-name">${record.user}</div>
+                        <div class="history-cadastro">${record.record}</div>
+                        <div class="history-phone">${record.phone || 'N/A'}</div>
+                        <div class="history-date">${record.formattedDate}</div>
+                        <div class="history-time">${formatInstitutionalTime(record.time)}</div>
+                        <div class="history-profissional">${record.profissional || '-'}</div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function filterMessages() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (!allMessages || allMessages.length === 0) return;
+
+            const filtered = allMessages.filter(msg => 
+                msg.user.toLowerCase().includes(searchTerm) || 
+                msg.record.toLowerCase().includes(searchTerm)
+            );
+
+            displayMessages(filtered);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            if (allMessages.length > 0) {
+                displayMessages(allMessages);
+            }
+        }
+
+        function filterHistory() {
+            const searchTerm = document.getElementById('searchHistoryInput').value.toLowerCase();
+            if (!sessionHistory || sessionHistory.length === 0) return;
+
+            const filtered = sessionHistory.filter(record => 
+                record.user.toLowerCase().includes(searchTerm) || 
+                record.record.toLowerCase().includes(searchTerm) ||
+                (record.phone || '').toLowerCase().includes(searchTerm) ||
+                (record.profissional || record.profissionalCompleto || '').toLowerCase().includes(searchTerm)
+            );
+
+            displayHistory(filtered);
+        }
+
+        function clearHistorySearch() {
+            document.getElementById('searchHistoryInput').value = '';
+            displayHistory();
+        }
+
+        function markAsProcessed(index) {
+            const msg = window.generatedMessages[index];
+            if (msg) {
+                sentStatus[msg.id] = true;
+                const card = document.getElementById(`card_${index}`);
+                if (card) card.classList.add('sent');
+            }
+        }
+
+        function openWhatsApp(index) {
+            const msg = window.generatedMessages[index];
+            if (!msg || !msg.whatsappLink) return showToast('⚠️ Sem telefone disponível');
+            markAsProcessed(index);
+            window.open(msg.whatsappLink, '_blank');
+        }
+
+        function copyPhone(index) {
+            const msg = window.generatedMessages[index];
+            if (msg && msg.phone) copyToClipboard(msg.phone, `📱 Telefone ${msg.phone} copiado!`);
+        }
+
+        function copyMessage(index) {
+            const msg = window.generatedMessages[index];
+            if (msg) {
+                markAsProcessed(index);
+                copyToClipboard(msg.message, '✅ Mensagem copiada!');
+            }
+        }
+
+        function copyWhatsAppLink(index) {
+            const msg = window.generatedMessages[index];
+            if (msg && msg.whatsappLink) {
+                markAsProcessed(index);
+                copyToClipboard(msg.whatsappLink, '✅ Link do WhatsApp copiado!');
+            }
+        }
+
+        function copyAllMessages() {
+            const msgs = window.generatedMessages || [];
+            if (msgs.length === 0) return showToast('⚠️ Nenhuma mensagem para copiar');
+            const allText = msgs.map(m => m.message).join('\n\n---\n\n');
+            copyToClipboard(allText, `✅ ${msgs.length} mensagens copiadas!`);
+        }
+
+        function copyAllWhatsAppLinks() {
+            const msgs = window.generatedMessages || [];
+            const withPhone = msgs.filter(m => m.whatsappLink);
+            if (withPhone.length === 0) return showToast('⚠️ Nenhum paciente com telefone');
+            const allLinks = withPhone.map(m => m.whatsappLink).join('\n\n');
+            copyToClipboard(allLinks, `✅ ${withPhone.length} links do WhatsApp copiados!`);
+        }
+
+        function copyHistoryToClipboard() {
+            if (sessionHistory.length === 0) return showToast('⚠️ Nenhum registro para copiar');
+
+            const order = document.getElementById('copyOrder')?.value || DEFAULT_CONFIG.copyOrder;
+            const orderedHistory = sortHistoryForCopy(sessionHistory, order);
+            const text = orderedHistory.map(record => {
+                let line = `${record.user || 'Nome não informado'} | Cadastro: ${record.record || 'N/A'} | Tel: ${record.phone || 'N/A'} | ${record.formattedDate || ''} ${formatInstitutionalTime(record.time)}`;
+                if (record.profissional || record.profissionalCompleto) line += ` | Prof: ${record.profissionalCompleto || record.profissional}`;
+                return line;
+            }).join('\n\n');
+
+            copyToClipboard(text, `📋 Histórico copiado! (${orderedHistory.length} registros)`);
+        }
+
+        function exportHistory() {
+            if (sessionHistory.length === 0) return showToast('⚠️ Nenhum registro para exportar');
+
+            let csv = 'Nome,Cadastro,Telefone,Data,Horário Original,Profissional\n';
+            sessionHistory.forEach(record => {
+                const line = [
+                    `"${record.user}"`,
+                    `"${record.record}"`,
+                    record.phone || 'N/A',
+                    record.formattedDate,
+                    formatInstitutionalTime(record.time),
+                    `"${record.profissionalCompleto || record.profissional || ''}"`
+                ].join(',');
+                csv += line + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `historico_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast(`📊 ${sessionHistory.length} registros exportados em CSV!`);
+        }
+
+        function updateStats(appointments, scheduled, messages, canceled, transferred) {
+            document.getElementById('totalCount').textContent = sessionHistory.length;
+            document.getElementById('scheduledCount').textContent = messages.length;
+            document.getElementById('canceledCount').textContent = canceled.length + transferred.length;
+        }
+
+        function clearAll() {
+            document.getElementById('inputData').value = '';
+            document.getElementById('messagesContainer').innerHTML =
+                `<div class="empty-state">Nenhuma mensagem gerada ainda.<br>Cole os dados e clique em "Gerar"</div>`;
+            document.getElementById('totalCount').textContent = sessionHistory.length;
+            document.getElementById('scheduledCount').textContent = '0';
+            document.getElementById('canceledCount').textContent = '0';
+            document.getElementById('searchInput').value = '';
+            window.generatedMessages = [];
+            allMessages = [];
+            sentStatus = {};
+            showToast('🗑️ Dados atuais limpos!');
+        }
+
+        function clearHistory() {
+            if (!confirm('Tem certeza que deseja limpar todo o histórico da sessão?')) return;
+            sessionHistory = [];
+            saveHistory();
+            displayHistory();
+            updateSessionTotal();
+            showToast('🗑️ Histórico limpo!');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast.timeout);
+            toast.timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        document.getElementById('inputData').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                generateMessages();
+            }
+        });
+
+        initializeApp();
+    </script>
+</body>
+</html>

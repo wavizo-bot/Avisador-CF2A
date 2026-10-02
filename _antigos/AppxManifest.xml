@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:mp="http://schemas.microsoft.com/appx/manifest/foundation/windows10/package"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+         Ignoreservesystem="false">
+
+  <Identity Name="wavizo.AvisadorCF2A"
+            ProcessorArchitecture="x64"
+            Publisher="CN=57BB464E-553F-45B6-A4ED-B253157408EB"
+            Version="1.0.0.0" />
+
+  <Properties>
+    <DisplayName>Avisador CF2A</DisplayName>
+    <Description>Aplicativo de consulta CF2A para Clínica da Família II</Description>
+    <PublisherDisplayName>wavizo</PublisherDisplayName>
+    <Logo>logo.png</Logo>
+  </Properties>
+
+  <Resources>
+    <Resource Language="pt-BR" />
+  </Resources>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Microsoft.Windows.TwoInOne"
+                        MinVersion="10.0.10240.0"
+                        MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <Capability Name="privateNetworkClientServer" />
+  </Capabilities>
+
+  <Applications>
+    <Application Id="AvisadorCF2A" Executable="html\FullAutoMensagensWhatsapp_v7.html">
+      <uap:VisualElements
+        DisplayName="Avisador CF2A"
+        Description="Aplicativo de consulta CF2A"
+        BackgroundColor="#2a5298"
+        Square150x150Logo="logo.png"
+        Square44x44Logo="logo.png"
+        WarnIfNoEntryPoint="false" />
+      <uap:DefaultTile
+        Wide310x150Logo="logo.png"
+        Square310x310Logo="logo.png" />
+    </Application>
+  </Applications>
+
+  <Resources>
+    <Resource Language="pt-BR" />
+  </Resources>
+
+  <Extensions>
+    <Extension Category="windows.appInvocation5">
+      <uap:AppInvocation>
+        <uap:ExecutionContext>foreground</uap:ExecutionContext>
+      </uap:AppInvocation>
+    </Extension>
+  </Extensions>
+</Package>

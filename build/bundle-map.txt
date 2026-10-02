@@ -1,0 +1,3 @@
+[Files]
+"C:\Users\Maycon\Downloads\ManusIA\Avisador CF2A MSIX\build\AvisadorCF2A_1.0.0.0_x64.msix"  "AvisadorCF2A_1.0.0.0_x64.msix"
+"C:\Users\Maycon\Downloads\ManusIA\Avisador CF2A MSIX\build\AvisadorCF2A_1.0.0.0_x86.msix"  "AvisadorCF2A_1.0.0.0_x86.msix"

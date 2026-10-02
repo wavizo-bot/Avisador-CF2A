@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap rescap">
+
+  <Identity Name="wavizo.AvisadorCF2A"
+            Publisher="CN=57BB464E-553F-45B6-A4ED-B253157408EB"
+            Version="1.0.0.0"
+            ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Avisador CF2A</DisplayName>
+    <Description>Aplicativo de consulta CF2A para Cl&#237;nica da Fam&#237;lia II</Description>
+    <PublisherDisplayName>wavizo</PublisherDisplayName>
+    <Logo>assets\storelogo.png</Logo>
+  </Properties>
+
+  <Resources>
+    <Resource Language="pt-BR" />
+  </Resources>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop"
+                        MinVersion="10.0.17763.0"
+                        MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient" />
+    <Capability Name="privateNetworkClientServer" />
+  </Capabilities>
+
+  <Applications>
+    <Application Id="AvisadorCF2A" Executable="AvisadorCF2A.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Avisador CF2A"
+        Description="Aplicativo de consulta CF2A"
+        BackgroundColor="#2a5298"
+        Square150x150Logo="assets\logo150.png"
+        Square44x44Logo="assets\logo44.png">
+        <uap:DefaultTile
+          ShortName="Avisador CF2A"
+          Wide310x150Logo="assets\logowide.png"
+          Square310x310Logo="assets\logo310.png" />
+        <uap:SplashScreen Image="assets\splash.png" BackgroundColor="#2a5298" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+</Package>
