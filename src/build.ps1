@@ -15,7 +15,7 @@ $build = Join-Path $root 'build'
 
 $identityName = 'wavizo.AvisadorCF2A'
 $publisher = 'CN=57BB464E-553F-45B6-A4ED-B253157408EB'
-$version = '1.0.0.0'
+$version = '1.1.0.0'
 $exeName = 'AvisadorCF2A.exe'
 $htmlSource = Join-Path $root 'Package\html\FullAutoMensagensWhatsapp_v7.html'
 

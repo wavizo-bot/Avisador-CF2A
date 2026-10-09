@@ -7,7 +7,7 @@
 
   <Identity Name="wavizo.AvisadorCF2A"
             Publisher="CN=57BB464E-553F-45B6-A4ED-B253157408EB"
-            Version="1.0.0.0"
+            Version="1.1.0.0"
             ProcessorArchitecture="x64" />
 
   <Properties>

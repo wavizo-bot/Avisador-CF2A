@@ -789,9 +789,211 @@
         .message-item {
             animation: slideIn 0.3s ease;
         }
+
+        .history-row {
+            cursor: pointer;
+        }
+
+        .history-row:hover {
+            background: var(--card-hover);
+        }
+
+        .terms-overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.62);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .terms-modal {
+            background: var(--bg-panel);
+            color: var(--text-secondary);
+            width: min(720px, 94vw);
+            max-height: 90vh;
+            border-radius: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .terms-header {
+            background: var(--primary-color);
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 16px 22px;
+            text-align: center;
+        }
+
+        .terms-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .terms-tab {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .terms-tab:hover { color: var(--text-primary); }
+
+        .terms-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .terms-body {
+            padding: 16px 22px;
+            overflow: hidden;
+        }
+
+        .terms-pane {
+            display: none;
+            height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .terms-pane.active { display: block; }
+
+        .terms-pane h3 {
+            color: var(--text-primary);
+            font-size: 14px;
+            margin: 14px 0 4px 0;
+        }
+
+        .terms-pane h3:first-child { margin-top: 0; }
+
+        .terms-pane p { margin-bottom: 8px; }
+
+        .terms-pane .terms-meta {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .terms-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 22px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .btn-terms-exit,
+        .btn-terms-agree {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 26px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .btn-terms-exit { background: var(--danger-color); }
+        .btn-terms-exit:hover { background: #c0392b; }
+        .btn-terms-agree { background: #25D366; }
+        .btn-terms-agree:hover { background: #1eb857; }
+
+        #termsBlackout {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: #000000;
+            z-index: 99999;
+        }
     </style>
 </head>
 <body>
+    <div class="terms-overlay" id="termsOverlay">
+        <div class="terms-modal">
+            <div class="terms-header">📜 Termos e Condições de Uso</div>
+            <div class="terms-tabs">
+                <button class="terms-tab active" id="termsTabPrivacy" onclick="switchTermsTab('privacy')">🔒 Políticas de Privacidade</button>
+                <button class="terms-tab" id="termsTabUsage" onclick="switchTermsTab('usage')">📄 Termos de Uso</button>
+                <button class="terms-tab" id="termsTabLegal" onclick="switchTermsTab('legal')">⚖️ Aviso Legal</button>
+            </div>
+            <div class="terms-body">
+                <div class="terms-pane active" id="termsPanePrivacy">
+                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.0</p>
+                    <h3>1. Quais dados são coletados</h3>
+                    <p>O aplicativo não coleta dados. Nada é enviado a servidores do desenvolvedor ou de terceiros. Os dados que você digita ou cola no programa (tabela de agendamentos, nomes, cadastros, telefones, horários, histórico gerado e configurações) permanecem apenas no seu computador.</p>
+                    <p>Não há analytics, rastreamento, publicidade ou cookies.</p>
+                    <h3>2. Como são armazenados</h3>
+                    <p>Os dados ficam gravados somente no perfil local do aplicativo, dentro da pasta do seu usuário no Windows (%LOCALAPPDATA%). Nenhum armazenamento em nuvem é utilizado.</p>
+                    <h3>3. Como são utilizados</h3>
+                    <p>Os dados são usados unicamente no dispositivo para gerar as mensagens de aviso, exibir o histórico do dia/sessão e copiar textos para a área de transferência quando você clica nos botões do programa.</p>
+                    <h3>4. Direitos do usuário (LGPD/GDPR)</h3>
+                    <p>Você é o titular dos dados inseridos. Pode acessá-los, corrigi-los ou excluílos a qualquer momento pelos botões “Limpar”, “Histórico limpar” e “🧹 Dados locais” do próprio programa, ou desinstalando o aplicativo (o Windows remove os dados locais junto com ele).</p>
+                    <h3>5. Contato</h3>
+                    <p>Dúvidas sobre privacidade: e-mail <b>mmr05@hotmail.com</b> ou WhatsApp <b>11 978831938</b>.</p>
+                </div>
+                <div class="terms-pane" id="termsPaneUsage">
+                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.0</p>
+                    <h3>1. Como o aplicativo funciona</h3>
+                    <p>O Avisador CF2A recebe uma tabela de agendamentos (colada pelo usuário), filtra por status, ajusta o horário com antecedência configurável e gera mensagens personalizadas de lembrança para cada paciente, além de links do WhatsApp e histórico do dia.</p>
+                    <h3>2. Uso permitido</h3>
+                    <p>O uso é permitido para finalidades lícitas de agendamento e lembrete de consultas por profissionais e equipes de saúde, sem qualquer ilegalidade.</p>
+                    <h3>3. O que é permitido e o que é proibido</h3>
+                    <p>Permitido: uso próprio ou da equipe, cópia dos textos gerados para envio manual, uso interno da instituição.</p>
+                    <p>Proibido: revender ou redistribuir o aplicativo, realizar engenharia reversa, usar o programa para spam, fraude, assédio ou qualquer violação de lei (incluindo a LGPD ao tratar dados de pacientes), e inserir dados que o usuário não tenha base legal para tratar.</p>
+                    <h3>4. Propriedade intelectual</h3>
+                    <p>O aplicativo, sua marca e seu código pertencem ao desenvolvedor (wavizo — Maycon). Ao instalar, você recebe uma licença de uso limitada, pessoal e não exclusiva, revogável em caso de descumprimento destes termos.</p>
+                    <h3>5. Prazo da versão de demonstração gratuita</h3>
+                    <p>A versão de demonstração tem validade de <b>1 (um) mês a partir da primeira instalação</b>. Após esse prazo, adquira a versão licenciada para continuar usando.</p>
+                    <h3>6. Contato para adquirir a versão licenciada</h3>
+                    <p>E-mail <b>mmr05@hotmail.com</b> ou WhatsApp <b>11 978831938</b>.</p>
+                </div>
+                <div class="terms-pane" id="termsPaneLegal">
+                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.0</p>
+                    <h3>1. Limites de uso para manter a legalidade</h3>
+                    <p>O usuário é o único responsável por utilizar o aplicativo em conformidade com a lei, especialmente no tratamento de dados pessoais sensíveis de pacientes (LGPD). O programa é apenas uma ferramenta de apoio à digitação de mensagens.</p>
+                    <h3>2. Isenção por funcionalidades não projetadas</h3>
+                    <p>O desenvolvedor não se responsabiliza por resultados obtidos com usos para os quais o programa não foi projetado, como interpretação de arquivos em formatos inesperados, cálculos de horários fora do padrão suportado ou integração automática com outros sistemas. Revise sempre as mensagens antes de enviá-las.</p>
+                    <h3>3. Isenção por uso indevido</h3>
+                    <p>O desenvolvedor não se responsabiliza por danos decorrentes de uso indevido do aplicativo, incluindo envio indevido de mensagens, inserção de dados falsos ou incompletos, vazamento causado por terceiros ou violação de direitos de titulares de dados.</p>
+                </div>
+            </div>
+            <div class="terms-footer">
+                <button class="btn-terms-exit" onclick="termsQuit()">Quero sair</button>
+                <button class="btn-terms-agree" onclick="termsAgree()">Eu concordo</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            try {
+                var saved = JSON.parse(localStorage.getItem('mensagens-whatsapp-termos-v1'));
+                if (saved && saved.version === 'v1.0') {
+                    document.getElementById('termsOverlay').style.display = 'none';
+                }
+            } catch (e) { }
+        })();
+    </script>
     <div class="container">
         <div class="header">
             <div class="header-top">
@@ -1434,13 +1636,18 @@
             window.generatedMessages = messages;
         }
 
+        let currentHistoryView = [];
+
         function displayHistory(historyToShow = sessionHistory) {
             const container = document.getElementById('historyContainer');
             
             if (historyToShow.length === 0) {
                 container.innerHTML = `<div class="empty-history">Nenhum registro no histórico ainda.</div>`;
+                currentHistoryView = [];
                 return;
             }
+
+            currentHistoryView = historyToShow;
 
             let html = `
                 <div class="history-list">
@@ -1454,9 +1661,9 @@
                     </div>
             `;
 
-            historyToShow.forEach(record => {
+            historyToShow.forEach((record, index) => {
                 html += `
-                    <div class="history-row" onclick="copyToClipboard('${record.phone}', '📱 Telefone copiado!')">
+                    <div class="history-row" onclick="copyHistoryRow(${index})" title="Copiar a linha completa">
                         <div class="history-name">${record.user}</div>
                         <div class="history-cadastro">${record.record}</div>
                         <div class="history-phone">${record.phone || 'N/A'}</div>
@@ -1469,6 +1676,20 @@
 
             html += `</div>`;
             container.innerHTML = html;
+        }
+
+        function copyHistoryRow(index) {
+            const record = currentHistoryView[index];
+            if (!record) return;
+            const line = [
+                record.user || 'Nome não informado',
+                record.record || 'N/A',
+                record.phone || 'N/A',
+                record.formattedDate || '',
+                formatInstitutionalTime(record.time),
+                record.profissional || '-'
+            ].join(' | ');
+            copyToClipboard(line, '📋 Linha copiada!');
         }
 
         function filterMessages() {
@@ -1639,6 +1860,42 @@
             toast.classList.add('show');
             clearTimeout(toast.timeout);
             toast.timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        const TERMS_VERSION = 'v1.0';
+        const TERMS_STORAGE_KEY = 'mensagens-whatsapp-termos-v1';
+
+        function switchTermsTab(name) {
+            const tabs = { privacy: 'termsTabPrivacy', usage: 'termsTabUsage', legal: 'termsTabLegal' };
+            const panes = { privacy: 'termsPanePrivacy', usage: 'termsPaneUsage', legal: 'termsPaneLegal' };
+            Object.keys(tabs).forEach(function (key) {
+                document.getElementById(tabs[key]).classList.toggle('active', key === name);
+                document.getElementById(panes[key]).classList.toggle('active', key === name);
+            });
+        }
+
+        function termsAgree() {
+            try {
+                localStorage.setItem(TERMS_STORAGE_KEY, JSON.stringify({
+                    version: TERMS_VERSION,
+                    acceptedAt: new Date().toISOString()
+                }));
+            } catch (e) { }
+            document.getElementById('termsOverlay').style.display = 'none';
+        }
+
+        function termsQuit() {
+            try {
+                if (window.chrome && window.chrome.webview) {
+                    window.chrome.webview.postMessage('quit');
+                }
+            } catch (e) { }
+            setTimeout(function () {
+                if (document.getElementById('termsBlackout')) return;
+                const blackout = document.createElement('div');
+                blackout.id = 'termsBlackout';
+                document.body.appendChild(blackout);
+            }, 1200);
         }
 
         document.getElementById('inputData').addEventListener('keydown', function(e) {

@@ -178,6 +178,7 @@ namespace wavizo.AvisadorCF2A
             core.NavigationStarting += OnNavigationStarting;
             core.NewWindowRequested += OnNewWindowRequested;
             core.ProcessFailed += OnProcessFailed;
+            core.WebMessageReceived += OnWebMessageReceived;
 
             core.Navigate("https://" + VirtualHostName + "/" + HtmlFileName);
         }
@@ -247,6 +248,23 @@ namespace wavizo.AvisadorCF2A
             try
             {
                 webView.Reload();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            string message = e.TryGetWebMessageAsString();
+            if (!string.Equals(message, "quit", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            try
+            {
+                BeginInvoke(new Action(Close));
             }
             catch (Exception)
             {

@@ -7,39 +7,29 @@ New-Item -ItemType Directory -Force -Path $assets | Out-Null
 Add-Type -AssemblyName System.Drawing
 
 $bg = [System.Drawing.Color]::FromArgb(255, 0x2A, 0x52, 0x98)
-$fontFamily = 'Segoe UI'
 
-function New-FittedBitmap([int]$w, [int]$h, [string]$text = 'CF2A') {
+$logoPath = Join-Path $src 'logo.jpg'
+if (-not (Test-Path -LiteralPath $logoPath)) { throw "Logo nao encontrado: $logoPath" }
+$script:logoImg = [System.Drawing.Image]::FromFile($logoPath)
+
+function New-FittedBitmap([int]$w, [int]$h) {
     $bmp = New-Object System.Drawing.Bitmap($w, $h, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $g = [System.Drawing.Graphics]::FromImage($bmp)
     $g.SmoothingMode = 'AntiAlias'
-    $g.TextRenderingHint = 'AntiAliasGridFit'
+    $g.InterpolationMode = 'HighQualityBicubic'
+    $g.PixelOffsetMode = 'HighQuality'
     $g.Clear($bg)
 
-    $maxW = $w * 0.84
-    $maxH = $h * 0.66
-    $size = [Math]::Min($w, $h) * 0.55
-
-    $font = New-Object System.Drawing.Font($fontFamily, $size, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
     try {
-        $guard = 0
-        while ($guard -lt 80) {
-            $guard++
-            $measure = $g.MeasureString($text, $font, (New-Object System.Drawing.PointF(0, 0)), [System.Drawing.StringFormat]::GenericTypographic)
-            if ($measure.Width -le $maxW -and $measure.Height -le $maxH) { break }
-            $size = $size * 0.94
-            $font.Dispose()
-            $font = New-Object System.Drawing.Font($fontFamily, $size, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
-        }
-
-        $sf = [System.Drawing.StringFormat]::GenericTypographic.Clone()
-        $sf.Alignment = [System.Drawing.StringAlignment]::Center
-        $sf.LineAlignment = [System.Drawing.StringAlignment]::Center
-        $rect = New-Object System.Drawing.RectangleF(0, 0, $w, $h)
-        $g.DrawString($text, $font, [System.Drawing.Brushes]::White, $rect, $sf)
+        $pad = 0.94
+        $scale = [Math]::Min(($w * $pad) / $script:logoImg.Width, ($h * $pad) / $script:logoImg.Height)
+        $dw = [int][Math]::Round($script:logoImg.Width * $scale)
+        $dh = [int][Math]::Round($script:logoImg.Height * $scale)
+        $x = [int][Math]::Round(($w - $dw) / 2)
+        $y = [int][Math]::Round(($h - $dh) / 2)
+        $g.DrawImage($script:logoImg, (New-Object System.Drawing.Rectangle($x, $y, $dw, $dh)))
     }
     finally {
-        $font.Dispose()
         $g.Dispose()
     }
     return $bmp
@@ -97,7 +87,7 @@ Save-Png (New-FittedBitmap 50 50)   (Join-Path $assets 'storelogo.png')
 Save-Png (New-FittedBitmap 150 150) (Join-Path $assets 'logo150.png')
 Save-Png (New-FittedBitmap 310 310) (Join-Path $assets 'logo310.png')
 Save-Png (New-FittedBitmap 310 150) (Join-Path $assets 'logowide.png')
-Save-Png (New-FittedBitmap 620 300 'Avisador CF2A') (Join-Path $assets 'splash.png')
+Save-Png (New-FittedBitmap 620 300) (Join-Path $assets 'splash.png')
 
 $iconSizes = @(16, 24, 32, 48, 64, 128, 256)
 $entries = @()

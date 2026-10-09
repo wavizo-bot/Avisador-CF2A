@@ -149,6 +149,7 @@ $posPers     = @(576, 369)
 $posLinks    = @(1591, 305)
 $posHistoryClear = @(1477, 439)
 $posSearch   = @(1155, 361)
+$posTermosAceitar = @(1132, 745)
 
 $sample = @(
     'PROFISSIONAL: Maria da Silva',
@@ -174,6 +175,10 @@ $sample = @(
     'Carla Mendes Rocha',
     '[CEL] 98765-4321'
 ) -join "`r`n"
+
+# 0) aceita os termos (perfil novo sempre exibe o modal na 1a execucao)
+Invoke-Click $hwnd $posTermosAceitar[0] $posTermosAceitar[1]
+Start-Sleep -Seconds 1
 
 # 1) tela inicial (perfil novo = tema claro padrao)
 Capture-Step $hwnd 'screenshot-01.png' 'light'
