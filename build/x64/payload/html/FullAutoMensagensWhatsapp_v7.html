@@ -409,8 +409,13 @@
         .btn-whatsapp-all { background: #128C7E; }
         .btn-whatsapp-all:hover { background: #075E54; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(18, 140, 126, 0.4); }
 
-        .btn-phone { background: var(--success-color); }
-        .btn-phone:hover { background: #1da851; }
+        .btn-phone { background: var(--info-color); }
+        .btn-phone:hover { background: #2980b9; }
+
+        .btn-fail { background: var(--success-color); }
+        .btn-fail:hover { background: #1da851; }
+        .btn-fail.failed { background: var(--danger-color); }
+        .btn-fail.failed:hover { background: #c0392b; }
 
         .stats {
             display: flex;
@@ -571,6 +576,13 @@
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+        }
+
+        .message-actions-center {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
         }
 
         .history-list {
@@ -1104,6 +1116,7 @@
                                 <option value="profissional-nome">Profissional e nome</option>
                                 <option value="dia-nome">Dia e nome</option>
                                 <option value="dia-profissional" selected>Dia e profissional</option>
+                                <option value="nao-avisado">Não foi avisado</option>
                             </select>
                             <button class="btn-sm btn-copy-all" onclick="copyHistoryToClipboard()" title="Copiar histórico para bloco de notas">📋 Copiar</button>
                             <button class="btn-sm btn-export" onclick="exportHistory()" title="Exportar histórico em CSV">📊 Exportar</button>
@@ -1137,9 +1150,11 @@
         let templateOpen = false;
         let allMessages = [];
         let sessionHistory = [];
+        let failedPhones = {};
         let currentTab = 'messages';
         const CONFIG_STORAGE_KEY = 'mensagens-whatsapp-config-v1';
         const HISTORY_STORAGE_KEY = 'mensagens-whatsapp-historico-v1';
+        const FAILURES_STORAGE_KEY = 'mensagens-whatsapp-falhas-v1';
         const DEFAULT_MESSAGE_TEMPLATE = 'Olá, {nome}, cadastro {cadastro}, há um agendamento marcado para {data} às {horario}, na Clínica da Família II.';
         const DEFAULT_CONFIG = {
             theme: 'light',
@@ -1182,6 +1197,16 @@
                 }
             } catch (error) {
                 sessionHistory = [];
+            }
+
+            try {
+                const rawFailures = localStorage.getItem(FAILURES_STORAGE_KEY);
+                const parsedFailures = rawFailures ? JSON.parse(rawFailures) : null;
+                failedPhones = (parsedFailures && typeof parsedFailures === 'object' && !Array.isArray(parsedFailures))
+                    ? parsedFailures
+                    : {};
+            } catch (error) {
+                failedPhones = {};
             }
         }
 
@@ -1314,6 +1339,7 @@
             try {
                 localStorage.removeItem(CONFIG_STORAGE_KEY);
                 localStorage.removeItem(HISTORY_STORAGE_KEY);
+                localStorage.removeItem(FAILURES_STORAGE_KEY);
                 localStorage.removeItem('theme');
             } catch (error) {}
             location.reload();
@@ -1621,6 +1647,11 @@
                                 ${phoneBadge}
                                 <button class="btn-sm btn-copy-msg" onclick="copyMessage(${index})">📋 Copiar</button>
                             </div>
+                            ${msg.phone ? `
+                            <div class="message-actions-center">
+                                <button class="btn-sm btn-fail ${failedPhones[msg.id] ? 'failed' : ''}" onclick="toggleFailed(${index})" title="Marcar se o WhatsApp deste telefone não está funcionando">${failedPhones[msg.id] ? '📱❌ Não funcionou' : '📱✅ Funcionando'}</button>
+                            </div>
+                            ` : ''}
                             <div class="message-actions-right">
                                 ${msg.whatsappLink ? `
                                     <button class="btn-sm btn-whatsapp-link" onclick="copyWhatsAppLink(${index})" title="Copiar link do WhatsApp">📱 Link</button>
@@ -1751,6 +1782,26 @@
             if (msg && msg.phone) copyToClipboard(msg.phone, `📱 Telefone ${msg.phone} copiado!`);
         }
 
+        function saveFailures() {
+            try {
+                localStorage.setItem(FAILURES_STORAGE_KEY, JSON.stringify(failedPhones));
+            } catch (error) {}
+        }
+
+        function toggleFailed(index) {
+            const msg = (window.generatedMessages || [])[index];
+            if (!msg) return;
+            if (failedPhones[msg.id]) {
+                delete failedPhones[msg.id];
+                showToast('✅ Marcado como "Funcionando"');
+            } else {
+                failedPhones[msg.id] = true;
+                showToast('📱❌ Marcado como "Não funcionou"');
+            }
+            saveFailures();
+            displayMessages(window.generatedMessages || []);
+        }
+
         function copyMessage(index) {
             const msg = window.generatedMessages[index];
             if (msg) {
@@ -1786,6 +1837,27 @@
             if (sessionHistory.length === 0) return showToast('⚠️ Nenhum registro para copiar');
 
             const order = document.getElementById('copyOrder')?.value || DEFAULT_CONFIG.copyOrder;
+
+            if (order === 'nao-avisado') {
+                const failed = sessionHistory.filter(record => failedPhones[record.id]);
+                if (failed.length === 0) return showToast('⚠️ Nenhum contato marcado como "Não funcionou"');
+
+                const sorted = [...failed].sort((a, b) => {
+                    let result = compareTextMissingLast(a.profissional, b.profissional);
+                    if (!result) result = compareTextMissingLast(a.user, b.user);
+                    if (!result) result = compareTextMissingLast(a.record, b.record);
+                    if (!result) result = compareTextMissingLast(a.id, b.id);
+                    return result;
+                });
+
+                const text = sorted.map(record =>
+                    `${record.user || 'Nome não informado'} | Cadastro: ${record.record || 'N/A'} | Tel: ${record.phone || 'N/A'} | ${record.formattedDate || ''} ${formatInstitutionalTime(record.time)} | Prof: ${record.profissional || '-'}`
+                ).join('\n\n');
+
+                copyToClipboard(text, `📋 ${sorted.length} contato(s) não avisado(s) copiado(s)!`);
+                return;
+            }
+
             const orderedHistory = sortHistoryForCopy(sessionHistory, order);
             const text = orderedHistory.map(record => {
                 let line = `${record.user || 'Nome não informado'} | Cadastro: ${record.record || 'N/A'} | Tel: ${record.phone || 'N/A'} | ${record.formattedDate || ''} ${formatInstitutionalTime(record.time)}`;
