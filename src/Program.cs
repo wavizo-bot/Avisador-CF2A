@@ -90,7 +90,7 @@ namespace wavizo.AvisadorCF2A
 
     public class MainForm : Form
     {
-        public const string AppTitle = "Avisador CF2A \u2013 Cl\u00ednica da Fam\u00edlia II";
+        public const string AppTitle = "Avisador CF2A \u2013 Gerador de mensagens do Maico";
         public const string BrandColorHex = "#2a5298";
 
         private const string VirtualHostName = "avisador.local";
@@ -102,9 +102,11 @@ namespace wavizo.AvisadorCF2A
         private readonly WebView2 webView;
         private CoreWebView2Environment webViewEnvironment;
         private bool shuttingDown;
+        private readonly string packageVersion;
 
         public MainForm()
         {
+            packageVersion = ReadPackageVersion();
             Text = AppTitle;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(1200, 800);
@@ -176,6 +178,7 @@ namespace wavizo.AvisadorCF2A
                 CoreWebView2HostResourceAccessKind.Allow);
 
             core.NavigationStarting += OnNavigationStarting;
+            core.NavigationCompleted += OnNavigationCompleted;
             core.NewWindowRequested += OnNewWindowRequested;
             core.ProcessFailed += OnProcessFailed;
             core.WebMessageReceived += OnWebMessageReceived;
@@ -265,6 +268,47 @@ namespace wavizo.AvisadorCF2A
             try
             {
                 BeginInvoke(new Action(Close));
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private static string ReadPackageVersion()
+        {
+            try
+            {
+                string manifestPath = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "AppxManifest.xml");
+                if (!File.Exists(manifestPath))
+                {
+                    return null;
+                }
+
+                string xml = File.ReadAllText(manifestPath);
+                System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
+                    xml,
+                    "Version=\"([0-9]+(?:\\.[0-9]+){3})\"");
+                return match.Success ? match.Groups[1].Value : null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (shuttingDown || !e.IsSuccess || string.IsNullOrEmpty(packageVersion))
+            {
+                return;
+            }
+
+            try
+            {
+                webView.CoreWebView2.ExecuteScriptAsync(
+                    "window.aplicarVersao && window.aplicarVersao('" + packageVersion + "');");
             }
             catch (Exception)
             {

@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $src = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Split-Path -Parent $src
@@ -140,12 +140,15 @@ function Capture-Step([IntPtr]$h, [string]$name, [string]$expected) {
 }
 
 # posicoes relativas a janela maximizada (1936x1048)
-$posTextarea = @(604, 552)
-$posGerar    = @(446, 745)
+# v1.3: bloco de personalizacao removido do painel esquerdo -> textarea/botao Gerar
+# subiram; "Personalizar" agora e a 3a aba (medidas no payload com calibracao pelas
+# abas inalteradas: 219+30 = 249 = posicao antiga).
+$posTextarea = @(604, 503)
+$posGerar    = @(446, 699)
 $posClaro    = @(1575, 102)
 $posGeradas  = @(1053, 249)
 $posHistorico= @(1186, 249)
-$posPers     = @(576, 369)
+$posPers     = @(1338, 250)
 $posLinks    = @(1591, 305)
 $posHistoryClear = @(1477, 439)
 $posSearch   = @(1155, 361)
@@ -201,13 +204,12 @@ Invoke-Click $hwnd $posHistorico[0] $posHistorico[1]
 Invoke-Click $hwnd $posHistoryClear[0] $posHistoryClear[1]
 Capture-Step $hwnd 'screenshot-04.png' 'dark'
 
-# 5) volta para Geradas e expande a personalizacao da mensagem
-Invoke-Click $hwnd $posGeradas[0] $posGeradas[1]
+# 5) aba Personalizar (modelos por situacao + previas ao vivo)
 Invoke-Click $hwnd $posPers[0] $posPers[1]
 Capture-Step $hwnd 'screenshot-05.png' 'dark'
 
-# 6) recolhe a personalizacao e usa a busca para filtrar por nome
-Invoke-Click $hwnd $posPers[0] $posPers[1]
+# 6) volta para Geradas e usa a busca para filtrar por nome
+Invoke-Click $hwnd $posGeradas[0] $posGeradas[1]
 Invoke-Click $hwnd $posSearch[0] $posSearch[1]
 [System.Windows.Forms.SendKeys]::SendWait('carla')
 Start-Sleep -Seconds 2

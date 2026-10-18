@@ -15,7 +15,7 @@ $build = Join-Path $root 'build'
 
 $identityName = 'wavizo.AvisadorCF2A'
 $publisher = 'CN=57BB464E-553F-45B6-A4ED-B253157408EB'
-$version = '1.2.0.0'
+$version = '1.3.0.0'
 $exeName = 'AvisadorCF2A.exe'
 $htmlSource = Join-Path $root 'Package\html\FullAutoMensagensWhatsapp_v7.html'
 
@@ -130,6 +130,12 @@ function New-Payload([string]$arch, [string]$payloadDir) {
     Copy-Item (Join-Path $src 'packages\webview2\lib\net462\Microsoft.Web.WebView2.WinForms.dll') $payloadDir
     Copy-Item (Join-Path $src "packages\webview2\build\native\$arch\WebView2Loader.dll") $payloadDir
     Copy-Item $htmlSource $htmlDir
+
+    # Carimba a versao no rodape (regra 2.2): o host nativo corrige em execucao lendo o AppxManifest.
+    $stagedHtml = Join-Path $htmlDir (Split-Path -Leaf $htmlSource)
+    $stagedText = [System.IO.File]::ReadAllText($stagedHtml, [System.Text.Encoding]::UTF8)
+    $stagedText = $stagedText.Replace('__VERSAO_BUILD__', 'v' + $version)
+    [System.IO.File]::WriteAllText($stagedHtml, $stagedText, (New-Object System.Text.UTF8Encoding $false))
     Copy-Item (Join-Path $src 'assets\*.png') $assetDir
 
     $manifestPath = Join-Path $payloadDir 'AppxManifest.xml'

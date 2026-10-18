@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Mensagens - Clínica da Família II</title>
+    <title>Gerador de mensagens do Maico</title>
     <style>
         * {
             margin: 0;
@@ -213,108 +213,153 @@
             transition: all 0.3s;
         }
 
-        .template-toggle-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .template-toggle-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 13px;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .template-toggle-btn:hover {
-            background: var(--card-bg);
-            color: var(--text-primary);
-        }
-
-        .template-toggle-btn .arrow {
+        .versao-app {
             display: inline-block;
-            transition: transform 0.3s;
-            font-size: 12px;
-        }
-
-        .template-toggle-btn .arrow.open {
-            transform: rotate(180deg);
-        }
-
-        .template-box {
-            overflow: hidden;
-            max-height: 0;
-            opacity: 0;
-            transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
-            margin-bottom: 0;
+            margin-left: 12px;
+            padding: 2px 10px;
+            border-radius: 999px;
             background: var(--card-bg);
-            padding: 0 12px;
-            border-radius: 12px;
             border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            vertical-align: middle;
         }
 
-        .template-box.open {
-            max-height: 400px;
-            opacity: 1;
-            margin-bottom: 20px;
-            padding: 15px;
+        .pp-geral {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: end;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
         }
 
-        .template-box label {
+        .pp-campo {
+            flex: 1 1 150px;
+        }
+
+        .pp-campo label {
             display: block;
             font-size: 12px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
-        .template-box textarea {
+        .pp-campo input {
             width: 100%;
-            padding: 12px;
+            box-sizing: border-box;
+            padding: 7px 8px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
-            font-size: 13px;
             background: var(--input-bg);
             color: var(--text-primary);
-            margin-bottom: 8px;
-            font-family: 'Courier New', monospace;
-            min-height: 100px;
-            resize: vertical;
-            line-height: 1.5;
+            font-size: 13px;
         }
 
-        .template-box textarea:focus {
+        .pp-geral-nota {
+            flex: 1 1 100%;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .pp-tags-row {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 2;
+        }
+
+        .pp-tags-row b {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1px 6px;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .pp-card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            background: var(--card-bg);
+        }
+
+        .pp-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 7px;
+        }
+
+        .pp-chip {
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pp-agendado { background: #3498db; }
+        .pp-cancelado { background: #95a5a6; }
+        .pp-faltou { background: #e74c3c; }
+
+        .pp-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .pp-ta {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 54px;
+            resize: vertical;
+            padding: 8px 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.5;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 0;
+        }
+
+        .pp-ta:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
             outline: none;
         }
 
-        .template-tags {
-            font-size: 11px;
-            color: var(--text-muted);
+        .pp-preview {
             margin-top: 8px;
-            line-height: 1.6;
+            border-left: 3px solid var(--primary-color);
+            background: var(--input-bg);
+            border-radius: 0 8px 8px 0;
+            padding: 7px 10px;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            overflow-wrap: anywhere;
         }
 
-        .template-tags b {
+        .pp-prev-label {
+            font-weight: 700;
             color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .template-hint {
             font-size: 11px;
-            color: var(--warning-color);
-            margin-top: 8px;
-            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-right: 6px;
         }
 
         textarea {
@@ -1016,7 +1061,7 @@
         <div class="header">
             <div class="header-top">
                 <div class="header-left">
-                    <h1>🏥 Gerador de Mensagens - Clínica da Família II</h1>
+                    <h1>🏥 Gerador de mensagens do Maico</h1>
                     <p class="subtitle">Cole a tabela de agendamentos e gere mensagens personalizadas para cada paciente</p>
                 </div>
                 <div class="header-right">
@@ -1039,36 +1084,16 @@
                         <label>min</label>
                     </div>
                     <div class="control-group">
-                        <label for="statusFilter">📋 Status:</label>
+                        <label for="statusFilter">📋 Situação:</label>
                         <select id="statusFilter">
-                            <option value="all">Todos</option>
-                            <option value="agendado" selected>✅ Agendados</option>
+                            <option value="agendado" selected>✅ Agendado</option>
+                            <option value="cancelado">🚫 Cancelado</option>
+                            <option value="faltou">⚠️ Faltou</option>
                         </select>
                     </div>
                 </div>
 
 
-
-                <div class="template-toggle-area">
-                    <button class="template-toggle-btn" onclick="toggleTemplate()" title="Expandir/Recolher personalização">
-                        <span class="arrow" id="templateArrow">▶</span>
-                        <span id="templateLabel">Personalizar mensagem</span>
-                    </button>
-                    <span style="font-size:11px;color:var(--text-muted);">(avançado)</span>
-                </div>
-
-                <div class="template-box" id="templateBox">
-                    <label for="messageTemplate">📝 Modelo da mensagem (use Enter para adicionar linha):</label>
-                    <textarea id="messageTemplate" placeholder="Use as tags: {nome}, {cadastro}, {data}, {horario}, {profissional}, {profissionalcompleto}">Olá, {nome}, cadastro {cadastro}, há um agendamento marcado para {data} às {horario}, na Clínica da Família II.</textarea>
-                    <div class="template-tags">Tags disponíveis: <b>{nome}</b> <b>{cadastro}</b> <b>{data}</b> <b>{horario}</b> <b>{profissional}</b> <b>{profissionalcompleto}</b></div>
-                    <div class="template-hint">💡 Use Enter para adicionar linha.</div>
-
-                    <label for="defaultDDD" style="margin-top: 12px;">📞 DDD Padrão:</label>
-                    <input type="text" id="defaultDDD" value="11" maxlength="2" style="width:100%;text-align:center;" placeholder="Ex: 11">
-
-                    <label for="openingTime" style="margin-top: 12px;">🕖 Horário de Abertura:</label>
-                    <input type="time" id="openingTime" value="07:00" style="width:100%;padding:10px;border:2px solid var(--border-color);border-radius:8px;background:var(--input-bg);color:var(--text-primary);">
-                </div>
 
                 <textarea id="inputData" placeholder="Cole aqui a tabela de agendamentos..." aria-label="Dados de entrada"></textarea>
 
@@ -1083,8 +1108,9 @@
 
                 <div class="stats" id="statsArea">
                     <span class="stat-item">📊 Total Sessão: <strong id="totalCount">0</strong></span>
-                    <span class="stat-item">✅ Gerados: <strong id="scheduledCount">0</strong></span>
-                    <span class="stat-item warning" title="Pacientes cancelados/transferidos">🚫 Cancel/Transf: <strong id="canceledCount">0</strong></span>
+                    <span class="stat-item">✅ Agendados: <strong id="scheduledCount">0</strong></span>
+                    <span class="stat-item" style="color:#95a5a6;" title="Agendamentos cancelados ou transferidos">🚫 Cancelados: <strong id="canceledCount">0</strong></span>
+                    <span class="stat-item warning" title="Pacientes que faltaram">⚠️ Faltos: <strong id="faltouCount">0</strong></span>
                 </div>
             </div>
 
@@ -1092,6 +1118,7 @@
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('messages')">💬 Geradas</button>
                     <button class="tab-btn" onclick="switchTab('history')">📋 Histórico do Dia</button>
+                    <button class="tab-btn" onclick="switchTab('personalizar')">📝 Personalizar</button>
                 </div>
 
                 <div id="messages" class="tab-content active">
@@ -1140,11 +1167,59 @@
                         <div class="empty-history">Nenhum registro no histórico ainda.</div>
                     </div>
                 </div>
+
+                <div id="personalizar" class="tab-content">
+                    <div class="panel-title">
+                        <span>📝 Personalizar Mensagens</span>
+                    </div>
+
+                    <div class="pp-geral">
+                        <div class="pp-campo">
+                            <label for="defaultDDD">📞 DDD Padrão:</label>
+                            <input type="text" id="defaultDDD" value="11" maxlength="2" placeholder="Ex: 11">
+                        </div>
+                        <div class="pp-campo">
+                            <label for="openingTime">🕖 Horário de Abertura:</label>
+                            <input type="time" id="openingTime" value="07:00">
+                        </div>
+                        <div class="pp-geral-nota">⚙️ Configurações gerais, usadas em todas as mensagens</div>
+                    </div>
+
+                    <div class="pp-tags-row">Etiquetas disponíveis (valem para os três modelos): <b>{nome}</b> <b>{cadastro}</b> <b>{data}</b> <b>{horario}</b> <b>{profissional}</b> <b>{profissionalcompleto}</b></div>
+
+                    <div class="pp-card">
+                        <div class="pp-head">
+                            <span class="pp-chip pp-agendado">✅ Agendado</span>
+                            <span class="pp-hint">usada quando a Situação = Agendado</span>
+                        </div>
+                        <textarea id="templateAgendado" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, há um agendamento marcado para {data} às {horario}, na Clínica da Família II.</textarea>
+                        <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevAgendado"></span></div>
+                    </div>
+
+                    <div class="pp-card">
+                        <div class="pp-head">
+                            <span class="pp-chip pp-cancelado">🚫 Cancelado</span>
+                            <span class="pp-hint">usada quando a Situação = Cancelado</span>
+                        </div>
+                        <textarea id="templateCancelado" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, seu agendamento de {data} às {horario} com {profissional} foi cancelado. Enviaremos nova data e horário em breve. Obrigado pela compreensão.</textarea>
+                        <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevCancelado"></span></div>
+                    </div>
+
+                    <div class="pp-card">
+                        <div class="pp-head">
+                            <span class="pp-chip pp-faltou">⚠️ Faltou</span>
+                            <span class="pp-hint">usada quando a Situação = Faltou</span>
+                        </div>
+                        <textarea id="templateFaltou" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, você não compareceu à consulta de {data} às {horario} com {profissional}. Pode nos informar o motivo da falta? Responda esta mensagem.</textarea>
+                        <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevFaltou"></span></div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="footer">
             ⭐ Este programa é uma gentileza do agente comunitário de saúde <strong>Maycon</strong>, Clínica da Família II - WhatsApp para contato: <strong>11 978831938</strong>
+            <span class="versao-app" id="versaoApp">__VERSAO_BUILD__</span>
         </div>
     </div>
 
@@ -1153,7 +1228,6 @@
     <script>
         let isDarkMode = false;
         let sentStatus = {};
-        let templateOpen = false;
         let allMessages = [];
         let sessionHistory = [];
         let failedPhones = {};
@@ -1162,11 +1236,15 @@
         const HISTORY_STORAGE_KEY = 'mensagens-whatsapp-historico-v1';
         const FAILURES_STORAGE_KEY = 'mensagens-whatsapp-falhas-v1';
         const DEFAULT_MESSAGE_TEMPLATE = 'Olá, {nome}, cadastro {cadastro}, há um agendamento marcado para {data} às {horario}, na Clínica da Família II.';
+        const DEFAULT_CANCELADO_TEMPLATE = 'Olá, {nome}, cadastro {cadastro}, seu agendamento de {data} às {horario} com {profissional} foi cancelado. Enviaremos nova data e horário em breve. Obrigado pela compreensão.';
+        const DEFAULT_FALTOU_TEMPLATE = 'Olá, {nome}, cadastro {cadastro}, você não compareceu à consulta de {data} às {horario} com {profissional}. Pode nos informar o motivo da falta? Responda esta mensagem.';
         const DEFAULT_CONFIG = {
             theme: 'light',
             timeAdjust: '10',
             statusFilter: 'agendado',
-            messageTemplate: DEFAULT_MESSAGE_TEMPLATE,
+            templateAgendado: DEFAULT_MESSAGE_TEMPLATE,
+            templateCancelado: DEFAULT_CANCELADO_TEMPLATE,
+            templateFaltou: DEFAULT_FALTOU_TEMPLATE,
             defaultDDD: '11',
             openingTime: '07:00',
             copyOrder: 'dia-profissional'
@@ -1182,6 +1260,12 @@
                     const parsedConfig = JSON.parse(rawConfig);
                     if (parsedConfig && typeof parsedConfig === 'object' && !Array.isArray(parsedConfig)) {
                         appConfig = { ...appConfig, ...parsedConfig };
+                        // Migração v1.3: modelo único vira modelo "Agendado".
+                        if (parsedConfig.messageTemplate && !parsedConfig.templateAgendado) {
+                            appConfig.templateAgendado = parsedConfig.messageTemplate;
+                        }
+                        // Migração v1.3: opção antiga "Todos" vira "Agendado".
+                        if (appConfig.statusFilter === 'all') appConfig.statusFilter = 'agendado';
                     }
                 } else if (localStorage.getItem('theme') === 'dark') {
                     // Compatibilidade com a preferência de tema de versões anteriores.
@@ -1222,7 +1306,9 @@
                 theme: isDarkMode ? 'dark' : 'light',
                 timeAdjust: document.getElementById('timeAdjust')?.value || DEFAULT_CONFIG.timeAdjust,
                 statusFilter: document.getElementById('statusFilter')?.value || DEFAULT_CONFIG.statusFilter,
-                messageTemplate: document.getElementById('messageTemplate')?.value || DEFAULT_CONFIG.messageTemplate,
+                templateAgendado: document.getElementById('templateAgendado')?.value || DEFAULT_CONFIG.templateAgendado,
+                templateCancelado: document.getElementById('templateCancelado')?.value || DEFAULT_CONFIG.templateCancelado,
+                templateFaltou: document.getElementById('templateFaltou')?.value || DEFAULT_CONFIG.templateFaltou,
                 defaultDDD: document.getElementById('defaultDDD')?.value || DEFAULT_CONFIG.defaultDDD,
                 openingTime: document.getElementById('openingTime')?.value || DEFAULT_CONFIG.openingTime,
                 copyOrder: document.getElementById('copyOrder')?.value || DEFAULT_CONFIG.copyOrder
@@ -1242,7 +1328,9 @@
             const fields = {
                 timeAdjust: appConfig.timeAdjust,
                 statusFilter: appConfig.statusFilter,
-                messageTemplate: appConfig.messageTemplate,
+                templateAgendado: appConfig.templateAgendado,
+                templateCancelado: appConfig.templateCancelado,
+                templateFaltou: appConfig.templateFaltou,
                 defaultDDD: appConfig.defaultDDD,
                 openingTime: appConfig.openingTime,
                 copyOrder: appConfig.copyOrder || DEFAULT_CONFIG.copyOrder
@@ -1258,19 +1346,24 @@
         }
 
         function registerPersistenceListeners() {
-            ['timeAdjust', 'statusFilter', 'messageTemplate', 'defaultDDD', 'openingTime', 'copyOrder']
+            ['timeAdjust', 'statusFilter', 'templateAgendado', 'templateCancelado', 'templateFaltou', 'defaultDDD', 'openingTime', 'copyOrder']
                 .map(id => document.getElementById(id))
                 .filter(Boolean)
                 .forEach(element => {
                     element.addEventListener('input', saveConfig);
                     element.addEventListener('change', saveConfig);
                 });
+            ['templateAgendado', 'templateCancelado', 'templateFaltou']
+                .map(id => document.getElementById(id))
+                .filter(Boolean)
+                .forEach(element => element.addEventListener('input', renderPreviews));
         }
 
         function initializeApp() {
             loadLocalData();
             applyConfig();
             registerPersistenceListeners();
+            renderPreviews();
             displayHistory();
             updateSessionTotal();
         }
@@ -1381,23 +1474,6 @@
             }
         }
 
-        function toggleTemplate() {
-            templateOpen = !templateOpen;
-            const box = document.getElementById('templateBox');
-            const arrow = document.getElementById('templateArrow');
-            const label = document.getElementById('templateLabel');
-            
-            if (templateOpen) {
-                box.classList.add('open');
-                arrow.classList.add('open');
-                label.textContent = 'Ocultar personalização';
-            } else {
-                box.classList.remove('open');
-                arrow.classList.remove('open');
-                label.textContent = 'Personalizar mensagem';
-            }
-        }
-
         function switchTab(tabName) {
             currentTab = tabName;
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1405,6 +1481,42 @@
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
             if (tabName === 'history') displayHistory();
+        }
+
+        // ---------- Pré-visualização dos modelos (aba Personalizar) ----------
+        const EXEMPLOS_PREVIA = {
+            agendado: { nome: 'Ana Clara Pereira', cadastro: '1234567', data: '02/10', horario: '14h50', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva' },
+            cancelado: { nome: 'Jose Ramos Lima', cadastro: '7654321', data: '02/10', horario: '15h40', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva' },
+            faltou: { nome: 'Carla Mendes Rocha', cadastro: '2468135', data: '02/10', horario: '16h20', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva' }
+        };
+
+        function aplicarModelo(modelo, dados) {
+            return String(modelo || '')
+                .replace(/{nome}/g, dados.nome)
+                .replace(/{cadastro}/g, dados.cadastro)
+                .replace(/{data}/g, dados.data)
+                .replace(/{horario}/g, dados.horario)
+                .replace(/{profissional}/g, dados.profissional)
+                .replace(/{profissionalcompleto}/g, dados.profissionalcompleto);
+        }
+
+        function idPorSituacao(prefixo, situacao) {
+            return prefixo + situacao.charAt(0).toUpperCase() + situacao.slice(1);
+        }
+
+        function renderPreviews() {
+            ['agendado', 'cancelado', 'faltou'].forEach(situacao => {
+                const campo = document.getElementById(idPorSituacao('template', situacao));
+                const alvo = document.getElementById(idPorSituacao('prev', situacao));
+                if (campo && alvo) alvo.textContent = aplicarModelo(campo.value, EXEMPLOS_PREVIA[situacao]);
+            });
+        }
+
+        // Versão fiel ao pacote instalado: o build carimba o rodapé e o host nativo
+        // corrige em tempo de execução lendo o AppxManifest (regra 2.2 das Regras.txt).
+        function aplicarVersao(v) {
+            const el = document.getElementById('versaoApp');
+            if (el && v) el.textContent = 'v' + v;
         }
 
         function copyToClipboard(text, successMessage) {
@@ -1433,17 +1545,17 @@
             }).join(' ');
         }
 
-        function extractProfessional(lines, startIdx) {
-            for (let i = startIdx; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line.startsWith('PROFISSIONAL:')) {
-                    const name = line.replace('PROFISSIONAL:', '').trim();
-                    const parts = name.split(' ');
-                    return { completo: name, primeiro: parts[0] };
-                }
-                if (line.match(/^\d{2}-\d{2}-\d{4}/)) break;
-            }
-            return { completo: '', primeiro: '' };
+        // Mapeia o texto do status (relatório EASY) para a situação selecionável.
+        // AGENDADO -> agendado; CANCELADO*/TRANSFERIDO -> cancelado; FALTOU -> faltou.
+        // FALTA ABONADA / FALTA ATESTADO (falta justificada), NÃO REALIZADO, ADMITIDO e
+        // reservas ficam fora das mensagens (sem situação selecionável).
+        function situacaoDoStatus(status) {
+            if (!status) return null;
+            const texto = String(status).toUpperCase();
+            if (texto.indexOf('CANCELADO') >= 0 || texto.indexOf('TRANSFERIDO') >= 0) return 'cancelado';
+            if (texto.indexOf('FALTOU') >= 0) return 'faltou';
+            if (texto.indexOf('AGENDADO') >= 0) return 'agendado';
+            return null;
         }
 
         function generateMessages() {
@@ -1453,11 +1565,17 @@
                 return;
             }
 
+            const situacao = document.getElementById('statusFilter').value;
             const timeAdjust = parseInt(document.getElementById('timeAdjust').value) || 0;
             const defaultDDD = document.getElementById('defaultDDD').value.trim() || '11';
-            const template = document.getElementById('messageTemplate').value;
             const openingTime = document.getElementById('openingTime').value || '07:00';
             const [openHour, openMinute] = openingTime.split(':').map(Number);
+            const templates = {
+                agendado: document.getElementById('templateAgendado').value,
+                cancelado: document.getElementById('templateCancelado').value,
+                faltou: document.getElementById('templateFaltou').value
+            };
+            const template = templates[situacao] || templates.agendado;
 
             const lines = input.split('\n');
             const appointments = [];
@@ -1496,7 +1614,7 @@
 
                 if (!currentAppointment) continue;
 
-                if (line.includes('CANCELADO') || line.includes('TRANSFERIDO') || line.includes('AGENDADO') || line.includes('NÃO REALIZADO')) {
+                if (line.includes('CANCELADO') || line.includes('TRANSFERIDO') || line.includes('AGENDADO') || line.includes('NÃO REALIZADO') || line.includes('FALTOU')) {
                     if (!currentAppointment.status) currentAppointment.status = line;
                 } else if (line.includes('[CPF:]')) {
                     waitingForName = true;
@@ -1526,31 +1644,33 @@
 
             if (currentAppointment) appointments.push({ ...currentAppointment });
 
-            const scheduled = appointments.filter(a => 
-                a.status && a.status.includes('AGENDADO') && 
-                a.user && a.user.trim() !== '' && 
+            const validos = appointments.filter(a =>
+                situacaoDoStatus(a.status) &&
+                a.user && a.user.trim() !== '' &&
                 a.record && a.record.trim() !== '' && a.record !== 'sem cadastro'
             );
-            
-            const canceled = appointments.filter(a => a.status && a.status.includes('CANCELADO'));
-            const transferred = appointments.filter(a => a.status && a.status.includes('TRANSFERIDO'));
+            const porSituacao = { agendado: 0, cancelado: 0, faltou: 0 };
+            validos.forEach(a => { porSituacao[situacaoDoStatus(a.status)] += 1; });
+            const alvo = validos.filter(a => situacaoDoStatus(a.status) === situacao);
 
-            let messages = scheduled.map((app, idx) => {
+            let messages = alvo.map((app, idx) => {
                 const dateParts = app.date.split('-');
                 const formattedDate = `${dateParts[0]}/${dateParts[1]}`;
 
                 const timeParts = app.time.split(':');
                 let hours = parseInt(timeParts[0]);
                 let minutes = parseInt(timeParts[1]);
-                
-                // Não antecipar se for o horário de abertura
-                if (hours === openHour && minutes === openMinute) {
-                    // Mantém o horário original
-                } else {
-                    minutes -= timeAdjust;
-                    if (minutes < 0) {
-                        minutes += 60;
-                        hours -= 1;
+
+                // Antecipação vale só no lembrete de agendado; cancelado/faltou
+                // citam o horário original do agendamento.
+                if (situacao === 'agendado') {
+                    const naAbertura = hours === openHour && minutes === openMinute;
+                    if (!naAbertura) {
+                        minutes -= timeAdjust;
+                        if (minutes < 0) {
+                            minutes += 60;
+                            hours -= 1;
+                        }
                     }
                 }
                 const adjustedTime = `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}`;
@@ -1593,9 +1713,6 @@
                 };
             });
 
-            const filter = document.getElementById('statusFilter').value;
-            if (filter === 'agendado') messages = messages.filter(m => !m.isAdmitido);
-
             allMessages = messages;
             
             messages.forEach(msg => {
@@ -1607,10 +1724,10 @@
             saveHistory();
 
             displayMessages(messages);
-            updateStats(appointments, scheduled, messages, canceled, transferred);
+            updateStats(porSituacao);
             
             if (messages.length === 0) {
-                showToast('⚠️ Nenhuma mensagem gerada. Verifique se todos os pacientes têm nome e cadastro válidos.');
+                showToast('⚠️ Nenhuma mensagem gerada para esta situação. Verifique se há registros e se todos têm nome e cadastro válidos.');
             } else {
                 showToast(`✅ ${messages.length} mensagens geradas com sucesso!`);
             }
@@ -1903,10 +2020,11 @@
             showToast(`📊 ${sessionHistory.length} registros exportados em CSV!`);
         }
 
-        function updateStats(appointments, scheduled, messages, canceled, transferred) {
+        function updateStats(porSituacao) {
             document.getElementById('totalCount').textContent = sessionHistory.length;
-            document.getElementById('scheduledCount').textContent = messages.length;
-            document.getElementById('canceledCount').textContent = canceled.length + transferred.length;
+            document.getElementById('scheduledCount').textContent = porSituacao.agendado;
+            document.getElementById('canceledCount').textContent = porSituacao.cancelado;
+            document.getElementById('faltouCount').textContent = porSituacao.faltou;
         }
 
         function clearAll() {
@@ -1916,6 +2034,7 @@
             document.getElementById('totalCount').textContent = sessionHistory.length;
             document.getElementById('scheduledCount').textContent = '0';
             document.getElementById('canceledCount').textContent = '0';
+            document.getElementById('faltouCount').textContent = '0';
             document.getElementById('searchInput').value = '';
             window.generatedMessages = [];
             allMessages = [];
