@@ -1,0 +1,39 @@
+# .gitignore — Avisador CF2A (regra GH2 do Regras.txt)
+# Cobrem: artefatos de build, dados de execução, segredos e lixo de sistema.
+
+# Artefatos de build/empacotamento (a entrega versionada fica em entregas/,
+# fora deste repositório; os pacotes antigos já foram removidos do histórico atual)
+/build/
+/dist/
+/entregas/
+/src/out/
+*.msix
+*.msixbundle
+*.appx
+*.appxbundle
+
+# Dados de execução do WebView2 (regra W6 — nunca empacotar nem versionar)
+*.WebView2/
+
+# Segredos e credenciais (regras 3.1 e GH1.3)
+*.pfx
+*.key
+*.p12
+client_secret*.json
+google-client.json
+.env
+.env.*
+
+# Diário de trabalho local (fica fora do git por decisão do projeto)
+log.txt
+*.log
+
+# Temporários e caches
+tmp/
+*.tmp
+node_modules/
+
+# Sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
