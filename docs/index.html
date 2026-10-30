@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisador CF2A — Gerador de mensagens de lembrete de consulta para WhatsApp</title>
+    <meta name="description" content="O Avisador CF2A gera mensagens de lembrete de consulta para o WhatsApp da equipe de saúde direto da tabela de agendamentos. 100% offline, sem cadastro.">
+    <meta name="theme-color" content="#1e3c72">
+    <link rel="canonical" href="https://wavizo-bot.github.io/Avisador-CF2A/">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Avisador CF2A">
+    <meta property="og:title" content="Avisador CF2A — Gerador de mensagens de lembrete de consulta para WhatsApp">
+    <meta property="og:description" content="Cole a tabela de agendamentos e receba mensagens de lembrete prontas para o WhatsApp, com histórico, busca e modelos personalizáveis. 100% offline.">
+    <meta property="og:url" content="https://wavizo-bot.github.io/Avisador-CF2A/">
+    <meta property="og:image" content="https://wavizo-bot.github.io/Avisador-CF2A/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Avisador CF2A — Gerador de mensagens de lembrete de consulta para WhatsApp">
+    <meta name="twitter:description" content="Cole a tabela de agendamentos e receba mensagens de lembrete prontas para o WhatsApp. 100% offline, sem cadastro.">
+    <meta name="twitter:image" content="https://wavizo-bot.github.io/Avisador-CF2A/assets/og-image.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #24314a;
+            background: #f4f7fc;
+            line-height: 1.7;
+        }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        header.hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3c72 55%, #2a5298 100%);
+            color: #fff;
+            padding: 64px 0 56px;
+        }
+        .hero-inner { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
+        .hero-text { flex: 1 1 300px; min-width: 0; }
+        .hero h1 { font-size: 42px; line-height: 1.15; letter-spacing: -0.5px; }
+        .hero .tagline { font-size: 20px; color: #c7d7f5; margin-top: 14px; }
+        .hero .badges { margin-top: 26px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .badge {
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.28);
+            border-radius: 999px;
+            padding: 6px 18px;
+            font-size: 15px;
+        }
+        .hero-shot { flex: 1 1 300px; min-width: 0; }
+        .hero-shot img { width: 100%; border-radius: 14px; box-shadow: 0 22px 60px rgba(0,0,0,.45); display: block; }
+        img { max-width: 100%; height: auto; }
+        section { padding: 48px 0; }
+        section h2 { font-size: 30px; color: #1e3c72; margin-bottom: 18px; }
+        section h3 { font-size: 19px; color: #1e3c72; margin: 22px 0 8px; }
+        .card { background: #fff; border-radius: 16px; padding: 30px 34px; box-shadow: 0 4px 18px rgba(30,60,114,.08); }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 26px; }
+        figure.shot { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(30,60,114,.10); }
+        figure.shot img { width: 100%; display: block; }
+        figure.shot figcaption { padding: 14px 18px; font-size: 15px; color: #44506b; }
+        figure.shot figcaption b { color: #1e3c72; display: block; margin-bottom: 2px; }
+        ul.steps { margin: 12px 0 0 22px; }
+        ul.steps li { margin-bottom: 10px; }
+        .note {
+            background: #eef4ff;
+            border-left: 4px solid #2a5298;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 18px;
+            font-size: 15.5px;
+        }
+        .warn {
+            background: #fdf1e7;
+            border-left: 4px solid #d97706;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 18px;
+            font-size: 15.5px;
+        }
+        table.spec { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        table.spec th, table.spec td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e3e9f4; vertical-align: top; }
+        table.spec th { color: #1e3c72; width: 34%; font-weight: 600; }
+        details.faq { background: #fff; border-radius: 12px; padding: 16px 22px; margin-bottom: 12px; box-shadow: 0 3px 12px rgba(30,60,114,.07); }
+        details.faq summary { font-weight: 600; color: #1e3c72; cursor: pointer; font-size: 17px; }
+        details.faq p { margin-top: 10px; }
+        .en { background: #eef2fa; border-radius: 14px; padding: 26px 30px; }
+        .en h2 { margin-bottom: 10px; }
+        footer { background: #14203c; color: #cfd8ee; padding: 34px 0; margin-top: 40px; font-size: 15px; }
+        footer a { color: #9fc0ff; }
+        footer .row { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+        a { color: #2a5298; }
+        @media (max-width: 720px) {
+            .hero h1 { font-size: 32px; }
+            .card { padding: 22px 20px; }
+            section { padding: 34px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="wrap hero-inner">
+        <div class="hero-text">
+            <h1>Avisador CF2A</h1>
+            <p class="tagline">Cole a tabela de agendamentos da clínica e receba mensagens de lembrete de consulta prontas para o WhatsApp de cada paciente — com horário ajustado, histórico do dia e textos personalizáveis.</p>
+            <div class="badges">
+                <span class="badge">🪟 Windows 10/11</span>
+                <span class="badge">🔒 100% offline</span>
+                <span class="badge">📦 v1.3.0</span>
+                <span class="badge">🧾 Sem cadastro</span>
+            </div>
+        </div>
+        <div class="hero-shot">
+            <img src="assets/screenshot-02.webp" alt="Tela do Avisador CF2A com três mensagens de lembrete geradas, cada uma com telefone, botão de copiar, link e abertura no WhatsApp" width="1366" height="734">
+        </div>
+    </div>
+</header>
+
+<section id="o-que-e">
+    <div class="wrap">
+        <div class="card">
+            <h2>O que é</h2>
+            <p>O Avisador CF2A é um programa de computador (Windows) que transforma a tabela de agendamentos da Clínica da Família em mensagens de WhatsApp de lembrete de consulta. Você cola a tabela exportada do sistema da clínica, escolhe a situação (Agendado, Cancelado ou Faltou) e o programa monta um texto por paciente, com o horário já antecipado quando necessário, o link pronto para abrir no WhatsApp e o registro de tudo no histórico do dia.</p>
+            <p style="margin-top:12px"><b>Para quem serve:</b> equipes de saúde que avisam pacientes por WhatsApp — agentes comunitários, recepcionistas e profissionais que precisam lembrar consultas sem digitar mensagem por mensagem.</p>
+        </div>
+    </div>
+</section>
+
+<section id="por-dentro">
+    <div class="wrap">
+        <h2>Por dentro</h2>
+        <p style="margin-bottom:22px">As telas abaixo são capturas reais do aplicativo com dados <b>fictícios de demonstração</b> (nomes, cadastros e telefones de exemplo — nenhum paciente real).</p>
+        <div class="gallery">
+            <figure class="shot">
+                <img src="assets/screenshot-01.webp" alt="Tela inicial do Avisador CF2A em tema claro, com a área para colar a tabela de agendamentos, campos de antecipar o horário e escolher a situação" width="1366" height="734" loading="lazy">
+                <figcaption><b>1. Tela inicial</b>Cole a tabela de agendamentos, ajuste quantos minutos antecipar e qual situação gerar. Os contadores mostram o total da sessão.</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="assets/screenshot-03.webp" alt="Avisador CF2A em tema escuro mostrando os cartões de mensagens geradas com telefone azul, botões de copiar, funcionando, link e abrir" width="1366" height="734" loading="lazy">
+                <figcaption><b>2. Mensagens geradas</b>Cada paciente vira um cartão: telefone, botão Copiar, link e Abrir no WhatsApp, e a marcação ✅/❌ de funcionou. Tema claro ou escuro.</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="assets/screenshot-04.webp" alt="Aba Histórico do Dia do Avisador CF2A com tabela de nomes, cadastro, telefone, data, horário e profissional, e botões de copiar, exportar e limpar" width="1366" height="734" loading="lazy">
+                <figcaption><b>3. Histórico do Dia</b>Tudo o que já foi gerado fica registrado em tabela, com busca, cópia em lote (com ordenação), exportação CSV e limpeza seletiva.</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="assets/screenshot-05.webp" alt="Aba Personalizar do Avisador CF2A com DDD padrão, horário de abertura e os três modelos de mensagem (Agendado, Cancelado, Faltou) com prévia ao vivo" width="1366" height="734" loading="lazy">
+                <figcaption><b>4. Personalizar</b>Defina DDD padrão, horário de abertura e os textos dos três modelos (Agendado, Cancelado, Faltou) — com prévia ao vivo de como fica a mensagem.</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="assets/screenshot-06.webp" alt="Busca por nome dentro das mensagens geradas no Avisador CF2A, filtrando a lista para uma única paciente" width="1366" height="734" loading="lazy">
+                <figcaption><b>5. Busca rápida</b>Filtre as mensagens por nome ou cadastro para achar o paciente certo na hora, antes de copiar ou abrir o link.</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="assets/screenshot-02.webp" alt="Lista completa de mensagens geradas no Avisador CF2A mostrando o horário antecipado e o horário original de cada consulta" width="1366" height="734" loading="lazy">
+                <figcaption><b>6. Horário antecipado</b>Cada cartão mostra o horário antecipado e o original da consulta, para o aviso chegar com a antecedência combinada.</figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+<section id="como-funciona">
+    <div class="wrap">
+        <div class="card">
+            <h2>Como a mensagem é montada</h2>
+            <p>O programa não faz nenhum cálculo clínico. Ele apenas organiza o que a tabela já diz e aplica as regras de aviso combinadas com a equipe:</p>
+            <ul class="steps">
+                <li><b>Entrada:</b> a tabela de agendamentos colada (data, situação, cadastro, nome, telefone), o número de minutos de antecipação e a situação escolhida (Agendado, Cancelado ou Faltou).</li>
+                <li><b>Leitura:</b> o app separa cada paciente da tabela e identifica a situação de cada consulta pelo texto do sistema.</li>
+                <li><b>Horário:</b> só no <b>Agendado</b> o horário é antecipado (por exemplo, 15h00 vira 14h50 com "antecipar 10 min"). Consultas <b>canceladas</b> e <b>faltas</b> mantêm o horário original.</li>
+                <li><b>Texto:</b> o modelo escolhido é preenchido com {nome}, {cadastro}, {data}, {horário} e {profissional}. O modelo de <b>Cancelado</b> avisa que uma nova data será enviada; o de <b>Faltou</b> pergunta o motivo, sem remarcar.</li>
+                <li><b>Saída:</b> a mensagem pronta no cartão do paciente, com link para abrir no WhatsApp e registro no histórico do dia.</li>
+            </ul>
+            <div class="note">⚖️ <b>Apoio à decisão, não prescrição:</b> o texto gerado é um lembrete operacional. Revise sempre a mensagem antes de enviá-la — a decisão clínica e a comunicação com o paciente são sempre do profissional habilitado.</div>
+        </div>
+    </div>
+</section>
+
+<section id="o-que-nao-e">
+    <div class="wrap">
+        <div class="card">
+            <h2>O que não é</h2>
+            <ul class="steps">
+                <li><b>Não é sistema oficial</b> de saúde, nem produto de órgão público — é uma ferramenta independente, criada por um agente comunitário para apoiar a própria equipe.</li>
+                <li><b>Não é prontuário eletrônico</b> e não guarda histórico clínico: o que você cola é processado na hora e fica só no seu computador.</li>
+                <li><b>Não é dispositivo médico</b> e não faz diagnóstico, cálculo clínico, prescrição ou qualquer recomendação de tratamento.</li>
+                <li><b>Não substitui a análise de um profissional habilitado</b> nem a política de comunicação da sua instituição.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="compatibilidade">
+    <div class="wrap">
+        <div class="card">
+            <h2>Compatibilidade, requisitos e limitações</h2>
+            <table class="spec">
+                <tr><th>Sistema</th><td>Windows 10 e Windows 11 (versões x64 e x86).</td></tr>
+                <tr><th>Instalação</th><td>Microsoft Store (recomendado) ou pacote MSIX assinado para instalação local.</td></tr>
+                <tr><th>Internet</th><td>O programa funciona <b>sem internet</b>. A rede só é usada pelo próprio WhatsApp, no envio da mensagem.</td></tr>
+                <tr><th>Dados</th><td>Tudo fica no perfil do seu usuário, dentro do computador (%LOCALAPPDATA%). Nada é enviado a servidores, não há nuvem, analytics ou cookies.</td></tr>
+                <tr><th>Tela</th><td>Janela redimensionável, confortável a partir de aproximadamente 1100 px de largura. É um app de desktop — não é um app de celular.</td></tr>
+                <tr><th>Navegador embutido</th><td>Usa o WebView2 (runtime do Microsoft Edge já presente no Windows 11 e instalado pela Store quando necessário).</td></tr>
+                <tr><th>Limitações</th><td>Não integra automaticamente com outros sistemas; não lê arquivos de formatos inesperados; não envia mensagens sozinho — o disparo é manual, pelo WhatsApp, pelo profissional.</td></tr>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section id="privacidade">
+    <div class="wrap">
+        <div class="card">
+            <h2>Privacidade em resumo</h2>
+            <p>O Avisador CF2A <b>não coleta dados</b>. Não há login, conta, nuvem nem integração com Google Drive ou OAuth. Tudo o que você digita ou cola (agenda, nomes, telefones, histórico e configurações) permanece no seu computador e é apagado pelos botões internos do app ou na desinstalação. Não usamos cookies, analytics, rastreamento ou publicidade.</p>
+            <p style="margin-top:12px">Você é o titular dos dados e pode acessá-los, corrigi-los ou excluílos a qualquer momento pelo próprio programa. Os detalhes estão na <a href="politica-de-privacidade.html">Política de Privacidade</a>.</p>
+        </div>
+    </div>
+</section>
+
+<section id="documentos">
+    <div class="wrap">
+        <div class="card">
+            <h2>Documentos legais</h2>
+            <ul class="steps">
+                <li><a href="politica-de-privacidade.html">Política de Privacidade</a> — o que é (não) coletado, armazenamento local, direitos LGPD/GDPR e contato.</li>
+                <li><a href="termos-de-servico.html">Termos de Serviço</a> — como funciona, uso permitido e proibido, propriedade intelectual, prazo da demonstração e licenciamento.</li>
+                <li><a href="aviso-legal.html">Aviso Legal</a> — limites de uso, isenção por função não projetada e por uso indevido.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="faq">
+    <div class="wrap">
+        <h2>Perguntas frequentes</h2>
+        <details class="faq">
+            <summary>Preciso de internet para usar?</summary>
+            <p>Não. O app roda 100% offline. A internet entra apenas no envio da mensagem pelo WhatsApp, que é aberto pelo próprio botão do cartão.</p>
+        </details>
+        <details class="faq">
+            <summary>Meus dados de pacientes vão para algum servidor?</summary>
+            <p>Não. Nada sai do seu computador: não há nuvem, login nem telemetria. Os dados ficam no perfil local do Windows e são apagados pelos botões do app ou na desinstalação.</p>
+        </details>
+        <details class="faq">
+            <summary>Funciona com a tabela exportada do sistema da minha clínica?</summary>
+            <p>Sim, desde que o texto tenha os campos de sempre (data, situação, cadastro, nome e telefone). Cole a tabela como texto puro na área indicada e clique em Gerar. Se a formatação da sua unidade for muito diferente, revise cada mensagem antes de enviar.</p>
+        </details>
+        <details class="faq">
+            <summary>O que fazer quando o telefone de um paciente não funciona?</summary>
+            <p>Use o botão 📱❌ "Não funcionou" no cartão: a marcação fica guardada no histórico e nos próximos avisos você já sabe quem precisa de outro canal de contato.</p>
+        </details>
+        <details class="faq">
+            <summary>Posso mudar o texto das mensagens?</summary>
+            <p>Sim. Na aba Personalizar você edita os modelos de Agendado, Cancelado e Faltou, define DDD padrão e horário de abertura, com prévia ao vivo de como a mensagem fica.</p>
+        </details>
+        <details class="faq">
+            <summary>Existe versão de demonstração?</summary>
+            <p>Sim: a demonstração tem validade de 1 mês a partir da primeira instalação. Para continuar usando, fale com o desenvolvedor (mmr05@hotmail.com ou WhatsApp 11 978831938) sobre o licenciamento.</p>
+        </details>
+    </div>
+</section>
+
+<section id="english">
+    <div class="wrap">
+        <div class="en">
+            <h2>English summary</h2>
+            <p><b>Avisador CF2A</b> is a free Windows desktop tool that turns a clinic's appointment table into ready-to-send WhatsApp reminder messages for each patient. Paste the schedule, pick the status (booked, cancelled or missed), and the app prepares one message per patient with the appointment time shifted forward when needed, a direct WhatsApp link and a daily history with search and CSV export. It runs fully offline: no account, no cloud, no tracking — all data stays in the local user profile on your own PC. It is an independent decision-support helper, not an official health system, medical record or medical device, and it does not replace a qualified professional's assessment. Contact: mmr05@hotmail.com.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="wrap row">
+        <div>
+            <b>Avisador CF2A</b> — v1.3.0 (pacote 1.3.0.0)<br>
+            Contato: <a href="mailto:mmr05@hotmail.com">mmr05@hotmail.com</a> · WhatsApp 11 978831938
+        </div>
+        <div>
+            <a href="https://github.com/wavizo-bot/Avisador-CF2A">Repositório no GitHub</a> ·
+            <a href="https://apps.microsoft.com/detail/9PFP3R8HZJ7H">Página na Microsoft Store</a><br>
+            <a href="politica-de-privacidade.html">Privacidade</a> ·
+            <a href="termos-de-servico.html">Termos</a> ·
+            <a href="aviso-legal.html">Aviso legal</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
