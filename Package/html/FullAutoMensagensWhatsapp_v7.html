@@ -1645,10 +1645,14 @@
                 var salvo = JSON.parse(localStorage.getItem('mensagens-whatsapp-termos-v1'));
                 var aceito = !!(salvo && salvo.version === 'v1.1');
                 if (semOnboarding) {
+                    // Onboarding primeiro; os termos entram quando ele terminar.
                     document.getElementById('onboardingOverlay').style.display = 'flex';
-                    if (!aceito) document.getElementById('termsOverlay').style.display = 'none';
+                    document.getElementById('termsOverlay').style.display = 'none';
                 } else if (!aceito) {
                     document.getElementById('termsOverlay').style.display = 'flex';
+                } else {
+                    // Já aceito: nunca re-bloquear a cada abertura (v1.4).
+                    document.getElementById('termsOverlay').style.display = 'none';
                 }
             } catch (e) { }
         })();
@@ -2358,7 +2362,11 @@
                 'templateAgendadoMulti', 'templateCanceladoMulti', 'templateFaltouMulti']
                 .map(id => document.getElementById(id))
                 .filter(Boolean)
-                .forEach(element => element.addEventListener('input', renderPreviews));
+                .forEach(element => {
+                    element.addEventListener('input', renderPreviews);
+                    element.addEventListener('input', aplicarModelosNasMensagens);
+                    element.addEventListener('change', aplicarModelosNasMensagens);
+                });
         }
 
         function initializeApp() {
@@ -2528,6 +2536,39 @@
                 const alvo = document.getElementById(idPorSituacao('prev', situacao));
                 if (campo && alvo) alvo.textContent = aplicarModelo(campo.value, EXEMPLOS_PREVIA[situacao]);
             });
+        }
+
+        // Atualiza os cartões JÁ GERADOS quando um modelo é editado.
+        // Sem isso, a prévia muda mas Copiar/Link/Abrir continuam usando o texto
+        // gravado no momento do "Gerar" (mensagem antiga, muitas vezes o padrão).
+        function aplicarModelosNasMensagens() {
+            if (!allMessages || !allMessages.length) return;
+            const campo = id => document.getElementById(id);
+            const templates = {
+                agendado: campo('templateAgendado').value,
+                cancelado: campo('templateCancelado').value,
+                faltou: campo('templateFaltou').value,
+                agendadoMulti: (campo('templateAgendadoMulti') || {}).value || DEFAULT_CONFIG.templateAgendadoMulti,
+                canceladoMulti: (campo('templateCanceladoMulti') || {}).value || DEFAULT_CONFIG.templateCanceladoMulti,
+                faltouMulti: (campo('templateFaltouMulti') || {}).value || DEFAULT_CONFIG.templateFaltouMulti
+            };
+            allMessages.forEach(msg => {
+                let template = templates[msg.situacao] || templates.agendado;
+                if (msg.multiplo && templates[msg.situacao + 'Multi']) template = templates[msg.situacao + 'Multi'];
+                const eventosTexto = listaEventosTexto(msg.eventos || []);
+                msg.message = String(template || '')
+                    .replace(/{nome}/g, msg.user)
+                    .replace(/{cadastro}/g, msg.record)
+                    .replace(/{data}/g, msg.formattedDate)
+                    .replace(/{horario}/g, msg.adjustedTime)
+                    .replace(/{profissional}/g, msg.profissional)
+                    .replace(/{profissionalcompleto}/g, msg.profissionalCompleto)
+                    .replace(/{eventos}/g, eventosTexto);
+                msg.whatsappLink = msg.phone
+                    ? `https://wa.me/55${msg.phone}?text=${encodeURIComponent(msg.message)}`
+                    : '';
+            });
+            aplicarFiltros();
         }
 
         // Versão fiel ao pacote instalado: o build carimba o rodapé e o host nativo
@@ -2927,7 +2968,41 @@
 
         // ---------- SMS via OpenSMS (ponte com o host nativo) ----------
         // Windows: o host C# faz o POST http://IP:9292/sms/ com Bearer key.
-        // Android (fase 2): intenção sms: com o texto já preenchido.
+        // Android (fase 2): intenção smsto: com o texto já preenchido.
+
+        // ---------- Ponte nativa Android/Capacitor (A6) ----------
+        // Emula o contrato window.chrome.webview do WebView2 para manter a
+        // fonte web única Windows/Android: o plugin nativo Cf2aHost recebe o
+        // {"id","cmd"} e responde pelo mesmo canal (window.__cf2aHostResposta).
+        (function instalarPonteCapacitor() {
+            try {
+                if (window.chrome && window.chrome.webview) return;
+                if (!(window.Capacitor && window.Capacitor.Plugins &&
+                      window.Capacitor.Plugins.Cf2aHost)) return;
+                const ouvintes = [];
+                window.chrome = window.chrome || {};
+                window.chrome.webview = {
+                    addEventListener: function (tipo, fn) {
+                        if (tipo === 'message' && typeof fn === 'function') ouvintes.push(fn);
+                    },
+                    postMessage: function (dados) {
+                        try {
+                            window.Capacitor.Plugins.Cf2aHost.postMessage({ json: String(dados) });
+                        } catch (e) { }
+                    }
+                };
+                window.__cf2aHostResposta = function (bruto) {
+                    let dados = bruto;
+                    if (typeof dados === 'string') {
+                        try { dados = JSON.parse(dados); } catch (e) { return; }
+                    }
+                    ouvintes.forEach(function (fn) {
+                        try { fn({ data: dados }); } catch (e) { }
+                    });
+                };
+            } catch (e) { }
+        })();
+
         const SmsBridge = {
             proximoId: 1,
             pendentes: new Map(),
@@ -2988,7 +3063,29 @@
                 if (this.plataforma() === 'android') {
                     // Android: deixa o app de SMS padrão do celular com o texto pronto
                     // (política do Google Play não permite SEND_SMS a apps comuns).
+                    // O plugin nativo Cf2aHost dispara a intenção smsto: quando
+                    // existe; sem ele, cai para location.href (mesmo contrato).
                     try {
+                        if (window.Capacitor && window.Capacitor.Plugins &&
+                            window.Capacitor.Plugins.Cf2aHost) {
+                            return window.Capacitor.Plugins.Cf2aHost
+                                .abrirSmsDireto({ numero: numero, texto: texto })
+                                .then(function (r) {
+                                    return {
+                                        ok: !!(r && r.ok),
+                                        status: 0,
+                                        intent: true,
+                                        error: (r && r.error) || undefined
+                                    };
+                                })
+                                .catch(function (e) {
+                                    return {
+                                        ok: false,
+                                        status: 0,
+                                        error: String((e && e.message) || e)
+                                    };
+                                });
+                        }
                         window.location.href = 'sms:' + numero + '?body=' + encodeURIComponent(texto);
                         return Promise.resolve({ ok: true, status: 0, intent: true });
                     } catch (e) {
@@ -3038,17 +3135,20 @@
             const msg = (window.generatedMessages || [])[index];
             if (!msg) return;
             if (!msg.phone) return showToast('⚠️ Sem telefone disponível para SMS');
+            const ehAndroid = SmsBridge.plataforma() === 'android';
             const cfg = smsConfigAtual();
-            if (!cfg.url) {
+            if (!ehAndroid && !cfg.url) {
                 switchTab('ajustes');
                 return showToast('⚠️ Configure o servidor OpenSMS na aba Ajustes');
             }
             const numero = '+' + (msg.phone.indexOf('55') === 0 ? msg.phone : '55' + msg.phone);
-            showToast('📩 Enviando SMS pelo OpenSMS…');
+            showToast(ehAndroid ? '📩 Abrindo o app de SMS com a mensagem…' : '📩 Enviando SMS pelo OpenSMS…');
             SmsBridge.enviar(cfg.url, cfg.key, numero, msg.message).then(function (r) {
                 if (r.ok) {
                     registrarAvisoDoCard(msg, 'sms');
-                    showToast(`📩 SMS enviado pelo OpenSMS para ${msg.phone}`);
+                    showToast(ehAndroid
+                        ? `📩 SMS preparado para ${msg.phone}`
+                        : `📩 SMS enviado pelo OpenSMS para ${msg.phone}`);
                 } else {
                     showToast('❌ SMS falhou: ' + (r.error || ('HTTP ' + r.status)));
                 }
@@ -3432,6 +3532,20 @@
             if (!msg || !msg.whatsappLink) return showToast('⚠️ Sem telefone disponível');
             markAsProcessed(index);
             registrarAvisoDoCard(msg, 'whatsapp');
+
+            // Abre direto no WhatsApp instalado (Desktop no Windows, app no
+            // Android) pela ponte nativa. Evita a janela WebView2 intermediária
+            // do host e preserva os emojis (o texto vai como Unicode, não como
+            // URL já codificada). Sem ponte (navegador/PWA), usa o link wa.me.
+            if (window.chrome && window.chrome.webview && msg.phone) {
+                SmsBridge.solicitar(
+                    { cmd: 'whatsapp', phone: '55' + msg.phone, text: msg.message },
+                    15000
+                ).then(function (r) {
+                    if (!r || !r.ok) window.open(msg.whatsappLink, '_blank');
+                });
+                return;
+            }
             window.open(msg.whatsappLink, '_blank');
         }
 
@@ -3544,11 +3658,27 @@
                 csv += line + '\n';
             });
 
+            const nomeArquivo = `historico_${new Date().toISOString().split('T')[0]}.csv`;
+
+            // Android: o WebView não processa <a download> (A6) — grava o CSV
+            // pelo host nativo (MediaStore/Downloads) no mesmo contrato {"cmd"}.
+            if (SmsBridge.plataforma() === 'android') {
+                SmsBridge.solicitar({ cmd: 'salvarCsv', nome: nomeArquivo, conteudo: csv }, 15000)
+                    .then(function (r) {
+                        if (r.ok) {
+                            showToast(`📊 ${sessionHistory.length} registros exportados em CSV!`);
+                        } else {
+                            showToast('❌ Exportação falhou: ' + (r.error || ('HTTP ' + r.status)));
+                        }
+                    });
+                return;
+            }
+
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `historico_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', nomeArquivo);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();

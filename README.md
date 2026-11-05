@@ -6,7 +6,7 @@
 
 - **Landing page:** https://wavizo-bot.github.io/Avisador-CF2A/
 - **Microsoft Store:** https://apps.microsoft.com/detail/9PFP3R8HZJ7H
-- **Versão atual:** v1.4.0 (pacote 1.4.0.0)
+- **Versão atual:** v1.4.1 (pacote 1.4.1.0)
 
 ## O que faz
 
@@ -17,7 +17,7 @@ Você cola a tabela de agendamentos exportada do sistema da clínica (texto puro
 - **Modo Simples ou Completo** — o Simples mostra só o essencial (como as versões anteriores); o Completo libera todos os dados abaixo;
 - Geração por situação, com modelos de mensagem personalizáveis (aba Personalizar) e prévia ao vivo;
 - Mensagem de **Cancelado** avisando que nova data será enviada; mensagem de **Faltou** perguntando o motivo, sem remarcar;
-- Cartão por paciente com telefone, botão de copiar texto, link e abertura direta no WhatsApp;
+- Cartão por paciente com telefone, botão de copiar texto, link e abertura direta no WhatsApp (Desktop/app, sem janela intermediária e com emojis preservados);
 - **Memória de avisos**: cada cartão marca ✨ primeira vez ou 🔔 já avisado, com data e canal (WhatsApp ou SMS) — copiar, abrir ou enviar SMS registra o aviso e evita reaviso;
 - **Equipe responsável**: importação local dos arquivos de equipe do BI (equipes + agendas), equipe padrão por pessoa (médica, enfermeira, assistente) e lista de profissionais com telefone para contatar quando o número do paciente falha;
 - **Fila de agendas (lotes)**: acumule várias agendas antes de gerar — agendamentos da mesma pessoa são unificados numa única mensagem;
@@ -68,7 +68,7 @@ powershell -ExecutionPolicy Bypass -File src\elevated-validate.ps1 -CertFile bui
 
 Último resultado WACK: **OVERALL PASS, 24/24 testes** no bundle 1.3.0.0.
 
-Teste automatizado da interface (suíte embutida, executada dentro do pacote instalado): **73 PASS, 0 FAIL** no build 1.4.0.0 — inclui toggle de modo, memória de avisos, unificação de lotes, importação da base do BI e a ponte de SMS de ponta a ponta.
+Teste automatizado da interface (suíte embutida, executada dentro do pacote instalado): **73 PASS, 0 FAIL** no build 1.4.0.0 — inclui toggle de modo, memória de avisos, unificação de lotes, importação da base do BI e a ponte de SMS de ponta a ponta. No build 1.4.1.0, a ponte de WhatsApp foi validada de ponta a ponta (comando nativo, abertura do WhatsApp Desktop e emojis preservados).
 
 ## Estrutura de pastas
 

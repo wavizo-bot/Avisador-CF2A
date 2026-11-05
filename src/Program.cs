@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -290,6 +291,39 @@ namespace wavizo.AvisadorCF2A
         {
             int id = ExtrairInteiroJson(message, "id", 0);
             string cmd = ExtrairTextoJson(message, "cmd");
+
+            // v1.4.1: abre o WhatsApp instalado direto, sem a janela WebView2.
+            if (string.Equals(cmd, "whatsapp", StringComparison.Ordinal))
+            {
+                string phone = ExtrairTextoJson(message, "phone");
+                string texto = ExtrairTextoJson(message, "text");
+                ThreadPool.QueueUserWorkItem(
+                    delegate(object state)
+                    {
+                        bool ok = false;
+                        string erro = null;
+                        try
+                        {
+                            ok = AbrirWhatsApp(phone, texto, out erro);
+                        }
+                        catch (Exception ex)
+                        {
+                            ok = false;
+                            erro = ex.Message;
+                        }
+
+                        string reply =
+                            "{\"id\":" + id +
+                            ",\"ok\":" + (ok ? "true" : "false") +
+                            ",\"status\":0" +
+                            ",\"error\":" + (erro == null ? "null" : "\"" + EscapearJson(erro) + "\"") +
+                            "}";
+                        PostarMensagemParaPagina(reply);
+                    },
+                    null);
+                return;
+            }
+
             if (!string.Equals(cmd, "sms", StringComparison.Ordinal))
             {
                 return;
@@ -327,6 +361,50 @@ namespace wavizo.AvisadorCF2A
                     PostarMensagemParaPagina(reply);
                 },
                 null);
+        }
+
+        /* Abre o WhatsApp instalado pelo protocolo whatsapp:, sem criar a
+           janela WebView2 intermediária. O texto chega como Unicode pela
+           ponte e é codificado UMA vez aqui — por isso os emojis sobrevivem.
+           Se o protocolo não estiver registrado, abre o wa.me no navegador
+           padrão (mesmo link do botão "Link"). */
+        private static bool AbrirWhatsApp(string phone, string text, out string erro)
+        {
+            erro = null;
+            string numero = (phone ?? string.Empty).Trim();
+            if (numero.Length == 0)
+            {
+                erro = "Telefone ausente.";
+                return false;
+            }
+
+            string codificado = Uri.EscapeDataString(text ?? string.Empty);
+            try
+            {
+                Process.Start(new ProcessStartInfo(
+                    "whatsapp://send?phone=" + numero + "&text=" + codificado)
+                {
+                    UseShellExecute = true
+                });
+                return true;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo(
+                        "https://wa.me/" + numero + "?text=" + codificado)
+                    {
+                        UseShellExecute = true
+                    });
+                    return true;
+                }
+                catch (Exception ex2)
+                {
+                    erro = ex2.Message;
+                    return false;
+                }
+            }
         }
 
         private void PostarMensagemParaPagina(string json)
