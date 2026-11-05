@@ -6,7 +6,7 @@
 
 - **Landing page:** https://wavizo-bot.github.io/Avisador-CF2A/
 - **Microsoft Store:** https://apps.microsoft.com/detail/9PFP3R8HZJ7H
-- **Versão atual:** v1.3.0 (pacote 1.3.0.0)
+- **Versão atual:** v1.4.0 (pacote 1.4.0.0)
 
 ## O que faz
 
@@ -14,17 +14,23 @@ Você cola a tabela de agendamentos exportada do sistema da clínica (texto puro
 
 ### Recursos principais
 
+- **Modo Simples ou Completo** — o Simples mostra só o essencial (como as versões anteriores); o Completo libera todos os dados abaixo;
 - Geração por situação, com modelos de mensagem personalizáveis (aba Personalizar) e prévia ao vivo;
 - Mensagem de **Cancelado** avisando que nova data será enviada; mensagem de **Faltou** perguntando o motivo, sem remarcar;
 - Cartão por paciente com telefone, botão de copiar texto, link e abertura direta no WhatsApp;
+- **Memória de avisos**: cada cartão marca ✨ primeira vez ou 🔔 já avisado, com data e canal (WhatsApp ou SMS) — copiar, abrir ou enviar SMS registra o aviso e evita reaviso;
+- **Equipe responsável**: importação local dos arquivos de equipe do BI (equipes + agendas), equipe padrão por pessoa (médica, enfermeira, assistente) e lista de profissionais com telefone para contatar quando o número do paciente falha;
+- **Fila de agendas (lotes)**: acumule várias agendas antes de gerar — agendamentos da mesma pessoa são unificados numa única mensagem;
+- **Envio de SMS** pelo aplicativo OpenSMS no seu próprio celular, na rede local (endereço e chave configurados na aba Ajustes);
 - Marcação ✅ Funcionou / ❌ Não funcionou por paciente, persistida entre sessões;
 - Histórico do dia/sessão em tabela, com busca, ordenação da cópia, exportação CSV e limpeza seletiva;
 - Temas claro e escuro, DDD padrão e horário de abertura configuráveis;
+- Onboarding em 3 passos com dados de demonstração na primeira execução;
 - Versão dinâmica no rodapé, lida do manifesto do pacote instalado.
 
 ## Privacidade e armazenamento
 
-**100% offline.** Não há login, conta, nuvem, analytics, cookies nem telemetria — e nenhuma integração com Google Drive ou OAuth. Todos os dados (agenda colada, histórico, configurações e marcações) ficam apenas no perfil local do usuário (`%LOCALAPPDATA%\wavizo\AvisadorCF2A`) e são apagados pelos botões internos do app ou na desinstalação.
+**100% offline.** Não há login, conta, nuvem, analytics, cookies nem telemetria — e nenhuma integração com Google Drive ou OAuth. Todos os dados (agenda colada, base de equipe importada, memória de avisos, histórico, configurações e marcações) ficam apenas no perfil local do usuário (`%LOCALAPPDATA%\wavizo\AvisadorCF2A`) e são apagados pelos botões internos do app ou na desinstalação. O envio de SMS, se você o usar, sai do chip do seu próprio celular via servidor OpenSMS na sua rede local — nada trafega por servidores do desenvolvedor.
 
 Documentos legais (publicados também na landing):
 
@@ -60,7 +66,9 @@ Validação de qualidade (WACK, requer elevação):
 powershell -ExecutionPolicy Bypass -File src\elevated-validate.ps1 -CertFile build\test-cert.cer -PackagePath build\AvisadorCF2A_<versao>.msixbundle -ReportPath build\wack-report.xml -LogPath build\wack-log.txt
 ```
 
-Último resultado: **OVERALL PASS, 24/24 testes** no bundle 1.3.0.0.
+Último resultado WACK: **OVERALL PASS, 24/24 testes** no bundle 1.3.0.0.
+
+Teste automatizado da interface (suíte embutida, executada dentro do pacote instalado): **73 PASS, 0 FAIL** no build 1.4.0.0 — inclui toggle de modo, memória de avisos, unificação de lotes, importação da base do BI e a ponte de SMS de ponta a ponta.
 
 ## Estrutura de pastas
 
@@ -92,4 +100,4 @@ Contato: **mmr05@hotmail.com** · WhatsApp **11 978831938**
 
 ### English summary
 
-**Avisador CF2A** is a free Windows 10/11 desktop tool (WinForms + WebView2 host, HTML/JS interface) that turns a clinic's appointment schedule into ready-to-send WhatsApp reminder messages for each patients. Paste the schedule, pick the status (booked, cancelled or missed) and the app prepares one message per patient — with the appointment time shifted forward when needed — plus a direct WhatsApp link, a daily history with search and CSV export, and customizable message templates. It runs **fully offline**: no account, no cloud, no tracking; data stays in the local user profile. It is an independent decision-support helper, not an official health system, medical record or medical device. Build with `src/build.ps1`; store packages live outside the repository. Contact: mmr05@hotmail.com.
+**Avisador CF2A** is a free Windows 10/11 desktop tool (WinForms + WebView2 host, HTML/JS interface) that turns a clinic's appointment schedule into ready-to-send reminder messages for each patients. Paste the schedule, pick the status (booked, cancelled or missed) and the app prepares one message per patient — with the appointment time shifted forward when needed — plus a direct WhatsApp link, a daily history with search and CSV export, customizable message templates, a record of who was already reminded (WhatsApp or SMS), the patient's care team for fallback contact, multi-schedule batching with per-person message merging, and optional SMS through a local OpenSMS server on your own phone. It runs **fully offline**: no account, no cloud, no tracking; data stays in the local user profile. It is an independent decision-support helper, not an official health system, medical record or medical device. Build with `src/build.ps1`; store packages live outside the repository. Contact: mmr05@hotmail.com.
