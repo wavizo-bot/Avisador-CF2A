@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -260,18 +261,273 @@ namespace wavizo.AvisadorCF2A
         private void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             string message = e.TryGetWebMessageAsString();
-            if (!string.Equals(message, "quit", StringComparison.Ordinal))
+            if (message == null)
             {
                 return;
             }
 
+            if (string.Equals(message, "quit", StringComparison.Ordinal))
+            {
+                try
+                {
+                    BeginInvoke(new Action(Close));
+                }
+                catch (Exception)
+                {
+                }
+                return;
+            }
+
+            // v1.4: ponte de SMS ({"id":1,"cmd":"sms",...}) — resposta via
+            // PostWebMessageAsString com o mesmo "id".
+            if (message.IndexOf("\"cmd\"", StringComparison.Ordinal) >= 0)
+            {
+                ProcessarComandoPonte(message);
+            }
+        }
+
+        private void ProcessarComandoPonte(string message)
+        {
+            int id = ExtrairInteiroJson(message, "id", 0);
+            string cmd = ExtrairTextoJson(message, "cmd");
+            if (!string.Equals(cmd, "sms", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            string url = ExtrairTextoJson(message, "url");
+            string key = ExtrairTextoJson(message, "key");
+            string number = ExtrairTextoJson(message, "number");
+            string text = ExtrairTextoJson(message, "text");
+            bool test = ExtrairBooleanoJson(message, "test", false);
+
+            ThreadPool.QueueUserWorkItem(
+                delegate(object state)
+                {
+                    int status = 0;
+                    string erro = null;
+                    bool ok = false;
+                    try
+                    {
+                        ok = ExecutarSmsOpenSms(url, key, number, text, test, out status, out erro);
+                    }
+                    catch (Exception ex)
+                    {
+                        ok = false;
+                        status = 0;
+                        erro = ex.Message;
+                    }
+
+                    string reply =
+                        "{\"id\":" + id +
+                        ",\"ok\":" + (ok ? "true" : "false") +
+                        ",\"status\":" + status +
+                        ",\"error\":" + (erro == null ? "null" : "\"" + EscapearJson(erro) + "\"") +
+                        "}";
+                    PostarMensagemParaPagina(reply);
+                },
+                null);
+        }
+
+        private void PostarMensagemParaPagina(string json)
+        {
             try
             {
-                BeginInvoke(new Action(Close));
+                // Esta checagem roda na thread do ThreadPool — webView.CoreWebView2
+                // NÃO pode ser lido daqui ("CoreWebView2 can only be accessed from
+                // the UI thread"). Só a referência do controle é segura; a checagem
+                // completa fica em PostarMensagemDireto, que roda na UI thread.
+                if (shuttingDown || webView == null)
+                {
+                    return;
+                }
+                BeginInvoke(new Action<string>(PostarMensagemDireto), json);
             }
             catch (Exception)
             {
             }
+        }
+
+        private void PostarMensagemDireto(string json)
+        {
+            try
+            {
+                if (webView != null && webView.CoreWebView2 != null)
+                {
+                    webView.CoreWebView2.PostWebMessageAsString(json);
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        /* POST para o servidor OpenSMS (http://IP:9292/sms/) com Bearer key.
+           "test": envia POST sem corpo — qualquer resposta HTTP prova que o
+           servidor está vivo (401/422 inclusive), sem disparar SMS algum. */
+        private static bool ExecutarSmsOpenSms(
+            string url,
+            string key,
+            string number,
+            string text,
+            bool test,
+            out int status,
+            out string erro)
+        {
+            status = 0;
+            erro = null;
+
+            Uri alvo;
+            if (string.IsNullOrEmpty(url) ||
+                !Uri.TryCreate(url.Trim(), UriKind.Absolute, out alvo) ||
+                (alvo.Scheme != Uri.UriSchemeHttp && alvo.Scheme != Uri.UriSchemeHttps))
+            {
+                erro = "Endereço do servidor OpenSMS inválido.";
+                return false;
+            }
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(alvo);
+                request.Method = "POST";
+                request.Timeout = 20000;
+                request.ReadWriteTimeout = 20000;
+                request.KeepAlive = false;
+                if (!string.IsNullOrEmpty(key))
+                {
+                    request.Headers.Add("Authorization", "Bearer " + key);
+                }
+
+                if (test)
+                {
+                    request.ContentLength = 0;
+                }
+                else
+                {
+                    string corpo =
+                        "{\"number\":\"" + EscapearJson(number ?? string.Empty) +
+                        "\",\"text\":\"" + EscapearJson(text ?? string.Empty) + "\"}";
+                    byte[] dados = System.Text.Encoding.UTF8.GetBytes(corpo);
+                    request.ContentType = "application/json; charset=utf-8";
+                    request.ContentLength = dados.Length;
+                    using (Stream fluxo = request.GetRequestStream())
+                    {
+                        fluxo.Write(dados, 0, dados.Length);
+                    }
+                }
+
+                using (HttpWebResponse resposta = (HttpWebResponse)request.GetResponse())
+                {
+                    status = (int)resposta.StatusCode;
+                    if (test)
+                    {
+                        return true;
+                    }
+                    bool sucesso = status >= 200 && status <= 299;
+                    if (!sucesso)
+                    {
+                        erro = "O servidor respondeu HTTP " + status + ".";
+                    }
+                    return sucesso;
+                }
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse respostaErro = ex.Response as HttpWebResponse;
+                if (respostaErro != null)
+                {
+                    status = (int)respostaErro.StatusCode;
+                    try { respostaErro.Close(); }
+                    catch (Exception) { }
+                    // Servidor respondeu: no teste isso já é sucesso; no envio, é recusa.
+                    if (test)
+                    {
+                        return true;
+                    }
+                    erro = "O servidor recusou a solicitação (HTTP " + status + ").";
+                    return false;
+                }
+
+                status = 0;
+                erro = "Sem resposta do servidor OpenSMS: " + ex.Message;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                status = 0;
+                erro = ex.Message;
+                return false;
+            }
+        }
+
+        private static string EscapearJson(string valor)
+        {
+            if (string.IsNullOrEmpty(valor))
+            {
+                return string.Empty;
+            }
+            return valor
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\r", "\\r")
+                .Replace("\n", "\\n")
+                .Replace("\t", "\\t");
+        }
+
+        private static string ExtrairTextoJson(string json, string campo)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                return null;
+            }
+            System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
+                json,
+                "\"" + campo + "\"\\s*:\\s*\"((?:\\\\.|[^\"\\\\])*)\"");
+            if (!match.Success)
+            {
+                return null;
+            }
+            return match.Groups[1].Value
+                .Replace("\\\"", "\"")
+                .Replace("\\/", "/")
+                .Replace("\\n", "\n")
+                .Replace("\\r", "\r")
+                .Replace("\\t", "\t")
+                .Replace("\\\\", "\\");
+        }
+
+        private static int ExtrairInteiroJson(string json, string campo, int padrao)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                return padrao;
+            }
+            System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
+                json,
+                "\"" + campo + "\"\\s*:\\s*(-?\\d+)");
+            if (!match.Success)
+            {
+                return padrao;
+            }
+            int valor;
+            return int.TryParse(match.Groups[1].Value, out valor) ? valor : padrao;
+        }
+
+        private static bool ExtrairBooleanoJson(string json, string campo, bool padrao)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                return padrao;
+            }
+            System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
+                json,
+                "\"" + campo + "\"\\s*:\\s*(true|false)",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (!match.Success)
+            {
+                return padrao;
+            }
+            return string.Equals(match.Groups[1].Value, "true", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string ReadPackageVersion()

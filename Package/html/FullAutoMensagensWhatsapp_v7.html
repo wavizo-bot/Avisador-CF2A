@@ -989,9 +989,534 @@
             outline: 3px solid var(--primary-color);
             outline-offset: 2px;
         }
+
+        /* ============================================================
+           v1.4.0.0 — Modo Completo, memoria de avisos, equipe, lotes e SMS
+           ============================================================ */
+
+        /* Exclusivos do Modo Completo: ocultos no Modo Simples. */
+        body:not(.mode-completo) .c-only { display: none !important; }
+
+        /* No Completo o texto da mensagem aparece (no Simples continua oculto). */
+        body.mode-completo .message-text {
+            display: block;
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: var(--text-secondary);
+            background: var(--message-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Cabecalho: tema + alternancia Simples/Completo */
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .mode-toggle {
+            display: flex;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .mode-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.25s;
+            min-width: auto;
+        }
+
+        .mode-btn:hover { color: var(--text-primary); }
+
+        .mode-btn.active {
+            background: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(42, 82, 152, 0.35);
+        }
+
+        /* Fila de agendas (lotes) */
+        .lotes-box {
+            background: var(--card-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-top: 16px;
+        }
+
+        .lotes-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .lotes-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lotes-info b { color: var(--primary-color); }
+
+        .lotes-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-lote { background: var(--transferred-color); }
+        .btn-lote:hover { background: #d35400; }
+        .btn-lote-gerar { background: var(--primary-color); }
+        .btn-lote-gerar:hover { background: var(--primary-dark); }
+
+        /* Filtro de avisados na aba Geradas */
+        .msg-filters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 9px 12px;
+            margin-bottom: 14px;
+        }
+
+        .msg-filters label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .msg-filters select {
+            padding: 7px 9px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .msg-filters .spacer { flex: 1; }
+
+        /* Selo de aviso no cartao */
+        .badge-aviso {
+            background: rgba(37, 211, 102, 0.18);
+            color: #1da851;
+            border: 1px solid rgba(37, 211, 102, 0.5);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge-novo {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--info-color);
+            border: 1px dashed rgba(52, 152, 219, 0.55);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* Só no Modo Completo: no Simples o cartão fica como nas versões antigas */
+        body:not(.mode-completo) .badge-aviso,
+        body:not(.mode-completo) .badge-novo { display: none !important; }
+
+        /* Bloco expandido do cartao (dados do evento, equipe e avisos) */
+        .msg-extra { margin-top: 12px; }
+
+        .extra-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+            gap: 8px;
+        }
+
+        .extra-cell {
+            background: var(--message-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .extra-k {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .extra-v { color: var(--text-secondary); word-break: break-word; }
+        .extra-v b { color: var(--text-primary); }
+        .extra-v .eq-cor { color: var(--primary-color); font-weight: 700; }
+
+        .extra-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn-aviso { background: #1da851; }
+        .btn-aviso:hover { background: #178f45; }
+        .btn-reaviso { background: var(--transferred-color); }
+        .btn-reaviso:hover { background: #d35400; }
+        .btn-sms { background: #8e44ad; }
+        .btn-sms:hover { background: #7d3c98; }
+        .btn-sms:disabled { background: var(--canceled-color); cursor: not-allowed; }
+
+        /* Aba Equipe */
+        .eq-toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .eq-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+            line-height: 1.6;
+        }
+
+        .eq-info b { color: var(--text-primary); }
+
+        .eq-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .eq-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .eq-card h4 {
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .eq-card .eq-linha { color: var(--text-secondary); }
+        .eq-card .eq-linha span.rot { color: var(--text-muted); font-weight: 600; }
+
+        .eq-vazio {
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 18px;
+            text-align: center;
+            background: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .eq-lista {
+            max-height: 340px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .eq-prof {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12.5px;
+            flex-wrap: wrap;
+        }
+
+        .eq-prof:last-child { border-bottom: none; }
+
+        .eq-prof .nome { font-weight: 700; color: var(--text-primary); flex: 1; min-width: 150px; }
+
+        .eq-prof .papel {
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 9px;
+            border-radius: 999px;
+        }
+
+        .eq-prof input.tel {
+            width: 140px;
+            padding: 6px 9px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 12px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        /* Aba Ajustes */
+        .aj-grupo {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .aj-grupo h4 {
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .aj-grupo p {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .aj-linha {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .aj-linha:last-child { margin-bottom: 0; }
+
+        .aj-linha label.campo {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 130px;
+        }
+
+        .aj-linha input[type="text"],
+        .aj-linha input[type="password"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 9px 11px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .aj-check {
+            display: flex;
+            gap: 9px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .aj-check input { width: 17px; height: 17px; accent-color: var(--primary-color); cursor: pointer; }
+
+        .aj-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Modelos extras (multiplos agendamentos) */
+        .pp-multi-titulo {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 8px 0;
+            padding-top: 12px;
+            border-top: 2px dashed var(--border-color);
+        }
+
+        /* Apresentacao inicial (onboarding) */
+        .ob-overlay {
+            position: fixed;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.68);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .ob-modal {
+            background: var(--bg-panel);
+            color: var(--text-secondary);
+            width: min(680px, 94vw);
+            max-height: 92vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 30px 32px;
+        }
+
+        .ob-eyebrow {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .ob-titulo {
+            font-size: 25px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+
+        .ob-texto {
+            font-size: 14.5px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .ob-lista { margin: 0 0 16px 20px; font-size: 14px; line-height: 1.75; color: var(--text-secondary); }
+        .ob-lista li { margin-bottom: 7px; }
+        .ob-lista b { color: var(--text-primary); }
+
+        .ob-passo {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .ob-escolhas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+
+        .ob-escolha {
+            flex: 1;
+            min-width: 230px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.25s;
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .ob-escolha:hover { border-color: var(--primary-color); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+        .ob-escolha .ob-icone { font-size: 24px; display: block; margin-bottom: 8px; }
+        .ob-escolha b { display: block; color: var(--text-primary); font-size: 15px; margin-bottom: 5px; }
+
+        .ob-rodape {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .ob-pular {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+            min-width: auto;
+        }
+
+        .ob-pular:hover { color: var(--text-primary); }
+
+        .ob-avancar {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            min-width: auto;
+        }
+
+        .ob-avancar:hover { background: var(--primary-dark); }
+
+        .ob-dica {
+            background: rgba(42, 82, 152, 0.08);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Area de testes (?testes=1) — fora do fluxo normal */
+        #areaTestes {
+            position: fixed;
+            left: 8px; top: 8px;
+            z-index: 99999;
+            background: #101418;
+            color: #d7e0ea;
+            font: 12px/1.5 Consolas, monospace;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 640px;
+            max-height: 80vh;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
     </style>
 </head>
 <body>
+    <div id="areaTestes" style="display:none"></div>
     <div class="terms-overlay" id="termsOverlay">
         <div class="terms-modal">
             <div class="terms-header">📜 Termos e Condições de Uso</div>
@@ -1002,43 +1527,55 @@
             </div>
             <div class="terms-body">
                 <div class="terms-pane active" id="termsPanePrivacy">
-                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.0</p>
+                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.1 (4 de novembro de 2026)</p>
                     <h3>1. Quais dados são coletados</h3>
                     <p>O aplicativo não coleta dados. Nada é enviado a servidores do desenvolvedor ou de terceiros. Os dados que você digita ou cola no programa (tabela de agendamentos, nomes, cadastros, telefones, horários, histórico gerado e configurações) permanecem apenas no seu computador.</p>
                     <p>Não há analytics, rastreamento, publicidade ou cookies.</p>
-                    <h3>2. Como são armazenados</h3>
+                    <h3>2. Dados de equipe importados (novo na v1.4)</h3>
+                    <p>Você pode importar arquivos exportados do sistema da clínica (relatórios do BI) para o programa associar cada pessoa à sua equipe padrão (médica, enfermeira e assistente) e listar os profissionais responsáveis. Esses arquivos são lidos localmente, armazenados apenas no seu computador e apagados pelos botões do programa. Nenhum dado de paciente ou de profissional sai do dispositivo.</p>
+                    <h3>3. Registro de avisos (novo na v1.4)</h3>
+                    <p>O programa guarda, também apenas no seu computador, quem já foi avisado, em que data e por qual canal (WhatsApp ou SMS), para evitar avisos duplicados. Esse histórico pode ser apagado a qualquer momento na aba Ajustes.</p>
+                    <h3>4. Envio de SMS (novo na v1.4)</h3>
+                    <p>O envio de SMS utiliza o aplicativo OpenSMS instalado no seu próprio celular, que roda um servidor de SMS na sua rede local (rede doméstica ou da unidade). A mensagem sai do chip do seu celular. O Avisador apenas envia a solicitação para esse servidor na rede local, usando a endereço e a chave que você configurar. Nada passa por servidores do desenvolvedor e o conteúdo trafega somente entre os seus aparelhos.</p>
+                    <h3>5. Como são armazenados</h3>
                     <p>Os dados ficam gravados somente no perfil local do aplicativo, dentro da pasta do seu usuário no Windows (%LOCALAPPDATA%). Nenhum armazenamento em nuvem é utilizado.</p>
-                    <h3>3. Como são utilizados</h3>
-                    <p>Os dados são usados unicamente no dispositivo para gerar as mensagens de aviso, exibir o histórico do dia/sessão e copiar textos para a área de transferência quando você clica nos botões do programa.</p>
-                    <h3>4. Direitos do usuário (LGPD/GDPR)</h3>
-                    <p>Você é o titular dos dados inseridos. Pode acessá-los, corrigi-los ou excluílos a qualquer momento pelos botões “Limpar”, “Histórico limpar” e “🧹 Dados locais” do próprio programa, ou desinstalando o aplicativo (o Windows remove os dados locais junto com ele).</p>
-                    <h3>5. Contato</h3>
+                    <h3>6. Como são utilizados</h3>
+                    <p>Os dados são usados unicamente no dispositivo para gerar as mensagens de aviso, exibir o histórico do dia/sessão, controlar quem já foi avisado, mostrar a equipe de cada pessoa e copiar textos para a área de transferência quando você clica nos botões do programa.</p>
+                    <h3>7. Direitos do usuário (LGPD/GDPR)</h3>
+                    <p>Você é o titular dos dados inseridos. Pode acessá-los, corrigi-los ou excluílos a qualquer momento pelos botões “Limpar”, “Histórico limpar”, “🧹 Dados locais” e “🧹 Limpar base” do próprio programa, ou desinstalando o aplicativo (o Windows remove os dados locais junto com ele).</p>
+                    <h3>8. Contato</h3>
                     <p>Dúvidas sobre privacidade: e-mail <b>mmr05@hotmail.com</b> ou WhatsApp <b>11 978831938</b>.</p>
                 </div>
                 <div class="terms-pane" id="termsPaneUsage">
-                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.0</p>
+                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.1 (4 de novembro de 2026)</p>
                     <h3>1. Como o aplicativo funciona</h3>
                     <p>O Avisador CF2A recebe uma tabela de agendamentos (colada pelo usuário), filtra por status, ajusta o horário com antecedência configurável e gera mensagens personalizadas de lembrança para cada paciente, além de links do WhatsApp e histórico do dia.</p>
-                    <h3>2. Uso permitido</h3>
+                    <h3>2. Recursos da versão estendida (v1.4)</h3>
+                    <p>A versão completa oferece, além do modo simples: visualização ampliada de cada evento (situação, profissional da consulta, equipe padrão, endereço e telefones), registro de quem já foi avisado, importação local de arquivos de equipe, fila de várias agendas (lotes) com unificação de agendamentos da mesma pessoa numa só mensagem, e envio de SMS pelo serviço OpenSMS na sua rede local.</p>
+                    <h3>3. Uso permitido</h3>
                     <p>O uso é permitido para finalidades lícitas de agendamento e lembrete de consultas por profissionais e equipes de saúde, sem qualquer ilegalidade.</p>
-                    <h3>3. O que é permitido e o que é proibido</h3>
+                    <h3>4. O que é permitido e o que é proibido</h3>
                     <p>Permitido: uso próprio ou da equipe, cópia dos textos gerados para envio manual, uso interno da instituição.</p>
                     <p>Proibido: revender ou redistribuir o aplicativo, realizar engenharia reversa, usar o programa para spam, fraude, assédio ou qualquer violação de lei (incluindo a LGPD ao tratar dados de pacientes), e inserir dados que o usuário não tenha base legal para tratar.</p>
-                    <h3>4. Propriedade intelectual</h3>
+                    <h3>5. Propriedade intelectual</h3>
                     <p>O aplicativo, sua marca e seu código pertencem ao desenvolvedor (wavizo — Maycon). Ao instalar, você recebe uma licença de uso limitada, pessoal e não exclusiva, revogável em caso de descumprimento destes termos.</p>
-                    <h3>5. Prazo da versão de demonstração gratuita</h3>
+                    <h3>6. Serviços de terceiros usados por opção sua</h3>
+                    <p>O envio de WhatsApp depende do WhatsApp Web/conto do próprio usuário; o envio de SMS depende do aplicativo OpenSMS instalado e configurado por você no seu celular, na sua rede local. O Avisador não controla a disponibilidade desses serviços e não se responsabiliza por falhas de entrega decorrentes deles.</p>
+                    <h3>7. Prazo da versão de demonstração gratuita</h3>
                     <p>A versão de demonstração tem validade de <b>1 (um) mês a partir da primeira instalação</b>. Após esse prazo, adquira a versão licenciada para continuar usando.</p>
-                    <h3>6. Contato para adquirir a versão licenciada</h3>
+                    <h3>8. Contato para adquirir a versão licenciada</h3>
                     <p>E-mail <b>mmr05@hotmail.com</b> ou WhatsApp <b>11 978831938</b>.</p>
                 </div>
                 <div class="terms-pane" id="termsPaneLegal">
-                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.0</p>
+                    <p class="terms-meta">Avisador CF2A — versão dos termos v1.1 (4 de novembro de 2026)</p>
                     <h3>1. Limites de uso para manter a legalidade</h3>
                     <p>O usuário é o único responsável por utilizar o aplicativo em conformidade com a lei, especialmente no tratamento de dados pessoais sensíveis de pacientes (LGPD). O programa é apenas uma ferramenta de apoio à digitação de mensagens.</p>
                     <h3>2. Isenção por funcionalidades não projetadas</h3>
-                    <p>O desenvolvedor não se responsabiliza por resultados obtidos com usos para os quais o programa não foi projetado, como interpretação de arquivos em formatos inesperados, cálculos de horários fora do padrão suportado ou integração automática com outros sistemas. Revise sempre as mensagens antes de enviá-las.</p>
+                    <p>O desenvolvedor não se responsabiliza por resultados obtidos com usos para os quais o programa não foi projetado, como interpretação de arquivos em formatos inesperados, cálculos de horários fora do padrão suportado, leitura de relatórios do BI com layout diferente do atual ou integração automática com outros sistemas. Revise sempre as mensagens antes de enviá-las.</p>
                     <h3>3. Isenção por uso indevido</h3>
                     <p>O desenvolvedor não se responsabiliza por danos decorrentes de uso indevido do aplicativo, incluindo envio indevido de mensagens, inserção de dados falsos ou incompletos, vazamento causado por terceiros ou violação de direitos de titulares de dados.</p>
+                    <h3>4. Envio por canais de terceiros</h3>
+                    <p>WhatsApp e o serviço OpenSMS (SMS) são canais operados por terceiros e configurados pelo próprio usuário. O desenvolvedor não controla a entrega, o bloqueio ou a cobrança de mensagens por esses canais.</p>
                 </div>
             </div>
             <div class="terms-footer">
@@ -1047,12 +1584,71 @@
             </div>
         </div>
     </div>
+
+    <div class="ob-overlay" id="onboardingOverlay" style="display:none">
+        <div class="ob-modal">
+            <div class="ob-passo" id="obPasso">Passo 1 de 3</div>
+
+            <div class="ob-etapa" id="obEtapa1">
+                <div class="ob-eyebrow">Bem-vindo(a) ao Avisador CF2A</div>
+                <div class="ob-titulo">Os avisos de consulta da clínica, prontos em poucos cliques.</div>
+                <div class="ob-texto">Este programa transforma a agenda exportada do sistema em mensagens de lembrete para cada paciente — com o horário já antecipado, o link do WhatsApp e tudo registrado. Agora ele também lembra <b>quem já foi avisado</b>, mostra a <b>equipe de saúde de cada pessoa</b> e junta vários agendamentos da mesma pessoa numa única mensagem.</div>
+                <ul class="ob-lista">
+                    <li><b>100% local:</b> nada sai do seu computador; sem cadastro, sem nuvem.</li>
+                    <li><b>Dois modos:</b> “Simples” faz só o essencial (como sempre foi); “Completo” libera todos os recursos novos.</li>
+                    <li><b>Seus dados são seus:</b> tudo pode ser apagado pelos botões do programa.</li>
+                </ul>
+            </div>
+
+            <div class="ob-etapa" id="obEtapa2" style="display:none">
+                <div class="ob-eyebrow">Como começar</div>
+                <div class="ob-titulo">Prefere ver funcionando ou partir do zero?</div>
+                <div class="ob-texto">Você pode mudar de ideia depois — os dados de demonstração são fictícios e podem ser apagados a qualquer momento.</div>
+                <div class="ob-escolhas">
+                    <button class="ob-escolha" onclick="obEscolher('demo')">
+                        <span class="ob-icone">🎲</span>
+                        <b>Ver demonstração</b>
+                        Preenche a agenda com dados fictícios de exemplo (nomes e cadastros de teste), gera mensagens e mostra um aviso já registrado — para você ver cada recurso em ação.
+                    </button>
+                    <button class="ob-escolha" onclick="obEscolher('vazio')">
+                        <span class="ob-icone">🧹</span>
+                        <b>Começar do zero</b>
+                        Deixa tudo limpo e pronto para você colar a primeira agenda real da clínica.
+                    </button>
+                </div>
+            </div>
+
+            <div class="ob-etapa" id="obEtapa3" style="display:none">
+                <div class="ob-eyebrow">Tutorial rápido</div>
+                <div class="ob-titulo">Três passos e você está avisando.</div>
+                <div class="ob-dica"><b>1. Cole a agenda</b> na coluna da esquerda e clique em <b>🚀 Gerar</b>. No modo Completo, use <b>➕ Adicionar ao lote</b> para acumular várias agendas e depois <b>🚀 Gerar do lote</b> — agendamentos da mesma pessoa viram uma mensagem só.</div>
+                <div class="ob-dica"><b>2. Acompanhe os avisos:</b> cada cartão mostra ✨ <b>primeira vez</b> ou 🔔 <b>já avisado</b>. Copiar a mensagem, abrir o WhatsApp ou enviar SMS registra o aviso automaticamente — assim você não avisa a mesma pessoa duas vezes.</div>
+                <div class="ob-dica"><b>3. Equipe de cada pessoa:</b> na aba 👥 <b>Equipe</b> importe os arquivos do BI e consulte médica, enfermeira, assistente, endereço e telefones — inclusive para contatar a equipe quando o número do paciente não funcionar.</div>
+                <div class="ob-texto">Na próxima tela você encontrará os <b>Termos atualizados (v1.1)</b>, com as seções novas sobre dados de equipe e envio de SMS.</div>
+            </div>
+
+            <div class="ob-rodape">
+                <button class="ob-pular" onclick="obPular()">Pular apresentação</button>
+                <button class="ob-avancar" id="obAvancar" onclick="obAvancar()">Continuar</button>
+            </div>
+        </div>
+    </div>
     <script>
         (function () {
+            // Ordem: primeiro a apresentação (onboarding); os termos v1.1
+            // aparecem assim que ela termina (re-aceite bloqueante).
+            var semOnboarding = false;
             try {
-                var saved = JSON.parse(localStorage.getItem('mensagens-whatsapp-termos-v1'));
-                if (saved && saved.version === 'v1.0') {
-                    document.getElementById('termsOverlay').style.display = 'none';
+                semOnboarding = !localStorage.getItem('mensagens-whatsapp-onboarding-v1');
+            } catch (e) { semOnboarding = true; }
+            try {
+                var salvo = JSON.parse(localStorage.getItem('mensagens-whatsapp-termos-v1'));
+                var aceito = !!(salvo && salvo.version === 'v1.1');
+                if (semOnboarding) {
+                    document.getElementById('onboardingOverlay').style.display = 'flex';
+                    if (!aceito) document.getElementById('termsOverlay').style.display = 'none';
+                } else if (!aceito) {
+                    document.getElementById('termsOverlay').style.display = 'flex';
                 }
             } catch (e) { }
         })();
@@ -1065,6 +1661,10 @@
                     <p class="subtitle">Cole a tabela de agendamentos e gere mensagens personalizadas para cada paciente</p>
                 </div>
                 <div class="header-right">
+                    <div class="mode-toggle" role="group" aria-label="Modo de exibição">
+                        <button class="mode-btn active" id="modeSimples" onclick="setMode('simples')" title="Somente o essencial, como nas versões anteriores">☀️ Simples</button>
+                        <button class="mode-btn" id="modeCompleto" onclick="setMode('completo')" title="Todos os recursos: dados do evento, avisos, equipe, lotes e SMS">🧩 Completo</button>
+                    </div>
                     <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema claro/escuro">
                         <span class="icon" id="themeIcon">🌙</span>
                         <span id="themeLabel">Escuro</span>
@@ -1106,11 +1706,23 @@
                     </button>
                 </div>
 
+                <div class="lotes-box c-only">
+                    <div class="lotes-title">📦 Fila de agendas (lotes)</div>
+                    <div class="lotes-info" id="lotesInfo">Nenhuma agenda na fila. Adicione várias agendas antes de gerar: agendamentos da mesma pessoa serão unificados numa só mensagem.</div>
+                    <div class="lotes-actions">
+                        <button class="btn-sm btn-lote" onclick="adicionarAoLote()" title="Parseia o texto ao lado e guarda na fila, sem gerar mensagens">➕ Adicionar ao lote</button>
+                        <button class="btn-sm btn-lote-gerar" onclick="gerarDoLote()" title="Gera as mensagens de todas as agendas acumuladas e limpa a fila">🚀 Gerar do lote</button>
+                        <button class="btn-sm btn-clear" onclick="limparLotes()" title="Descartar as agendas guardadas">🗑 Limpar fila</button>
+                    </div>
+                </div>
+
                 <div class="stats" id="statsArea">
                     <span class="stat-item">📊 Total Sessão: <strong id="totalCount">0</strong></span>
                     <span class="stat-item">✅ Agendados: <strong id="scheduledCount">0</strong></span>
                     <span class="stat-item" style="color:#95a5a6;" title="Agendamentos cancelados ou transferidos">🚫 Cancelados: <strong id="canceledCount">0</strong></span>
                     <span class="stat-item warning" title="Pacientes que faltaram">⚠️ Faltos: <strong id="faltouCount">0</strong></span>
+                    <span class="stat-item c-only" title="Pessoas desta geração que já receberam aviso em alguma data">🔔 Avisados: <strong id="avisadosCount">0</strong></span>
+                    <span class="stat-item c-only" title="Agendas guardadas na fila de lotes">📦 Lotes: <strong id="lotesCount">0</strong></span>
                 </div>
             </div>
 
@@ -1119,6 +1731,8 @@
                     <button class="tab-btn active" onclick="switchTab('messages')">💬 Geradas</button>
                     <button class="tab-btn" onclick="switchTab('history')">📋 Histórico do Dia</button>
                     <button class="tab-btn" onclick="switchTab('personalizar')">📝 Personalizar</button>
+                    <button class="tab-btn c-only" onclick="switchTab('equipe')">👥 Equipe</button>
+                    <button class="tab-btn c-only" onclick="switchTab('ajustes')">⚙️ Ajustes</button>
                 </div>
 
                 <div id="messages" class="tab-content active">
@@ -1128,6 +1742,17 @@
                             <button class="btn-sm btn-copy-all" onclick="copyAllMessages()" title="Copiar todas as mensagens">📋 Textos</button>
                             <button class="btn-sm btn-whatsapp-all" onclick="copyAllWhatsAppLinks()" title="Copiar todos os links do WhatsApp">📱 Links</button>
                         </div>
+                    </div>
+
+                    <div class="msg-filters c-only">
+                        <label for="filtroAvisado">🔔 Avisos:</label>
+                        <select id="filtroAvisado" onchange="aplicarFiltros()" title="Filtrar por quem já foi avisado">
+                            <option value="todos" selected>Todos</option>
+                            <option value="nao">Não avisados</option>
+                            <option value="sim">Já avisados</option>
+                        </select>
+                        <span class="spacer"></span>
+                        <button class="btn-sm btn-aviso" onclick="registrarTodosComoAvisados()" title="Registra como avisadas todas as pessoas exibidas agora">✓ Registrar exibidos</button>
                     </div>
 
                     <div class="search-bar">
@@ -1213,6 +1838,127 @@
                         <textarea id="templateFaltou" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, você não compareceu à consulta de {data} às {horario} com {profissional}. Pode nos informar o motivo da falta? Responda esta mensagem.</textarea>
                         <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevFaltou"></span></div>
                     </div>
+
+                    <div class="pp-multi-titulo c-only">Modelos para várias consultas da mesma pessoa (unificação de agendamentos)</div>
+                    <div class="pp-tags-row c-only">Etiqueta extra: <b>{eventos}</b> — lista todas as datas e horários juntos (ex.: 05/11 às 09h00, 12/11 às 14h20 e 19/11 às 08h40)</div>
+
+                    <div class="pp-card c-only">
+                        <div class="pp-head">
+                            <span class="pp-chip pp-agendado">✅ Agendado · múltiplo</span>
+                            <span class="pp-hint">2+ agendamentos da mesma pessoa na mesma geração</span>
+                        </div>
+                        <textarea id="templateAgendadoMulti" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, há agendamentos marcados para {eventos}, na Clínica da Família II.</textarea>
+                        <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevAgendadoMulti"></span></div>
+                    </div>
+
+                    <div class="pp-card c-only">
+                        <div class="pp-head">
+                            <span class="pp-chip pp-cancelado">🚫 Cancelado · múltiplo</span>
+                            <span class="pp-hint">2+ cancelamentos da mesma pessoa</span>
+                        </div>
+                        <textarea id="templateCanceladoMulti" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, seus agendamentos de {eventos} com {profissional} foram cancelados. Enviaremos nova data e horário em breve. Obrigado pela compreensão.</textarea>
+                        <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevCanceladoMulti"></span></div>
+                    </div>
+
+                    <div class="pp-card c-only">
+                        <div class="pp-head">
+                            <span class="pp-chip pp-faltou">⚠️ Faltou · múltiplo</span>
+                            <span class="pp-hint">2+ faltas da mesma pessoa</span>
+                        </div>
+                        <textarea id="templateFaltouMulti" class="pp-ta" rows="2" placeholder="Use as etiquetas acima">Olá, {nome}, cadastro {cadastro}, você não compareceu às consultas de {eventos} com {profissional}. Pode nos informar o motivo das faltas? Responda esta mensagem.</textarea>
+                        <div class="pp-preview"><span class="pp-prev-label">Prévia</span><span id="prevFaltouMulti"></span></div>
+                    </div>
+                </div>
+
+                <div id="equipe" class="tab-content c-only">
+                    <div class="panel-title">
+                        <span>👥 Equipe de Saúde das Pessoas</span>
+                        <div class="btn-group">
+                            <button class="btn-sm btn-copy-all" onclick="document.getElementById('biFileInput').click()" title="Importar relatórios exportados do BI (equipes.csv e TSVs de pacientes)">📁 Importar arquivos do BI</button>
+                            <button class="btn-sm btn-clear" onclick="limparBaseEquipe()" title="Apagar a base de equipe importada deste computador">🧹 Limpar base</button>
+                        </div>
+                    </div>
+                    <input type="file" id="biFileInput" multiple accept=".csv,.tsv,.txt" style="display:none" onchange="importarArquivosBI(this.files)">
+
+                    <div class="eq-info" id="eqInfo">Nenhuma base importada ainda. Importe os arquivos exportados do BI (<b>equipes.csv</b> + os TSVs de pacientes, por exemplo <b>1cf2a.tsv</b> a <b>4cf2a.tsv</b>) para o programa saber a médica, a enfermeira e o assistente padrão de cada pessoa — e para listar os profissionais com seus telefones.</div>
+
+                    <div class="eq-search">
+                        <input type="text" class="search-input" id="eqSearchInput" placeholder="🔍 Buscar pessoa por nome ou cadastro..." onkeyup="buscarEquipe(event)">
+                        <button class="search-clear" onclick="limparBuscaEquipe()" title="Limpar busca">✕</button>
+                    </div>
+                    <div id="eqResultado"></div>
+
+                    <div class="panel-title" style="margin-top:18px;">
+                        <span>👨‍⚕️ Profissionais cadastrados</span>
+                        <div class="btn-group">
+                            <button class="btn-sm btn-copy-all" onclick="exportarProfissionais()" title="Copiar lista de profissionais">📋 Copiar lista</button>
+                        </div>
+                    </div>
+                    <p class="eq-info" style="margin-bottom:8px;">Vem do arquivo de equipes e das agendas geradas. Você pode <b>adicionar o telefone</b> de cada profissional (aparece salvo automaticamente) — assim, quando o número do paciente não funcionar, você já tem como contatar a equipe responsável.</p>
+                    <div class="eq-lista" id="eqProfissionais">
+                        <div class="eq-vazio">Nenhum profissional registrado ainda.</div>
+                    </div>
+                </div>
+
+                <div id="ajustes" class="tab-content c-only">
+                    <div class="panel-title">
+                        <span>⚙️ Ajustes</span>
+                    </div>
+
+                    <div class="aj-grupo">
+                        <h4>🧩 Modo de exibição</h4>
+                        <div class="aj-linha">
+                            <label class="campo" for="ajModoSimples">Modo atual</label>
+                            <div class="mode-toggle">
+                                <button class="mode-btn" id="ajModeSimples" onclick="setMode('simples')">☀️ Simples</button>
+                                <button class="mode-btn" id="ajModeCompleto" onclick="setMode('completo')">🧩 Completo</button>
+                            </div>
+                        </div>
+                        <p>O modo <b>Simples</b> mostra apenas o essencial, como nas versões anteriores. O modo <b>Completo</b> libera dados do evento, avisos, equipe, lotes e SMS.</p>
+                    </div>
+
+                    <div class="aj-grupo">
+                        <h4>📦 Agendamentos da mesma pessoa</h4>
+                        <label class="aj-check">
+                            <input type="checkbox" id="unirAgendamentos" onchange="saveConfig()">
+                            Unir vários agendamentos da mesma pessoa numa única mensagem (usa o modelo “múltiplo” da aba Personalizar)
+                        </label>
+                        <p style="margin-top:8px;">Vale para o botão 🚀 Gerar e para 🚀 Gerar do lote. Desmarcado, cada agendamento vira uma mensagem, como antes.</p>
+                    </div>
+
+                    <div class="aj-grupo">
+                        <h4>🔔 Registro de avisos</h4>
+                        <p id="ajAvisosInfo">Nenhum aviso registrado.</p>
+                        <div class="aj-linha">
+                            <button class="btn-sm btn-clear" onclick="limparAvisos()">🧹 Limpar registro de avisos</button>
+                            <span class="aj-status" id="ajAvisosStatus"></span>
+                        </div>
+                    </div>
+
+                    <div class="aj-grupo">
+                        <h4>📨 Envio de SMS (OpenSMS)</h4>
+                        <p>Instale o aplicativo <b>OpenSMS</b> no seu celular (com chip ativo), inicie o servidor e informe abaixo o endereço dele na rede local e a chave de API gerada no app. O Avisador envia a solicitação para o celular e o SMS sai do chip — sem intermediários.</p>
+                        <div class="aj-linha">
+                            <label class="campo" for="smsUrl">Endereço do servidor</label>
+                            <input type="text" id="smsUrl" placeholder="http://192.168.0.10:9292/sms/" oninput="saveConfig()">
+                        </div>
+                        <div class="aj-linha">
+                            <label class="campo" for="smsKey">Chave de API</label>
+                            <input type="password" id="smsKey" placeholder="chave gerada no OpenSMS" oninput="saveConfig()">
+                        </div>
+                        <div class="aj-linha">
+                            <button class="btn-sm btn-sms" onclick="smsTestar()">📶 Testar conexão</button>
+                            <span class="aj-status" id="smsStatus">SMS ainda não configurado.</span>
+                        </div>
+                    </div>
+
+                    <div class="aj-grupo">
+                        <h4>🎓 Apresentação e dados</h4>
+                        <div class="aj-linha">
+                            <button class="btn-sm btn-copy-all" onclick="reverApresentacao()">▶️ Rever apresentação/tutorial</button>
+                            <button class="btn-sm btn-clear" onclick="clearLocalData()">🧹 Dados locais (tudo)</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1247,10 +1993,207 @@
             templateFaltou: DEFAULT_FALTOU_TEMPLATE,
             defaultDDD: '11',
             openingTime: '07:00',
-            copyOrder: 'dia-profissional'
+            copyOrder: 'dia-profissional',
+            // v1.4
+            modo: 'completo',
+            unirAgendamentos: true,
+            filtroAvisado: 'todos',
+            templateAgendadoMulti: 'Olá, {nome}, cadastro {cadastro}, há agendamentos marcados para {eventos}, na Clínica da Família II.',
+            templateCanceladoMulti: 'Olá, {nome}, cadastro {cadastro}, seus agendamentos de {eventos} com {profissional} foram cancelados. Enviaremos nova data e horário em breve. Obrigado pela compreensão.',
+            templateFaltouMulti: 'Olá, {nome}, cadastro {cadastro}, você não compareceu às consultas de {eventos} com {profissional}. Pode nos informar o motivo das faltas? Responda esta mensagem.',
+            smsUrl: '',
+            smsKey: ''
         };
         let appConfig = { ...DEFAULT_CONFIG };
         const ptBrCollator = new Intl.Collator('pt-BR', { sensitivity: 'base', numeric: true });
+
+        // ============================================================
+        // v1.4.0.0 — Memória estendida: avisos, equipe, lotes e SMS.
+        // Persistência em IndexedDB (avisador-v2) com queda automática
+        // para localStorage quando o IndexedDB não está disponível.
+        // ============================================================
+        const ONBOARDING_STORAGE_KEY = 'mensagens-whatsapp-onboarding-v1';
+        const DB_NAME = 'avisador-v2';
+        const DB_VERSION = 1;
+        const NOME_LOJAS = ['avisos', 'equipes', 'profissionais', 'lotes', 'meta'];
+
+        function normalizeBusca(value) {
+            return String(value == null ? '' : value)
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        }
+
+        function chavePessoa(record, nome) {
+            const cad = String(record || '').replace(/\D/g, '');
+            if (cad) return 'c:' + cad;
+            return 'n:' + normalizeBusca(nome);
+        }
+
+        function agoraISO() { return new Date().toISOString(); }
+
+        function dataCurta(iso) {
+            if (!iso) return '';
+            const d = new Date(iso);
+            if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0');
+        }
+
+        const Store = {
+            db: null,
+            idb: false,
+
+            init: function () {
+                const self = this;
+                return new Promise(function (resolve) {
+                    try {
+                        if (!window.indexedDB) { resolve(false); return; }
+                        const req = indexedDB.open(DB_NAME, DB_VERSION);
+                        req.onupgradeneeded = function (ev) {
+                            const db = ev.target.result;
+                            ['avisos', 'equipes', 'profissionais', 'meta'].forEach(function (nome) {
+                                if (!db.objectStoreNames.contains(nome)) db.createObjectStore(nome, { keyPath: 'chave' });
+                            });
+                            if (!db.objectStoreNames.contains('lotes')) db.createObjectStore('lotes', { keyPath: 'id' });
+                        };
+                        req.onsuccess = function (ev) { self.db = ev.target.result; self.idb = true; resolve(true); };
+                        req.onerror = function () { resolve(false); };
+                        req.onblocked = function () { resolve(false); };
+                    } catch (e) { resolve(false); }
+                });
+            },
+
+            _lsKey: function (loja) { return DB_NAME + ':' + loja; },
+
+            _lsAll: function (loja) {
+                try {
+                    const raw = localStorage.getItem(this._lsKey(loja));
+                    const parsed = raw ? JSON.parse(raw) : null;
+                    return (parsed && typeof parsed === 'object') ? parsed : {};
+                } catch (e) { return {}; }
+            },
+
+            _lsSave: function (loja, mapa) {
+                try { localStorage.setItem(this._lsKey(loja), JSON.stringify(mapa)); } catch (e) { }
+            },
+
+            all: function (loja) {
+                const self = this;
+                return new Promise(function (resolve) {
+                    if (self.idb) {
+                        try {
+                            const tx = self.db.transaction(loja, 'readonly');
+                            const req = tx.objectStore(loja).getAll();
+                            req.onsuccess = function () { resolve(req.result || []); };
+                            req.onerror = function () { resolve([]); };
+                            return;
+                        } catch (e) { }
+                    }
+                    const mapa = self._lsAll(loja);
+                    resolve(Object.keys(mapa).map(function (k) { return mapa[k]; }));
+                });
+            },
+
+            put: function (loja, valor) {
+                const self = this;
+                return new Promise(function (resolve) {
+                    if (self.idb) {
+                        try {
+                            const tx = self.db.transaction(loja, 'readwrite');
+                            tx.objectStore(loja).put(valor);
+                            tx.oncomplete = function () { resolve(true); };
+                            tx.onerror = function () { resolve(false); };
+                            tx.onabort = function () { resolve(false); };
+                            return;
+                        } catch (e) { }
+                    }
+                    const mapa = self._lsAll(loja);
+                    const chave = valor.chave != null ? valor.chave : valor.id;
+                    mapa[chave] = valor;
+                    self._lsSave(loja, mapa);
+                    resolve(true);
+                });
+            },
+
+            del: function (loja, chave) {
+                const self = this;
+                return new Promise(function (resolve) {
+                    if (self.idb) {
+                        try {
+                            const tx = self.db.transaction(loja, 'readwrite');
+                            tx.objectStore(loja)['delete'](chave);
+                            tx.oncomplete = function () { resolve(true); };
+                            tx.onerror = function () { resolve(false); };
+                            return;
+                        } catch (e) { }
+                    }
+                    const mapa = self._lsAll(loja);
+                    delete mapa[chave];
+                    self._lsSave(loja, mapa);
+                    resolve(true);
+                });
+            },
+
+            clear: function (loja) {
+                const self = this;
+                return new Promise(function (resolve) {
+                    if (self.idb) {
+                        try {
+                            const tx = self.db.transaction(loja, 'readwrite');
+                            tx.objectStore(loja).clear();
+                            tx.oncomplete = function () { resolve(true); };
+                            tx.onerror = function () { resolve(false); };
+                            return;
+                        } catch (e) { }
+                    }
+                    self._lsSave(loja, {});
+                    resolve(true);
+                });
+            }
+        };
+
+        // Espelhos em memória (carregados uma vez na abertura).
+        let avisosMap = new Map();        // chave pessoa -> { chave, nome, cadastro, eventos: [] }
+        let equipeRegistro = new Map();   // cadastro -> documento de equipe
+        let equipeNome = new Map();       // nome normalizado -> documento de equipe
+        let profissionaisMap = new Map(); // nome normalizado -> { chave, nome, papel, telefones: [] }
+        let lotesList = [];               // [ { id, criadoEm, rotulo, qtd, appointments } ]
+        let baseInfo = null;              // { quando, arquivos, pacientes, equipes }
+
+        function ultimoAvisoDe(chave) {
+            const doc = avisosMap.get(chave);
+            if (!doc || !doc.eventos || !doc.eventos.length) return null;
+            return doc.eventos[doc.eventos.length - 1];
+        }
+
+        function pessoaFoiAvisada(chave) { return !!ultimoAvisoDe(chave); }
+
+        function registrarAviso(chave, nome, cadastro, canal, situacao, datas, qtd) {
+            if (!chave) return Promise.resolve(false);
+            let doc = avisosMap.get(chave);
+            if (!doc) {
+                doc = { chave: chave, nome: nome || '', cadastro: cadastro || '', eventos: [] };
+                avisosMap.set(chave, doc);
+            }
+            doc.nome = nome || doc.nome;
+            doc.cadastro = cadastro || doc.cadastro;
+            doc.eventos.push({
+                quando: agoraISO(),
+                canal: canal || 'manual',
+                situacao: situacao || '',
+                datas: datas || [],
+                qtd: qtd || 1
+            });
+            if (doc.eventos.length > 200) doc.eventos = doc.eventos.slice(-200);
+            atualizarStatAvisados();
+            return Store.put('avisos', doc);
+        }
+
+        function equipeDaPessoa(record, nome) {
+            const cad = String(record || '').replace(/\D/g, '');
+            if (cad && equipeRegistro.has(cad)) return equipeRegistro.get(cad);
+            const porNome = equipeNome.get(normalizeBusca(nome));
+            return porNome || null;
+        }
 
         function loadLocalData() {
             appConfig = { ...DEFAULT_CONFIG };
@@ -1266,6 +2209,10 @@
                         }
                         // Migração v1.3: opção antiga "Todos" vira "Agendado".
                         if (appConfig.statusFilter === 'all') appConfig.statusFilter = 'agendado';
+                        // Migração v1.4: quem já usava o programa mantém o Modo Simples
+                        // (a UI de sempre); só instalações novas abrem no Completo.
+                        if (!parsedConfig.modo) appConfig.modo = 'simples';
+                        if (typeof parsedConfig.unirAgendamentos !== 'boolean') appConfig.unirAgendamentos = true;
                     }
                 } else if (localStorage.getItem('theme') === 'dark') {
                     // Compatibilidade com a preferência de tema de versões anteriores.
@@ -1301,6 +2248,7 @@
         }
 
         function saveConfig() {
+            const unirEl = document.getElementById('unirAgendamentos');
             appConfig = {
                 ...appConfig,
                 theme: isDarkMode ? 'dark' : 'light',
@@ -1311,7 +2259,15 @@
                 templateFaltou: document.getElementById('templateFaltou')?.value || DEFAULT_CONFIG.templateFaltou,
                 defaultDDD: document.getElementById('defaultDDD')?.value || DEFAULT_CONFIG.defaultDDD,
                 openingTime: document.getElementById('openingTime')?.value || DEFAULT_CONFIG.openingTime,
-                copyOrder: document.getElementById('copyOrder')?.value || DEFAULT_CONFIG.copyOrder
+                copyOrder: document.getElementById('copyOrder')?.value || DEFAULT_CONFIG.copyOrder,
+                modo: document.body.classList.contains('mode-completo') ? 'completo' : 'simples',
+                unirAgendamentos: unirEl ? !!unirEl.checked : (typeof appConfig.unirAgendamentos === 'boolean' ? appConfig.unirAgendamentos : true),
+                filtroAvisado: document.getElementById('filtroAvisado')?.value || DEFAULT_CONFIG.filtroAvisado,
+                templateAgendadoMulti: document.getElementById('templateAgendadoMulti')?.value || DEFAULT_CONFIG.templateAgendadoMulti,
+                templateCanceladoMulti: document.getElementById('templateCanceladoMulti')?.value || DEFAULT_CONFIG.templateCanceladoMulti,
+                templateFaltouMulti: document.getElementById('templateFaltouMulti')?.value || DEFAULT_CONFIG.templateFaltouMulti,
+                smsUrl: document.getElementById('smsUrl')?.value ?? appConfig.smsUrl ?? '',
+                smsKey: document.getElementById('smsKey')?.value ?? appConfig.smsKey ?? ''
             };
             try {
                 localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(appConfig));
@@ -1320,6 +2276,8 @@
 
         function saveHistory() {
             try {
+                // v1.4: o histórico cresce com os lotes — guarda só os últimos 2000.
+                if (sessionHistory.length > 2000) sessionHistory = sessionHistory.slice(-2000);
                 localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(sessionHistory));
             } catch (error) {}
         }
@@ -1333,27 +2291,71 @@
                 templateFaltou: appConfig.templateFaltou,
                 defaultDDD: appConfig.defaultDDD,
                 openingTime: appConfig.openingTime,
-                copyOrder: appConfig.copyOrder || DEFAULT_CONFIG.copyOrder
+                copyOrder: appConfig.copyOrder || DEFAULT_CONFIG.copyOrder,
+                filtroAvisado: appConfig.filtroAvisado || DEFAULT_CONFIG.filtroAvisado,
+                templateAgendadoMulti: appConfig.templateAgendadoMulti || DEFAULT_CONFIG.templateAgendadoMulti,
+                templateCanceladoMulti: appConfig.templateCanceladoMulti || DEFAULT_CONFIG.templateCanceladoMulti,
+                templateFaltouMulti: appConfig.templateFaltouMulti || DEFAULT_CONFIG.templateFaltouMulti,
+                smsUrl: appConfig.smsUrl || '',
+                smsKey: appConfig.smsKey || ''
             };
             Object.entries(fields).forEach(([id, value]) => {
                 const element = document.getElementById(id);
                 if (element && value !== undefined && value !== null) element.value = value;
             });
 
+            const unirEl = document.getElementById('unirAgendamentos');
+            if (unirEl) unirEl.checked = appConfig.unirAgendamentos !== false;
+
             isDarkMode = appConfig.theme === 'dark';
             document.body.classList.toggle('dark-mode', isDarkMode);
             updateThemeLabel();
+
+            aplicarModo(appConfig.modo === 'completo' ? 'completo' : 'simples', false);
+        }
+
+        // Alterna entre o Modo Simples (UI de sempre) e o Completo (v1.4).
+        function setMode(modo) {
+            aplicarModo(modo, true);
+        }
+
+        function aplicarModo(modo, salvar) {
+            const completo = modo === 'completo';
+            document.body.classList.toggle('mode-completo', completo);
+
+            ['modeSimples', 'ajModeSimples'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('active', !completo);
+            });
+            ['modeCompleto', 'ajModeCompleto'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('active', completo);
+            });
+
+            // No Simples, qualquer aba exclusiva volta para as Geradas.
+            if (!completo && (currentTab === 'equipe' || currentTab === 'ajustes')) {
+                switchTab('messages');
+            }
+
+            if (salvar) {
+                saveConfig();
+                aplicarFiltros();
+                showToast(completo ? '🧩 Modo Completo ativado' : '☀️ Modo Simples ativado');
+            }
         }
 
         function registerPersistenceListeners() {
-            ['timeAdjust', 'statusFilter', 'templateAgendado', 'templateCancelado', 'templateFaltou', 'defaultDDD', 'openingTime', 'copyOrder']
+            ['timeAdjust', 'statusFilter', 'templateAgendado', 'templateCancelado', 'templateFaltou', 'defaultDDD', 'openingTime', 'copyOrder',
+                'unirAgendamentos', 'filtroAvisado', 'smsUrl', 'smsKey',
+                'templateAgendadoMulti', 'templateCanceladoMulti', 'templateFaltouMulti']
                 .map(id => document.getElementById(id))
                 .filter(Boolean)
                 .forEach(element => {
                     element.addEventListener('input', saveConfig);
                     element.addEventListener('change', saveConfig);
                 });
-            ['templateAgendado', 'templateCancelado', 'templateFaltou']
+            ['templateAgendado', 'templateCancelado', 'templateFaltou',
+                'templateAgendadoMulti', 'templateCanceladoMulti', 'templateFaltouMulti']
                 .map(id => document.getElementById(id))
                 .filter(Boolean)
                 .forEach(element => element.addEventListener('input', renderPreviews));
@@ -1432,14 +2434,22 @@
             return sorted;
         }
 
-        function clearLocalData() {
-            const confirmed = confirm('Isso apagará apenas as configurações e o Histórico de Sessão salvos neste navegador para este programa. Continuar?');
+        async function clearLocalData() {
+            const confirmed = confirm('Isso apagará as configurações, o Histórico de Sessão, os avisos registrados, a base de equipe, os lotes e os telefones salvos neste computador. Continuar?');
             if (!confirmed) return;
             try {
                 localStorage.removeItem(CONFIG_STORAGE_KEY);
                 localStorage.removeItem(HISTORY_STORAGE_KEY);
                 localStorage.removeItem(FAILURES_STORAGE_KEY);
                 localStorage.removeItem('theme');
+                // Espelhos do fallback localStorage do IndexedDB (avisador-v2:*).
+                Object.keys(localStorage)
+                    .filter(chave => chave.indexOf('avisador-v2:') === 0)
+                    .forEach(chave => localStorage.removeItem(chave));
+            } catch (error) {}
+            try {
+                await Store.init();
+                for (const loja of NOME_LOJAS) await Store.clear(loja);
             } catch (error) {}
             location.reload();
         }
@@ -1476,18 +2486,25 @@
 
         function switchTab(tabName) {
             currentTab = tabName;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            const conteudos = Array.from(document.querySelectorAll('.tab-content'));
+            const abas = Array.from(document.querySelectorAll('.tab-btn'));
+            const alvo = conteudos.findIndex(el => el.id === tabName);
+            conteudos.forEach(el => el.classList.toggle('active', el.id === tabName));
+            // Botão correspondente pela posição (funciona também quando a troca
+            // é programática, sem um evento de clique).
+            abas.forEach((btn, i) => btn.classList.toggle('active', i === alvo));
             if (tabName === 'history') displayHistory();
         }
 
         // ---------- Pré-visualização dos modelos (aba Personalizar) ----------
+        const EVENTOS_EXEMPLO = '02/10 às 14h50, 09/10 às 09h20 e 16/10 às 10h00';
         const EXEMPLOS_PREVIA = {
-            agendado: { nome: 'Ana Clara Pereira', cadastro: '1234567', data: '02/10', horario: '14h50', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva' },
-            cancelado: { nome: 'Jose Ramos Lima', cadastro: '7654321', data: '02/10', horario: '15h40', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva' },
-            faltou: { nome: 'Carla Mendes Rocha', cadastro: '2468135', data: '02/10', horario: '16h20', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva' }
+            agendado: { nome: 'Ana Clara Pereira', cadastro: '1234567', data: '02/10', horario: '14h50', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva', eventos: EVENTOS_EXEMPLO },
+            cancelado: { nome: 'Jose Ramos Lima', cadastro: '7654321', data: '02/10', horario: '15h40', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva', eventos: EVENTOS_EXEMPLO },
+            faltou: { nome: 'Carla Mendes Rocha', cadastro: '2468135', data: '02/10', horario: '16h20', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva', eventos: EVENTOS_EXEMPLO },
+            agendadoMulti: { nome: 'Ana Clara Pereira', cadastro: '1234567', data: '02/10', horario: '14h50', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva', eventos: EVENTOS_EXEMPLO },
+            canceladoMulti: { nome: 'Jose Ramos Lima', cadastro: '7654321', data: '02/10', horario: '15h40', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva', eventos: EVENTOS_EXEMPLO },
+            faltouMulti: { nome: 'Carla Mendes Rocha', cadastro: '2468135', data: '02/10', horario: '16h20', profissional: 'Maria da Silva', profissionalcompleto: 'Maria da Silva', eventos: EVENTOS_EXEMPLO }
         };
 
         function aplicarModelo(modelo, dados) {
@@ -1497,7 +2514,8 @@
                 .replace(/{data}/g, dados.data)
                 .replace(/{horario}/g, dados.horario)
                 .replace(/{profissional}/g, dados.profissional)
-                .replace(/{profissionalcompleto}/g, dados.profissionalcompleto);
+                .replace(/{profissionalcompleto}/g, dados.profissionalcompleto)
+                .replace(/{eventos}/g, dados.eventos || EVENTOS_EXEMPLO);
         }
 
         function idPorSituacao(prefixo, situacao) {
@@ -1505,7 +2523,7 @@
         }
 
         function renderPreviews() {
-            ['agendado', 'cancelado', 'faltou'].forEach(situacao => {
+            ['agendado', 'cancelado', 'faltou', 'agendadoMulti', 'canceladoMulti', 'faltouMulti'].forEach(situacao => {
                 const campo = document.getElementById(idPorSituacao('template', situacao));
                 const alvo = document.getElementById(idPorSituacao('prev', situacao));
                 if (campo && alvo) alvo.textContent = aplicarModelo(campo.value, EXEMPLOS_PREVIA[situacao]);
@@ -1558,25 +2576,8 @@
             return null;
         }
 
-        function generateMessages() {
-            const input = document.getElementById('inputData').value;
-            if (!input.trim()) {
-                showToast('⚠️ Por favor, cole os dados da agenda');
-                return;
-            }
-
-            const situacao = document.getElementById('statusFilter').value;
-            const timeAdjust = parseInt(document.getElementById('timeAdjust').value) || 0;
-            const defaultDDD = document.getElementById('defaultDDD').value.trim() || '11';
-            const openingTime = document.getElementById('openingTime').value || '07:00';
-            const [openHour, openMinute] = openingTime.split(':').map(Number);
-            const templates = {
-                agendado: document.getElementById('templateAgendado').value,
-                cancelado: document.getElementById('templateCancelado').value,
-                faltou: document.getElementById('templateFaltou').value
-            };
-            const template = templates[situacao] || templates.agendado;
-
+        // Lê o texto colado e devolve os agendamentos parseados (sem filtrar situação).
+        function parseAgendaTexto(input, defaultDDD) {
             const lines = input.split('\n');
             const appointments = [];
             let currentAppointment = null;
@@ -1643,106 +2644,538 @@
             }
 
             if (currentAppointment) appointments.push({ ...currentAppointment });
+            return appointments;
+        }
 
-            const validos = appointments.filter(a =>
+        function validosDe(appointments) {
+            return appointments.filter(a =>
                 situacaoDoStatus(a.status) &&
                 a.user && a.user.trim() !== '' &&
                 a.record && a.record.trim() !== '' && a.record !== 'sem cadastro'
             );
-            const porSituacao = { agendado: 0, cancelado: 0, faltou: 0 };
-            validos.forEach(a => { porSituacao[situacaoDoStatus(a.status)] += 1; });
-            const alvo = validos.filter(a => situacaoDoStatus(a.status) === situacao);
+        }
 
-            let messages = alvo.map((app, idx) => {
-                const dateParts = app.date.split('-');
-                const formattedDate = `${dateParts[0]}/${dateParts[1]}`;
-
-                const timeParts = app.time.split(':');
-                let hours = parseInt(timeParts[0]);
-                let minutes = parseInt(timeParts[1]);
-
-                // Antecipação vale só no lembrete de agendado; cancelado/faltou
-                // citam o horário original do agendamento.
-                if (situacao === 'agendado') {
-                    const naAbertura = hours === openHour && minutes === openMinute;
-                    if (!naAbertura) {
-                        minutes -= timeAdjust;
-                        if (minutes < 0) {
-                            minutes += 60;
-                            hours -= 1;
-                        }
+        // Antecipação de horário: vale só no lembrete de agendado; cancelado e
+        // falta citam o horário original do agendamento.
+        function horarioAntecipado(time, situacao, timeAdjust, openHour, openMinute) {
+            const timeParts = String(time).split(':');
+            let hours = parseInt(timeParts[0]);
+            let minutes = parseInt(timeParts[1]);
+            if (situacao === 'agendado') {
+                const naAbertura = hours === openHour && minutes === openMinute;
+                if (!naAbertura) {
+                    minutes -= timeAdjust;
+                    if (minutes < 0) {
+                        minutes += 60;
+                        hours -= 1;
                     }
                 }
-                const adjustedTime = `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}`;
+            }
+            return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}`;
+        }
+
+        // "02/10 às 14h50, 09/10 às 09h20 e 16/10 às 10h00" (etiqueta {eventos}).
+        function listaEventosTexto(eventos) {
+            const textos = eventos.map(e => `${e.formattedDate} às ${e.adjustedTime}`);
+            if (textos.length === 1) return textos[0];
+            if (textos.length === 2) return textos[0] + ' e ' + textos[1];
+            return textos.slice(0, -1).join(', ') + ' e ' + textos[textos.length - 1];
+        }
+
+        // Monta as mensagens de `alvo` (mesma situação). Com "unir" ativo, vários
+        // agendamentos da mesma pessoa viram UMA mensagem (modelo "múltiplo").
+        function montarMensagens(alvo, situacao, opts) {
+            const timeAdjust = opts.timeAdjust;
+            const openHour = opts.openHour;
+            const openMinute = opts.openMinute;
+            const templates = opts.templates;
+            const unir = !!opts.unir;
+
+            const grupos = new Map();
+            alvo.forEach(app => {
+                const k = chavePessoa(app.record, app.user);
+                if (!grupos.has(k)) grupos.set(k, []);
+                grupos.get(k).push(app);
+            });
+
+            const messages = [];
+            const emitidos = new Set();
+
+            alvo.forEach(app => {
+                const chave = chavePessoa(app.record, app.user);
+                if (unir) {
+                    if (emitidos.has(chave)) return;
+                    emitidos.add(chave);
+                }
+                const lista = unir ? (grupos.get(chave) || [app]) : [app];
+                lista.sort(compareRecordDateTime);
+
+                const eventos = lista.map(item => {
+                    const dateParts = item.date.split('-');
+                    return {
+                        app: item,
+                        formattedDate: `${dateParts[0]}/${dateParts[1]}`,
+                        adjustedTime: horarioAntecipado(item.time, situacao, timeAdjust, openHour, openMinute)
+                    };
+                });
+
+                const multiplo = unir && eventos.length > 1;
+                const primeiro = eventos[0];
+
+                let template = templates[situacao] || templates.agendado;
+                if (multiplo && templates[situacao + 'Multi']) template = templates[situacao + 'Multi'];
 
                 let phone = '';
                 let phoneType = '';
-                const celPhone = app.phones.find(p => p.type === 'CEL');
-                const resPhone = app.phones.find(p => p.type === 'RES');
-
-                if (celPhone) { phone = celPhone.number; phoneType = 'CEL'; } 
-                else if (resPhone) { phone = resPhone.number; phoneType = 'RES'; }
+                for (let i = 0; i < eventos.length && !phone; i++) {
+                    const celPhone = eventos[i].app.phones.find(p => p.type === 'CEL');
+                    const resPhone = eventos[i].app.phones.find(p => p.type === 'RES');
+                    if (celPhone) { phone = celPhone.number; phoneType = 'CEL'; }
+                    else if (resPhone) { phone = resPhone.number; phoneType = 'RES'; }
+                }
 
                 const userName = app.user;
                 const recordNumber = app.record;
+                const eventosTexto = listaEventosTexto(eventos);
 
                 let messageText = template
                     .replace(/{nome}/g, userName)
                     .replace(/{cadastro}/g, recordNumber)
-                    .replace(/{data}/g, formattedDate)
-                    .replace(/{horario}/g, adjustedTime)
+                    .replace(/{data}/g, primeiro.formattedDate)
+                    .replace(/{horario}/g, primeiro.adjustedTime)
                     .replace(/{profissional}/g, app.profissional)
-                    .replace(/{profissionalcompleto}/g, app.profissionalCompleto);
+                    .replace(/{profissionalcompleto}/g, app.profissionalCompleto)
+                    .replace(/{eventos}/g, eventosTexto);
 
                 const whatsappLink = phone ? `https://wa.me/55${phone}?text=${encodeURIComponent(messageText)}` : '';
 
-                return {
-                    id: `${app.date}_${app.time}_${recordNumber}`,
+                const id = multiplo
+                    ? `m_${chave}_${situacao}_${eventos.map(e => e.app.date + e.app.time).join('_')}`
+                    : `${app.date}_${app.time}_${recordNumber}`;
+
+                messages.push({
+                    id: id,
                     user: userName,
                     date: app.date,
                     time: app.time,
-                    adjustedTime: adjustedTime,
-                    formattedDate: formattedDate,
+                    adjustedTime: primeiro.adjustedTime,
+                    formattedDate: primeiro.formattedDate,
                     phone: phone,
                     phoneType: phoneType,
                     record: recordNumber,
                     profissional: app.profissional,
                     profissionalCompleto: app.profissionalCompleto,
+                    status: app.status,
+                    situacao: situacao,
+                    multiplo: multiplo,
+                    eventos: eventos.map(e => ({
+                        date: e.app.date,
+                        time: e.app.time,
+                        adjustedTime: e.adjustedTime,
+                        formattedDate: e.formattedDate
+                    })),
                     message: messageText,
                     whatsappLink: whatsappLink
-                };
+                });
+            });
+
+            return messages;
+        }
+
+        // Pipeline comum do Gerar: valida, calcula estatísticas, monta,
+        // registra no histórico e redesenha aplicando os filtros.
+        function gerarAPartirDe(appointments) {
+            const situacao = document.getElementById('statusFilter').value;
+            const timeAdjust = parseInt(document.getElementById('timeAdjust').value) || 0;
+            const openingTime = document.getElementById('openingTime').value || '07:00';
+            const [openHour, openMinute] = openingTime.split(':').map(Number);
+            const el = id => document.getElementById(id);
+            const templates = {
+                agendado: el('templateAgendado').value,
+                cancelado: el('templateCancelado').value,
+                faltou: el('templateFaltou').value,
+                agendadoMulti: (el('templateAgendadoMulti') && el('templateAgendadoMulti').value) || DEFAULT_CONFIG.templateAgendadoMulti,
+                canceladoMulti: (el('templateCanceladoMulti') && el('templateCanceladoMulti').value) || DEFAULT_CONFIG.templateCanceladoMulti,
+                faltouMulti: (el('templateFaltouMulti') && el('templateFaltouMulti').value) || DEFAULT_CONFIG.templateFaltouMulti
+            };
+            const unirEl = el('unirAgendamentos');
+            const unir = unirEl ? !!unirEl.checked : false;
+
+            const validos = validosDe(appointments);
+            const porSituacao = { agendado: 0, cancelado: 0, faltou: 0 };
+            validos.forEach(a => { porSituacao[situacaoDoStatus(a.status)] += 1; });
+            const alvo = validos.filter(a => situacaoDoStatus(a.status) === situacao);
+
+            const messages = montarMensagens(alvo, situacao, {
+                timeAdjust: timeAdjust,
+                openHour: openHour,
+                openMinute: openMinute,
+                templates: templates,
+                unir: unir
             });
 
             allMessages = messages;
-            
+
+            // v1.4: profissionais vistos nas agendas entram na aba Equipe.
+            messages.forEach(m => registrarProfissionalDaMsg(m));
+            renderProfissionais();
+
             messages.forEach(msg => {
                 const existingIndex = sessionHistory.findIndex(h => h.id === msg.id);
                 if (existingIndex === -1) {
-                    sessionHistory.push({...msg, addedAt: new Date().toLocaleTimeString('pt-BR')});
+                    sessionHistory.push({ ...msg, addedAt: new Date().toLocaleTimeString('pt-BR') });
                 }
             });
             saveHistory();
 
-            displayMessages(messages);
+            aplicarFiltros();
             updateStats(porSituacao);
-            
+
+            const unidos = messages.filter(m => m.multiplo).length;
+            const extra = unidos > 0 ? ` · ${unidos} pessoa(s) com agendamentos unificados` : '';
             if (messages.length === 0) {
                 showToast('⚠️ Nenhuma mensagem gerada para esta situação. Verifique se há registros e se todos têm nome e cadastro válidos.');
             } else {
-                showToast(`✅ ${messages.length} mensagens geradas com sucesso!`);
+                showToast(`✅ ${messages.length} mensagens geradas com sucesso!${extra}`);
             }
+            return messages;
+        }
+
+        function generateMessages() {
+            const input = document.getElementById('inputData').value;
+            if (!input.trim()) {
+                showToast('⚠️ Por favor, cole os dados da agenda');
+                return;
+            }
+            const defaultDDD = document.getElementById('defaultDDD').value.trim() || '11';
+            gerarAPartirDe(parseAgendaTexto(input, defaultDDD));
+        }
+
+
+        // ---------- Fila de agendas (lotes) ----------
+        function proximoIdLote() {
+            return lotesList.reduce((max, l) => Math.max(max, l.id), 0) + 1;
+        }
+
+        function renderLotes() {
+            const info = document.getElementById('lotesInfo');
+            const cont = document.getElementById('lotesCount');
+            const total = lotesList.reduce((s, l) => s + l.qtd, 0);
+            if (cont) cont.textContent = lotesList.length;
+            if (!info) return;
+            if (!lotesList.length) {
+                info.innerHTML = 'Nenhuma agenda na fila. Adicione várias agendas antes de gerar: agendamentos da mesma pessoa serão unificados numa só mensagem.';
+            } else {
+                const rotulos = lotesList.map(l => l.rotulo).join(' · ');
+                info.innerHTML = `<b>${lotesList.length}</b> agenda(s) na fila · <b>${total}</b> agendamento(s) no total<br><small>${escapeAttr(rotulos)}</small>`;
+            }
+        }
+
+        function adicionarAoLote() {
+            const input = document.getElementById('inputData');
+            const texto = input.value;
+            if (!texto.trim()) return showToast('⚠️ Cole a agenda ao lado antes de adicionar ao lote');
+            const defaultDDD = document.getElementById('defaultDDD').value.trim() || '11';
+            const appointments = parseAgendaTexto(texto, defaultDDD);
+            const validos = validosDe(appointments);
+            if (!validos.length) {
+                return showToast('⚠️ Nenhum agendamento válido na agenda (falta nome, cadastro ou situação)');
+            }
+            const agora = new Date();
+            const rotulo = `lote ${lotesList.length + 1} · ${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')} ${String(agora.getHours()).padStart(2, '0')}h${String(agora.getMinutes()).padStart(2, '0')}`;
+            const lote = {
+                id: proximoIdLote(),
+                criadoEm: agoraISO(),
+                rotulo: rotulo,
+                qtd: validos.length,
+                appointments: validos
+            };
+            lotesList.push(lote);
+            Store.put('lotes', lote);
+            input.value = '';
+            renderLotes();
+            showToast(`➕ ${validos.length} agendamento(s) na fila · ${lotesList.length} lote(s)`);
+        }
+
+        function esvaziarLoteNaMemoria() {
+            const ids = lotesList.map(l => l.id);
+            lotesList = [];
+            ids.forEach(id => Store.del('lotes', id));
+            renderLotes();
+        }
+
+        function gerarDoLote() {
+            if (!lotesList.length) return showToast('⚠️ A fila de lotes está vazia');
+            const totalAgendamentos = lotesList.reduce((s, l) => s + l.qtd, 0);
+            const todos = [];
+            lotesList.forEach(l => l.appointments.forEach(a => todos.push(a)));
+            const messages = gerarAPartirDe(todos);
+            if (messages.length > 0) {
+                esvaziarLoteNaMemoria();
+                document.getElementById('inputData').value = '';
+                const unidos = messages.filter(m => m.multiplo).length;
+                showToast(`🚀 Fila processada: ${messages.length} mensagem(s) de ${totalAgendamentos} agendamento(s) · fila limpa${unidos ? ` · ${unidos} unificada(s)` : ''}`);
+            }
+        }
+
+        function limparLotes() {
+            if (!lotesList.length) return showToast('ℹ️ A fila já está vazia');
+            if (!confirm('Descartar as agendas guardadas na fila de lotes?')) return;
+            esvaziarLoteNaMemoria();
+            showToast('🗑 Fila de lotes limpa');
+        }
+
+        // ---------- SMS via OpenSMS (ponte com o host nativo) ----------
+        // Windows: o host C# faz o POST http://IP:9292/sms/ com Bearer key.
+        // Android (fase 2): intenção sms: com o texto já preenchido.
+        const SmsBridge = {
+            proximoId: 1,
+            pendentes: new Map(),
+
+            inicializar: function () {
+                try {
+                    if (window.chrome && window.chrome.webview) {
+                        window.chrome.webview.addEventListener('message', function (evento) {
+                            let dados = evento.data;
+                            if (typeof dados === 'string') {
+                                try { dados = JSON.parse(dados); } catch (e) { return; }
+                            }
+                            if (!dados || dados.id === undefined || dados.id === null) return;
+                            const resolver = SmsBridge.pendentes.get(dados.id);
+                            if (resolver) {
+                                SmsBridge.pendentes.delete(dados.id);
+                                resolver(dados);
+                            }
+                        });
+                    }
+                } catch (e) { }
+            },
+
+            plataforma: function () {
+                return /Android/i.test(navigator.userAgent) ? 'android' : 'windows';
+            },
+
+            solicitar: function (payload, tempoMs) {
+                const self = this;
+                return new Promise(function (resolve) {
+                    if (!(window.chrome && window.chrome.webview)) {
+                        resolve({ ok: false, status: 0, error: 'Ponte nativa indisponível nesta execução.' });
+                        return;
+                    }
+                    const id = self.proximoId++;
+                    payload.id = id;
+                    const temporizador = setTimeout(function () {
+                        if (self.pendentes.has(id)) {
+                            self.pendentes.delete(id);
+                            resolve({ ok: false, status: 0, error: 'Sem resposta do aplicativo nativo (host sem suporte a SMS?).' });
+                        }
+                    }, tempoMs || 20000);
+                    self.pendentes.set(id, function (dados) {
+                        clearTimeout(temporizador);
+                        resolve(dados);
+                    });
+                    try {
+                        window.chrome.webview.postMessage(JSON.stringify(payload));
+                    } catch (e) {
+                        clearTimeout(temporizador);
+                        self.pendentes.delete(id);
+                        resolve({ ok: false, status: 0, error: String((e && e.message) || e) });
+                    }
+                });
+            },
+
+            enviar: function (url, key, numero, texto) {
+                if (this.plataforma() === 'android') {
+                    // Android: deixa o app de SMS padrão do celular com o texto pronto
+                    // (política do Google Play não permite SEND_SMS a apps comuns).
+                    try {
+                        window.location.href = 'sms:' + numero + '?body=' + encodeURIComponent(texto);
+                        return Promise.resolve({ ok: true, status: 0, intent: true });
+                    } catch (e) {
+                        return Promise.resolve({ ok: false, status: 0, error: String(e) });
+                    }
+                }
+                return this.solicitar({ cmd: 'sms', url: url, key: key, number: numero, text: texto }, 25000);
+            },
+
+            testar: function (url, key) {
+                // Corpo vazio: o OpenSMS responde 401/422 (prova que está vivo)
+                // sem disparar SMS algum.
+                return this.solicitar({ cmd: 'sms', url: url, key: key, number: '', text: '', test: true }, 15000);
+            }
+        };
+
+        function smsConfigAtual() {
+            const campoUrl = document.getElementById('smsUrl');
+            const campoKey = document.getElementById('smsKey');
+            return {
+                url: ((campoUrl && campoUrl.value) || appConfig.smsUrl || '').trim(),
+                key: ((campoKey && campoKey.value) || appConfig.smsKey || '').trim()
+            };
+        }
+
+        function smsTestar() {
+            const cfg = smsConfigAtual();
+            const status = document.getElementById('smsStatus');
+            if (!cfg.url) {
+                if (status) status.textContent = 'Informe o endereço do servidor OpenSMS.';
+                return showToast('⚠️ Informe o endereço do servidor OpenSMS');
+            }
+            if (status) status.textContent = 'Testando conexão…';
+            SmsBridge.testar(cfg.url, cfg.key).then(function (r) {
+                if (r.ok) {
+                    if (status) status.textContent = `✅ Servidor respondeu (HTTP ${r.status}).`;
+                    showToast(`📶 Conexão com o OpenSMS OK (HTTP ${r.status})`);
+                } else {
+                    const motivo = r.error || ('HTTP ' + r.status);
+                    if (status) status.textContent = '❌ ' + motivo;
+                    showToast('❌ ' + motivo);
+                }
+            });
+        }
+
+        function smsEnviar(index) {
+            const msg = (window.generatedMessages || [])[index];
+            if (!msg) return;
+            if (!msg.phone) return showToast('⚠️ Sem telefone disponível para SMS');
+            const cfg = smsConfigAtual();
+            if (!cfg.url) {
+                switchTab('ajustes');
+                return showToast('⚠️ Configure o servidor OpenSMS na aba Ajustes');
+            }
+            const numero = '+' + (msg.phone.indexOf('55') === 0 ? msg.phone : '55' + msg.phone);
+            showToast('📩 Enviando SMS pelo OpenSMS…');
+            SmsBridge.enviar(cfg.url, cfg.key, numero, msg.message).then(function (r) {
+                if (r.ok) {
+                    registrarAvisoDoCard(msg, 'sms');
+                    showToast(`📩 SMS enviado pelo OpenSMS para ${msg.phone}`);
+                } else {
+                    showToast('❌ SMS falhou: ' + (r.error || ('HTTP ' + r.status)));
+                }
+            });
+        }
+
+        // ---------- Registro de avisos: limpeza ----------
+        function limparAvisos() {
+            if (!avisosMap.size) return showToast('ℹ️ Nenhum aviso registrado');
+            if (!confirm('Apagar todo o registro de avisos (quem já foi avisado)?')) return;
+            avisosMap = new Map();
+            Store.clear('avisos').then(function () {
+                aplicarFiltros();
+                atualizarInfoAvisos();
+                showToast('🧹 Registro de avisos apagado');
+            });
+        }
+
+        function atualizarInfoAvisos() {
+            const el = document.getElementById('ajAvisosInfo');
+            if (!el) return;
+            let eventos = 0;
+            avisosMap.forEach(doc => { eventos += (doc.eventos ? doc.eventos.length : 0); });
+            el.innerHTML = avisosMap.size
+                ? `<b>${avisosMap.size}</b> pessoa(s) no registro · <b>${eventos}</b> aviso(s) no total.`
+                : 'Nenhum aviso registrado.';
+        }
+        function rotuloSituacao(s) {
+            if (s === 'agendado') return '✅ Agendado';
+            if (s === 'cancelado') return '🚫 Cancelado';
+            if (s === 'faltou') return '⚠️ Faltou';
+            return s || '-';
+        }
+
+        function rotuloCanal(c) {
+            const mapa = { whatsapp: 'WhatsApp', sms: 'SMS', copia: 'cópia', manual: 'manual', demo: 'demonstração' };
+            return mapa[c] || c || '-';
+        }
+
+        function escapeAttr(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Bloco expandido do cartão (só no Modo Completo): situação original,
+        // profissional da consulta × equipe padrão, endereço, telefones,
+        // histórico de avisos e ações de aviso/SMS/equipe.
+        function blocoExtra(msg, index) {
+            const chave = chavePessoa(msg.record, msg.user);
+            const aviso = ultimoAvisoDe(chave);
+            const eq = equipeDaPessoa(msg.record, msg.user);
+
+            const eventosLinha = (msg.eventos && msg.eventos.length > 1)
+                ? msg.eventos.map(e => `${e.formattedDate} às ${formatInstitutionalTime(e.adjustedTime)}`).join(' · ')
+                : `${msg.formattedDate} às ${formatInstitutionalTime(msg.adjustedTime)}`;
+
+            let equipeTexto;
+            if (eq) {
+                equipeTexto = `<span class="eq-cor">${escapeAttr(eq.equipeNome || 'Equipe')}</span><br>` +
+                    `Médica: <b>${escapeAttr(eq.medica || '—')}</b><br>` +
+                    `Enfermeira: <b>${escapeAttr(eq.enfermeira || '—')}</b><br>` +
+                    `Assistente: <b>${escapeAttr(eq.assistente || '—')}</b>`;
+            } else {
+                equipeTexto = '<i>Não localizada na base importada</i><br><small>Importe os arquivos do BI na aba 👥 Equipe</small>';
+            }
+
+            const enderecoTexto = eq && eq.endereco ? escapeAttr(eq.endereco) : '<i>—</i>';
+
+            const telefones = [];
+            if (msg.phone) telefones.push(`${msg.phoneType === 'CEL' ? '📱' : '🏠'} ${msg.phone} (do agendamento)`);
+            if (eq && eq.telefones) {
+                eq.telefones.forEach(t => {
+                    if (!telefones.some(x => x.indexOf(t) >= 0)) telefones.push(`📋 ${t} (cadastro)`);
+                });
+            }
+            const telefonesTexto = telefones.length ? telefones.join('<br>') : '<i>nenhum telefone</i>';
+
+            const avisosDoc = avisosMap.get(chave);
+            const totalAvisos = avisosDoc && avisosDoc.eventos ? avisosDoc.eventos.length : 0;
+            const avisosTexto = totalAvisos
+                ? `<b>${totalAvisos}</b> registro(s) · último em <b>${dataCurta(aviso.quando)}</b> via ${rotuloCanal(aviso.canal)}`
+                : '<i>nunca avisado</i>';
+
+            const profissionalConsulta = msg.profissionalCompleto || msg.profissional || '-';
+            const profissionalDiferente = eq && eq.medica &&
+                normalizeBusca(eq.medica).indexOf(normalizeBusca(msg.profissional || '')) < 0 &&
+                normalizeBusca(msg.profissional || '').length > 0;
+
+            const btnAviso = aviso
+                ? `<button class="btn-sm btn-reaviso" onclick="marcarAvisoManual(${index})" title="Registra mais um aviso para esta pessoa">↺ Avisar de novo</button>`
+                : `<button class="btn-sm btn-aviso" onclick="marcarAvisoManual(${index})" title="Marcar esta pessoa como avisada">✓ Marcar avisado</button>`;
+
+            return `
+                        <div class="msg-extra c-only">
+                            <div class="extra-grid">
+                                <div class="extra-cell"><span class="extra-k">Situação do evento</span><span class="extra-v">${escapeAttr(msg.status || '-')} → ${rotuloSituacao(msg.situacao)}</span></div>
+                                <div class="extra-cell"><span class="extra-k">Data e horário</span><span class="extra-v">${eventosLinha}${msg.multiplo ? ' <b>(unificados)</b>' : ''}</span></div>
+                                <div class="extra-cell"><span class="extra-k">Profissional da consulta</span><span class="extra-v"><b>${escapeAttr(profissionalConsulta)}</b>${profissionalDiferente ? '<br><small>≠ da equipe padrão da pessoa</small>' : ''}</span></div>
+                                <div class="extra-cell"><span class="extra-k">Equipe padrão da pessoa</span><span class="extra-v">${equipeTexto}</span></div>
+                                <div class="extra-cell"><span class="extra-k">Endereço</span><span class="extra-v">${enderecoTexto}</span></div>
+                                <div class="extra-cell"><span class="extra-k">Telefones</span><span class="extra-v">${telefonesTexto}</span></div>
+                                <div class="extra-cell"><span class="extra-k">Avisos desta pessoa</span><span class="extra-v">${avisosTexto}</span></div>
+                            </div>
+                            <div class="extra-actions">
+                                ${btnAviso}
+                                <button class="btn-sm btn-sms" onclick="smsEnviar(${index})" ${msg.phone ? '' : 'disabled title="Sem telefone"'} title="Enviar SMS pelo OpenSMS">📩 SMS</button>
+                                <button class="btn-sm btn-copy-all" onclick="verEquipeDe(${index})" title="Abrir a ficha desta pessoa na aba Equipe">👤 Ver equipe</button>
+                            </div>
+                        </div>
+            `;
         }
 
         function displayMessages(messages) {
             const container = document.getElementById('messagesContainer');
             if (messages.length === 0) {
-                container.innerHTML = `<div class="empty-state">Nenhum agendamento encontrado com os filtros selecionados.<br><small>Verifique se todos têm nome e cadastro válidos.</small></div>`;
+                container.innerHTML = `<div class="empty-state">Nenhum agendamento encontrado com os filtros selecionados.<br><small>Verifique se todos têm nome e cadastro válidos, ou mudou o filtro de avisos.</small></div>`;
+                window.generatedMessages = [];
+                atualizarStatAvisados();
                 return;
             }
 
             let html = '';
             messages.forEach((msg, index) => {
                 const isSent = !!sentStatus[msg.id];
+                const chave = chavePessoa(msg.record, msg.user);
+                const aviso = ultimoAvisoDe(chave);
 
                 let phoneBadge = msg.phoneType === 'CEL' ?
                     `<button class="btn-sm btn-phone" onclick="copyPhone(${index})" title="Copiar telefone">📱 ${msg.phone}</button>` :
@@ -1751,6 +3184,14 @@
                     `<span class="badge-no-phone">⚠️ SEM TEL</span>`;
 
                 let sentBadge = isSent ? `<span class="badge-sent">✓ Processado</span>` : '';
+
+                let avisoBadge;
+                if (aviso) {
+                    const detalhe = `${totalAvisosDe(chave)} aviso(s) · último em ${dataCurta(aviso.quando)} via ${rotuloCanal(aviso.canal)}`;
+                    avisoBadge = `<span class="badge-aviso" title="${escapeAttr(detalhe)}">🔔 já avisado em ${dataCurta(aviso.quando)}</span>`;
+                } else {
+                    avisoBadge = `<span class="badge-novo" title="Nenhum aviso registrado até agora para esta pessoa">✨ primeira vez</span>`;
+                }
 
                 const sentClass = isSent ? 'sent' : '';
                 const timeDisplay = `${formatInstitutionalTime(msg.adjustedTime)} (original: ${formatInstitutionalTime(msg.time)})`;
@@ -1761,6 +3202,7 @@
                             <span class="message-name">
                                 ${msg.user}
                                 ${sentBadge}
+                                ${avisoBadge}
                             </span>
                             <span class="message-time">📅 ${msg.formattedDate} • ${timeDisplay}</span>
                         </div>
@@ -1782,12 +3224,114 @@
                                 ` : ''}
                             </div>
                         </div>
+                        ${blocoExtra(msg, index)}
                     </div>
                 `;
             });
 
             container.innerHTML = html;
             window.generatedMessages = messages;
+            atualizarStatAvisados();
+        }
+
+        function totalAvisosDe(chave) {
+            const doc = avisosMap.get(chave);
+            return doc && doc.eventos ? doc.eventos.length : 0;
+        }
+
+        function atualizarStatAvisados() {
+            const el = document.getElementById('avisadosCount');
+            if (!el) return;
+            const msgs = window.generatedMessages || [];
+            const vistos = new Set();
+            let n = 0;
+            msgs.forEach(m => {
+                const k = chavePessoa(m.record, m.user);
+                if (vistos.has(k)) return;
+                vistos.add(k);
+                if (pessoaFoiAvisada(k)) n++;
+            });
+            el.textContent = n;
+        }
+
+        // Combina busca por nome/cadastro com o filtro de avisos.
+        function aplicarFiltros() {
+            const inputBusca = document.getElementById('searchInput');
+            const termo = ((inputBusca && inputBusca.value) || '').toLowerCase();
+            const selFiltro = document.getElementById('filtroAvisado');
+            const filtro = (selFiltro && selFiltro.value) || 'todos';
+
+            let lista = allMessages || [];
+            if (termo) {
+                lista = lista.filter(m =>
+                    (m.user || '').toLowerCase().includes(termo) ||
+                    (m.record || '').toLowerCase().includes(termo)
+                );
+            }
+            if (filtro === 'nao' || filtro === 'sim') {
+                lista = lista.filter(m => {
+                    const k = chavePessoa(m.record, m.user);
+                    return filtro === 'sim' ? pessoaFoiAvisada(k) : !pessoaFoiAvisada(k);
+                });
+            }
+            displayMessages(lista);
+        }
+
+        // Registra um aviso para a pessoa do cartão e redesenha os selos.
+        function registrarAvisoDoCard(msg, canal) {
+            if (!msg) return;
+            const k = chavePessoa(msg.record, msg.user);
+            const antes = pessoaFoiAvisada(k);
+            registrarAviso(k, msg.user, msg.record, canal || 'whatsapp', msg.situacao,
+                (msg.eventos || []).map(e => e.formattedDate), (msg.eventos || []).length);
+            if (!antes) {
+                aplicarFiltros();
+            } else {
+                atualizarStatAvisados();
+            }
+        }
+
+        function marcarAvisoManual(index) {
+            const msg = (window.generatedMessages || [])[index];
+            if (!msg) return;
+            const k = chavePessoa(msg.record, msg.user);
+            const jaTinha = pessoaFoiAvisada(k);
+            registrarAviso(k, msg.user, msg.record, 'manual', msg.situacao,
+                (msg.eventos || []).map(e => e.formattedDate), (msg.eventos || []).length)
+                .then(function () {
+                    aplicarFiltros();
+                    showToast(jaTinha ? '↺ Novo aviso registrado para ' + msg.user : '🔔 ' + msg.user + ' marcada como avisada');
+                });
+        }
+
+        function registrarTodosComoAvisados() {
+            const msgs = window.generatedMessages || [];
+            if (msgs.length === 0) return showToast('⚠️ Nenhuma mensagem exibida para registrar');
+            const vistos = new Set();
+            let novos = 0;
+            msgs.forEach(m => {
+                const k = chavePessoa(m.record, m.user);
+                if (vistos.has(k)) return;
+                vistos.add(k);
+                if (!pessoaFoiAvisada(k)) {
+                    novos++;
+                    registrarAviso(k, m.user, m.record, 'manual', m.situacao,
+                        (m.eventos || []).map(e => e.formattedDate), (m.eventos || []).length);
+                }
+            });
+            aplicarFiltros();
+            showToast(novos > 0 ? `✓ ${novos} pessoa(s) registrada(s) como avisada(s)` : '🔔 Todos já estavam avisados');
+        }
+
+        function verEquipeDe(index) {
+            const msg = (window.generatedMessages || [])[index];
+            if (!msg) return;
+            switchTab('equipe');
+            const busca = document.getElementById('eqSearchInput');
+            if (busca) {
+                busca.value = msg.record || msg.user;
+                buscarEquipe();
+            }
         }
 
         let currentHistoryView = [];
@@ -1847,22 +3391,12 @@
         }
 
         function filterMessages() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            if (!allMessages || allMessages.length === 0) return;
-
-            const filtered = allMessages.filter(msg => 
-                msg.user.toLowerCase().includes(searchTerm) || 
-                msg.record.toLowerCase().includes(searchTerm)
-            );
-
-            displayMessages(filtered);
+            aplicarFiltros();
         }
 
         function clearSearch() {
             document.getElementById('searchInput').value = '';
-            if (allMessages.length > 0) {
-                displayMessages(allMessages);
-            }
+            aplicarFiltros();
         }
 
         function filterHistory() {
@@ -1897,6 +3431,7 @@
             const msg = window.generatedMessages[index];
             if (!msg || !msg.whatsappLink) return showToast('⚠️ Sem telefone disponível');
             markAsProcessed(index);
+            registrarAvisoDoCard(msg, 'whatsapp');
             window.open(msg.whatsappLink, '_blank');
         }
 
@@ -1929,6 +3464,7 @@
             const msg = window.generatedMessages[index];
             if (msg) {
                 markAsProcessed(index);
+                registrarAvisoDoCard(msg, 'whatsapp');
                 copyToClipboard(msg.message, '✅ Mensagem copiada!');
             }
         }
@@ -1937,6 +3473,7 @@
             const msg = window.generatedMessages[index];
             if (msg && msg.whatsappLink) {
                 markAsProcessed(index);
+                registrarAvisoDoCard(msg, 'whatsapp');
                 copyToClipboard(msg.whatsappLink, '✅ Link do WhatsApp copiado!');
             }
         }
@@ -1945,7 +3482,7 @@
             const msgs = window.generatedMessages || [];
             if (msgs.length === 0) return showToast('⚠️ Nenhuma mensagem para copiar');
             const allText = msgs.map(m => m.message).join('\n\n---\n\n');
-            copyToClipboard(allText, `✅ ${msgs.length} mensagens copiadas!`);
+            copyToClipboard(allText, `✅ ${msgs.length} mensagens copiadas! (copie card a card para registrar os avisos)`);
         }
 
         function copyAllWhatsAppLinks() {
@@ -2059,7 +3596,1079 @@
             toast.timeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        const TERMS_VERSION = 'v1.0';
+
+        // ============================================================
+        // v1.4.0.0 — ABA EQUIPE: importação dos arquivos do BI
+        // (port do Cadastro Clínico: biImport.ts + territoryRules.ts +
+        //  teamForAddress do Home.tsx), resolução da equipe padrão de
+        //  cada pessoa pelo endereço e lista de profissionais.
+        // Tudo local: nada sai deste computador.
+        // ============================================================
+        const BI_REPORT_LABELS = {
+            s1: 'CADASTRO — ANÁLISE DETALHADA',
+            s2: 'QUESTIONÁRIO AUTO REFERIDO',
+            s3: 'SAÚDE — CADASTROS DETALHADOS',
+            s4: 'CADASTRO — ACOMPANHAMENTO INDIVIDUAL',
+            equipes: 'EQUIPES — TERRITÓRIO'
+        };
+        const BI_TIPOS = ['s1', 's2', 's3', 's4', 'equipes'];
+        const BI_PALAVRA_ARQ = { s1: 'analise detalhada', s2: 'auto referido', s3: 'cadastros detalhados', s4: '', equipes: 'equipes' };
+
+        const biNorm = v => String(v == null ? '' : v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+        const biDigitos = v => String(v == null ? '' : v).replace(/\D/g, '');
+
+        function biSanitizar(v, maxLen) {
+            let t = String(v == null ? '' : v)
+                .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+                .replace(/[<>]/g, '')
+                .replace(/\n{3,}/g, '\n\n').trim();
+            if (maxLen && t.length > maxLen) t = t.slice(0, maxLen);
+            return t;
+        }
+
+        /* CNS: a base traz vários CNS separados por vírgula/espaço e runs de 15
+           dígitos. Guarda todos os trechos com 10+ dígitos, sem repetir. */
+        function biListaCNS(v) {
+            const partes = String(v == null ? '' : v).split(/[^0-9]+/).filter(t => t.length >= 10);
+            const unicos = [];
+            for (const p of partes) if (!unicos.includes(p)) unicos.push(p);
+            return unicos;
+        }
+        /* Regra do "7": se algum CNS começa com 7, escolhe o maior desses; senão,
+           o maior de todos. */
+        function biCnsPrincipal(lista) {
+            const l = (Array.isArray(lista) ? lista : []).filter(Boolean);
+            if (!l.length) return '';
+            const com7 = l.filter(c => String(c).charAt(0) === '7');
+            const escopo = com7.length ? com7 : l;
+            return escopo.slice().sort((a, b) => (b.length - a.length) || String(b).localeCompare(String(a)))[0];
+        }
+
+        /* REGRA EXCLUSIVA DO VARJÃO + regra Augusta x Dário Bocchino (port de
+           territoryRules.ts): todas as variantes viram o mesmo rótulo. */
+        const BI_VARJAO_ROTULO = 'Varjao';
+        const BI_DARIO_ROTULO = 'Dario Bocchino';
+        const BI_VARJAO_FORMAS = ['estrada municipal do varjao', 'municipal do varjao', 'do varjao', 'varjao'];
+        const BI_TIPO_LOGR = /^(?:rua|r\.?|avenida|av\.?|aven\.?|estrada|est\.?|travessa|tv\.?|alameda|al\.?|praca|pca\.?|beco|viela|rodovia|rod\.?|via|caminho)\s+/;
+        const biSemAcento = v => String(v == null ? '' : v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+        function biEhVarjao(v) {
+            return BI_VARJAO_FORMAS.includes(biSemAcento(v).replace(BI_TIPO_LOGR, ''));
+        }
+
+        function biNomeRua(v) {
+            const bruto = biSemAcento(v);
+            if (!bruto) return '';
+            const semNum = bruto.replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()
+                .split(' ').filter(w => !/^\d/.test(w)).join(' ');
+            return semNum.replace(BI_TIPO_LOGR, '').replace(/\s+/g, ' ').trim();
+        }
+
+        function biEhDario(rua, comeco, fim) {
+            if (biNomeRua(rua) !== 'augusta teixeira rodrigues') return false;
+            const num = value => { const raw = String(value == null ? '' : value).replace(/\D/g, ''); return raw === '' ? null : parseInt(raw, 10); };
+            const inicio = num(comeco);
+            const termino = num(fim);
+            if (inicio === null && termino === null) return true;
+            if (termino !== null) return termino < 3500;
+            return (inicio == null ? Infinity : inicio) < 3500;
+        }
+
+        function biPadronizarLogradouro(value, rangeStart, rangeEnd) {
+            if (!value) return value;
+            if (biEhVarjao(value)) return BI_VARJAO_ROTULO;
+            if (biEhDario(value, rangeStart, rangeEnd)) return BI_DARIO_ROTULO;
+            return value;
+        }
+
+        /* Endereço completo "logradouro, número" → "Varjao, 3000". */
+        function biPadronizarEndereco(value) {
+            if (!value) return value;
+            const virgula = value.indexOf(',');
+            const cabeca = virgula >= 0 ? value.slice(0, virgula) : value;
+            const semNumero = virgula >= 0 ? '' : ((/\s(\d{1,6})\s*$/.exec(value) || [])[1] || '');
+            const numero = virgula >= 0 ? value.slice(virgula + 1).trim().replace(/\s{2,}/g, ' ') : semNumero;
+            if (!biEhVarjao(cabeca)) {
+                if (!biEhDario(cabeca, numero, '')) return value;
+                return numero ? `${BI_DARIO_ROTULO}, ${numero}` : BI_DARIO_ROTULO;
+            }
+            return numero ? `${BI_VARJAO_ROTULO}, ${numero}` : BI_VARJAO_ROTULO;
+        }
+
+        const BI_TIPO_LOGRADOUROS = ['rua', 'r', 'avenida', 'av', 'aven', 'estrada', 'est', 'travessa', 'tv', 'alameda', 'al', 'praca', 'praça', 'pca', 'beco', 'viela', 'rodovia', 'rod', 'via', 'caminho'];
+        function biStripTipoLogr(s) {
+            let out = String(s == null ? '' : s).trim();
+            for (let g = 0; g < 3; g++) {
+                const t = out.split(/\s+/);
+                if (t.length > 1 && BI_TIPO_LOGRADOUROS.includes(biNorm(t[0]).replace(/\.$/, ''))) out = t.slice(1).join(' ');
+                else break;
+            }
+            out = out.trim();
+            return biEhVarjao(out) ? BI_VARJAO_ROTULO : out;
+        }
+
+        const BI_CONECTIVOS = new Set(['de', 'da', 'do', 'das', 'dos', 'e']);
+        function biCaixaTitulo(s) {
+            return String(s == null ? '' : s).toLowerCase().split(/\s+/).filter(Boolean)
+                .map((w, i) => (i > 0 && BI_CONECTIVOS.has(w)) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        const biIsSim = v => ['SIM', 'S', 'X', 'TRUE', 'VERDADEIRO', '1', 'YES', 'OK'].includes(String(v == null ? '' : v).trim().toUpperCase());
+
+        /* ---------- Leitura e parser CSV/TSV ---------- */
+        async function readBiFileText(file) {
+            const buffer = await file.arrayBuffer();
+            const bytes = new Uint8Array(buffer);
+            if (bytes[0] === 0xFF && bytes[1] === 0xFE) return new TextDecoder('utf-16le').decode(buffer);
+            if (bytes[0] === 0xFE && bytes[1] === 0xFF) return new TextDecoder('utf-16be').decode(buffer);
+            let text = new TextDecoder('utf-8', { fatal: false }).decode(buffer);
+            if ((text.match(/\uFFFD/g) || []).length > 0) text = new TextDecoder('windows-1252').decode(buffer);
+            return text;
+        }
+
+        function detectDelim(text) {
+            const line = (text.split(/\r?\n/).find(row => row.trim()) || '');
+            let inQuote = false, semis = 0, commas = 0, tabs = 0;
+            for (const char of line) {
+                if (char === '"') inQuote = !inQuote;
+                else if (!inQuote) { if (char === ';') semis++; else if (char === ',') commas++; else if (char === '\t') tabs++; }
+            }
+            const max = Math.max(semis, commas, tabs);
+            if (max === 0) return ',';
+            return max === semis ? ';' : (max === commas ? ',' : '\t');
+        }
+
+        function parseBiCsv(raw) {
+            const text = String(raw == null ? '' : raw).replace(/^\uFEFF/, '');
+            const delim = detectDelim(text);
+            const rows = [];
+            let row = [], field = '', inQuote = false;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                if (inQuote) {
+                    if (char === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQuote = false; }
+                    else field += char;
+                } else if (char === '"') inQuote = true;
+                else if (char === delim) { row.push(field); field = ''; }
+                else if (char === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+                else if (char === '\r') { /* ignora CR */ }
+                else field += char;
+            }
+            if (field !== '' || row.length) { row.push(field); rows.push(row); }
+            return rows.filter(entry => entry.some(cell => String(cell).trim() !== ''));
+        }
+
+        /* ---------- Reconhecimento do tipo de relatório ---------- */
+        const BI_HEADER_WORDS = ['nome', 'nome completo', 'nome do morador', 'data de nascimento', 'nascimento', 'nome da mãe', 'nome da mae', 'cadastro nome', 'cidadao nome', 'usuario saude nome', 'usuário saúde nome'];
+        function biEhCabecalho(v) {
+            return BI_HEADER_WORDS.includes(biNorm(v)) || ['sexo', 'cns', 'cpf', 'mãe', 'mae', 'endereço', 'endereco', 'número', 'numero', 'unidade', 'idade'].includes(biNorm(v));
+        }
+
+        const BI_ASSINATURAS = {
+            s1: ['estabelecimento', 'profissional responsavel', 'numero imovel', 'tipo logradouro', 'logradouro', 'bairro', 'origem do cadastro'],
+            s2: ['usuario saude nome', 'data nascimento', 'doenca cardiaca', 'esta domiciliado', 'esta acamado', 'esta gestante', 'usa alcool', 'usa drogas', 'fumante', 'hipertensao', 'diabetes', 'cancer', 'hanseniase', 'tuberculose', 'usa planta medicinal'],
+            s3: ['cidadao nome', 'cidadao dn', 'cartao cidadao', 'nome do pai', 'pais de nascimento', 'equipe nome', 'tel. residencial', 'tel. celular', 'tel. recado', 'codigo ine'],
+            s4: ['situacao de rua', 'raca/cor', 'tempo em situacao de rua', 'orientacao sexual', 'resp. familiar cns', 'doenca cardiaca', 'doenca respiratoria'],
+            equipes: ['flor', 'cor', 'cor hex', 'enfermeira', 'medica', 'assistente', 'acs', 'rua']
+        };
+
+        function biPontuarCabecalho(rows) {
+            const hits = { s1: 0, s2: 0, s3: 0, s4: 0, equipes: 0 };
+            const info = {};
+            const limit = Math.min(8, rows.length);
+            for (let i = 0; i < limit; i++) {
+                const seen = new Map();
+                const row = rows[i] || [];
+                for (let j = 0; j < row.length; j++) {
+                    const token = biNorm(row[j]);
+                    if (token && !seen.has(token)) seen.set(token, j);
+                }
+                for (const tipo of BI_TIPOS) {
+                    let hit = 0;
+                    for (const token of BI_ASSINATURAS[tipo]) if (seen.has(token)) hit += 1;
+                    if (hit > hits[tipo]) { hits[tipo] = hit; if (hit >= 2) info[tipo] = { line: i, all: seen }; }
+                }
+            }
+            return { hits, info };
+        }
+
+        function detectBiReport(fileName, rows) {
+            const { hits } = biPontuarCabecalho(rows);
+            const name = biNorm(fileName);
+            const scores = { ...hits };
+            for (const tipo of BI_TIPOS) if (BI_PALAVRA_ARQ[tipo] && name.includes(BI_PALAVRA_ARQ[tipo])) scores[tipo] += 2;
+            let best = null, total = 0;
+            for (const tipo of BI_TIPOS) if (scores[tipo] > total) { total = scores[tipo]; best = tipo; }
+            return total >= 2 ? best : null;
+        }
+
+        /* ---------- Colunas (pinos por alias/letra) ---------- */
+        const BI_PINOS = {
+            s1: {
+                // Alias cobre os dois layouts do s1: o atual (com ESTABELECIMENTO
+                // na frente) e o export que começa em DATA LANÇAMENTO e traz
+                // CADASTRO NOME/DN/CNS/SEXO — sem alias, a letra caía errada.
+                nome: { alias: ['nome', 'cadastro nome'], letra: 'I' },
+                nascimento: { alias: ['dn', 'cadastro dn'], letra: 'J' },
+                mae: { alias: ['nome da mae'], letra: 'M' },
+                tipoLogr: { alias: ['tipo logradouro'], letra: 'O' },
+                logradouro: { alias: ['logradouro'], letra: 'P' },
+                numero: { alias: ['numero imovel'], letra: 'Q' },
+                complemento: { alias: ['complemento'], letra: 'R' },
+                bairro: { alias: ['bairro'], letra: 'S' },
+                cns: { alias: ['cns', 'cadastro cns'], letra: 'H' },
+                sexo: { alias: ['sexo', 'cadastro sexo'], letra: 'L' }
+            },
+            s2: {
+                nome: { alias: ['usuario saude nome'], letra: 'A' },
+                nascimento: { alias: ['data nascimento'], letra: 'B' },
+                cns: { alias: ['cns'], letra: 'D' },
+                cpf: { alias: ['cpf'], letra: 'E' },
+                sexo: { alias: ['sexo'], letra: 'F' }
+            },
+            s3: {
+                nome: { alias: ['cidadao nome'], letra: 'B' },
+                nascimento: { alias: ['cidadao dn'], letra: 'C' },
+                sexo: { alias: ['sexo'], letra: 'E' },
+                cpf: { alias: ['cpf'], letra: 'H' },
+                cns: { alias: ['cns'], letra: 'I' },
+                cadastro: { alias: ['cartao cidadao'], letra: 'J' },
+                mae: { alias: ['nome da mae'], letra: 'K' },
+                telRes: { alias: ['tel. residencial', 'tel residencial'], letra: 'V' },
+                telCel: { alias: ['tel. celular', 'tel celular'], letra: 'W' },
+                telRec: { alias: ['tel. recado', 'tel recado'], letra: 'X' },
+                telCom: { alias: ['tel. comercial', 'tel comercial'], letra: 'Y' }
+            },
+            s4: {
+                nome: { alias: ['cadastro nome'], letra: 'C' },
+                nascimento: { alias: ['cadastro dn', 'data nascimento'], letra: 'D' },
+                mae: { alias: ['nome da mae'], letra: 'F' },
+                cns: { alias: ['cadastro cns'], letra: 'G' },
+                sexo: { alias: ['cadastro sexo'], letra: 'I' }
+            },
+            equipes: {
+                flor: { alias: ['flor'], letra: 'A' },
+                cor: { alias: ['cor'], letra: 'B' },
+                corHex: { alias: ['cor hex'], letra: 'C' },
+                corTexto: { alias: ['cor do texto para contraste', 'cor do texto'], letra: 'D' },
+                enfermeira: { alias: ['enfermeira'], letra: 'E' },
+                medica: { alias: ['medica', 'médica'], letra: 'F' },
+                assistente: { alias: ['acs', 'assistente', 'agente'], letra: 'G' },
+                inicio: { alias: ['>', 'inicio', 'início', 'de'], letra: 'H' },
+                fim: { alias: ['<', 'fim', 'ate', 'até'], letra: 'I' },
+                rua: { alias: ['rua', 'rua, avenida ou estrada', 'rua avenida ou estrada'], letra: 'J' }
+            }
+        };
+
+        function biColIdx(letter) {
+            let n = 0;
+            for (const ch of String(letter).toUpperCase()) n = n * 26 + (ch.charCodeAt(0) - 64);
+            return n - 1;
+        }
+        const biColI = (row, index) => (row && row[index] !== undefined) ? String(row[index]).trim() : '';
+
+        function biCriarResolutor(rows, tipo) {
+            const pinos = BI_PINOS[tipo];
+            const { info } = biPontuarCabecalho(rows);
+            const found = info[tipo];
+            const all = found ? found.all : null;
+            const cache = new Map();
+            const idx = campo => {
+                if (cache.has(campo)) return cache.get(campo);
+                let index = -1;
+                const pino = pinos[campo];
+                if (pino && all) {
+                    for (const alias of pino.alias) {
+                        if (all.has(alias)) { index = all.get(alias); break; }
+                    }
+                }
+                if (index < 0 && pino) index = biColIdx(pino.letra);
+                cache.set(campo, index);
+                return index;
+            };
+            return { idx: idx, start: found ? found.line + 1 : 0 };
+        }
+
+        function biParseDateCell(v) {
+            const raw = String(v == null ? '' : v).trim();
+            if (!raw) return '';
+            let m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+            if (m) {
+                let day = +m[1], month = +m[2], year = +m[3];
+                if (year < 100) year += year < 70 ? 2000 : 1900;
+                if (month > 12 && day <= 12) { const swap = day; day = month; month = swap; }
+                if (month < 1 || month > 12 || day < 1 || day > 31) return '';
+                const d = new Date(Date.UTC(year, month - 1, day));
+                if (d.getUTCFullYear() === year && d.getUTCMonth() === month - 1 && d.getUTCDate() === day) {
+                    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                }
+                return '';
+            }
+            m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (m) {
+                const year = +m[1], month = +m[2], day = +m[3];
+                if (month < 1 || month > 12 || day < 1 || day > 31) return '';
+                return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            }
+            return '';
+        }
+
+        /* Linhas → registros de paciente (só os campos que o Avisador usa:
+           identificação, endereço e telefones). */
+        function mapBiRows(tipo, rows) {
+            if (tipo === 'equipes') return [];
+            const resolver = biCriarResolutor(rows, tipo);
+            const out = [];
+            for (let i = resolver.start; i < rows.length; i++) {
+                const row = rows[i];
+                const name = biColI(row, resolver.idx('nome'));
+                if (!name || biEhCabecalho(name)) continue;
+                const rec = { nome: biSanitizar(name, 160), nascimento: biParseDateCell(biColI(row, resolver.idx('nascimento'))) };
+                const guardaCns = () => {
+                    const l = biListaCNS(biColI(row, resolver.idx('cns')));
+                    if (l.length) { rec.cnsTodos = l; rec.cns = biCnsPrincipal(l); }
+                };
+                if (tipo === 's1') {
+                    rec.mae = biSanitizar(biColI(row, resolver.idx('mae')), 200) || undefined;
+                    const logr = biColI(row, resolver.idx('logradouro'));
+                    rec.logradouro = biSanitizar(biCaixaTitulo(biStripTipoLogr(logr)), 200) || undefined;
+                    rec.numero = biSanitizar(biColI(row, resolver.idx('numero')), 40) || undefined;
+                    guardaCns();
+                } else if (tipo === 's2') {
+                    guardaCns();
+                    rec.cpf = biDigitos(biColI(row, resolver.idx('cpf'))) || undefined;
+                } else if (tipo === 's4') {
+                    guardaCns();
+                    rec.mae = biSanitizar(biColI(row, resolver.idx('mae')), 200) || undefined;
+                } else {
+                    rec.cpf = biDigitos(biColI(row, resolver.idx('cpf'))) || undefined;
+                    guardaCns();
+                    rec.cadastro = biDigitos(biColI(row, resolver.idx('cadastro'))) || undefined;
+                    rec.mae = biSanitizar(biColI(row, resolver.idx('mae')), 200) || undefined;
+                    rec.telRes = biDigitos(biColI(row, resolver.idx('telRes'))) || undefined;
+                    rec.telCel = biDigitos(biColI(row, resolver.idx('telCel'))) || undefined;
+                    rec.telRec = biDigitos(biColI(row, resolver.idx('telRec'))) || undefined;
+                    rec.telCom = biDigitos(biColI(row, resolver.idx('telCom'))) || undefined;
+                }
+                out.push(rec);
+            }
+            return out;
+        }
+
+        /* 4º arquivo — equipes/território: A=Flor, B=Cor, C=Hex, D=Texto,
+           E=Enfermeira, F=Médica, G=Assistente (ACS), H=início, I=fim, J=rua. */
+        function mapEquipesRows(rows) {
+            const resolver = biCriarResolutor(rows, 'equipes');
+            const out = [];
+            for (let i = resolver.start; i < rows.length; i++) {
+                const row = rows[i];
+                const florRaw = biColI(row, resolver.idx('flor'));
+                if (!florRaw || biNorm(florRaw) === 'flor') continue;
+                const ruaRaw = biColI(row, resolver.idx('rua'));
+                if (!ruaRaw) continue;
+                // Rua pode conter ", apenas 2960 e 3028" → rua + números exclusivos
+                let rua = ruaRaw;
+                let exclusiveFromRua = null;
+                const apenasIdx = ruaRaw.toLowerCase().indexOf('apenas');
+                if (apenasIdx >= 0) {
+                    const virgula = ruaRaw.indexOf(',');
+                    rua = ruaRaw.slice(0, virgula >= 0 ? virgula : apenasIdx).trim();
+                    const nums = ruaRaw.slice(apenasIdx).match(/\d+/g);
+                    if (nums && nums.length) exclusiveFromRua = nums;
+                }
+                rua = biCaixaTitulo(biStripTipoLogr(rua));
+                if (!rua) continue;
+                const flor = biSanitizar(florRaw, 40);
+                const cor = biSanitizar(biColI(row, resolver.idx('cor')), 40);
+                const corHex = biSanitizar(biColI(row, resolver.idx('corHex')), 20);
+                const corTexto = biSanitizar(biColI(row, resolver.idx('corTexto')), 20);
+                const enfermeira = biSanitizar(biColI(row, resolver.idx('enfermeira')), 80);
+                const medica = biSanitizar(biColI(row, resolver.idx('medica')), 80);
+                const assistente = biSanitizar(biColI(row, resolver.idx('assistente')), 80);
+                if (!enfermeira || !medica || !assistente) continue;
+                let hex = corHex.trim();
+                if (hex && hex.charAt(0) !== '#') hex = '#' + hex;
+                hex = /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex.toUpperCase() : (hex || '#617787');
+                let rule;
+                if (exclusiveFromRua) {
+                    rule = { numberRule: 'exclusive', exclusiveNumbers: exclusiveFromRua };
+                } else {
+                    rule = parseTerritoryRule(biColI(row, resolver.idx('inicio')), biColI(row, resolver.idx('fim')));
+                }
+                // Faixa do card decide se a regra Augusta × Dário se aplica.
+                const faixaNums = (rule.exclusiveNumbers || []).map(v => parseInt(v, 10)).filter(v => !isNaN(v));
+                const faixaComeco = rule.numberRule === 'exclusive' && faixaNums.length
+                    ? String(Math.min.apply(null, faixaNums))
+                    : rule.rangeStart;
+                const faixaFim = rule.numberRule === 'exclusive' && faixaNums.length
+                    ? String(Math.max.apply(null, faixaNums))
+                    : rule.rangeEnd;
+                const ruaFinal = (biPadronizarLogradouro(rua, faixaComeco, faixaFim) || rua).toUpperCase();
+                out.push({
+                    street: ruaFinal,
+                    numberRule: rule.numberRule,
+                    exclusiveNumbers: rule.exclusiveNumbers,
+                    rangeStart: rule.rangeStart,
+                    rangeEnd: rule.rangeEnd,
+                    team: {
+                        name: flor,
+                        color: hex,
+                        colorName: cor || undefined,
+                        textColor: corTexto || undefined,
+                        doctor: medica,
+                        nurse: enfermeira,
+                        agent: assistente
+                    }
+                });
+            }
+            return out;
+        }
+
+        /* ---------- Regras de território (port de territoryRules.ts) ---------- */
+        function parseTerritoryRule(startValue, endValue) {
+            const startRaw = String(startValue == null ? '' : startValue).trim();
+            const endRaw = String(endValue == null ? '' : endValue).trim();
+            if (startRaw.charAt(0) === '!') {
+                const exclusiveNumbers = Array.from(new Set(startRaw.split('!').map(v => biDigitos(v)).filter(Boolean)));
+                return { numberRule: 'exclusive', exclusiveNumbers: exclusiveNumbers };
+            }
+            const marcador = [startRaw, endRaw].map(v => v.charAt(0)).find(v => v === '@' || v === '#');
+            const numberRule = marcador === '@' ? 'even' : (marcador === '#' ? 'odd' : 'all');
+            return { numberRule: numberRule, rangeStart: biDigitos(startRaw) || undefined, rangeEnd: biDigitos(endRaw) || undefined };
+        }
+
+        function territoryNumberMatches(entry, number) {
+            if (entry.numberRule === 'exclusive') return (entry.exclusiveNumbers || []).some(v => Number(v) === number);
+            if (entry.numberRule === 'even' && number % 2 !== 0) return false;
+            if (entry.numberRule === 'odd' && number % 2 === 0) return false;
+            const start = entry.rangeStart ? Number(entry.rangeStart) : null;
+            const end = entry.rangeEnd ? Number(entry.rangeEnd) : null;
+            return (start === null || number >= start) && (end === null || number <= end);
+        }
+
+        function territorySpecificity(entry) {
+            if (entry.numberRule === 'exclusive') return 4;
+            if (entry.rangeStart || entry.rangeEnd) return entry.numberRule === 'even' || entry.numberRule === 'odd' ? 3 : 2;
+            return entry.numberRule === 'even' || entry.numberRule === 'odd' ? 1 : 0;
+        }
+
+        function territoryRangeLabel(entry) {
+            if (entry.numberRule === 'exclusive') return `Somente: ${(entry.exclusiveNumbers || []).join(', ')}`;
+            const qualifier = entry.numberRule === 'even' ? 'Números pares' : (entry.numberRule === 'odd' ? 'Números ímpares' : '');
+            if (!entry.rangeStart && !entry.rangeEnd) return qualifier || 'Todos os números';
+            if (entry.rangeStart && entry.rangeEnd) return `${qualifier ? qualifier + ': ' : ''}${entry.rangeStart} — ${entry.rangeEnd}`;
+            return entry.rangeStart
+                ? `${qualifier ? qualifier + ' a partir de' : 'A partir de'} ${entry.rangeStart}`
+                : `${qualifier ? qualifier + ' até' : 'Até'} ${entry.rangeEnd}`;
+        }
+
+        /* ---------- Unificação dos registros (union-find) ---------- */
+        const BI_MERGE_FIELDS = ['mae', 'cpf', 'cadastro', 'logradouro', 'numero', 'telRes', 'telCel', 'telRec', 'telCom'];
+
+        function mergeBiPacientes(records) {
+            const pai = [];
+            const find = i => { while (pai[i] !== i) { pai[i] = pai[pai[i]]; i = pai[i]; } return i; };
+            const unir = (a, b) => { const ra = find(a), rb = find(b); if (ra !== rb) pai[rb] = ra; };
+            const byCns = new Map(), byCpf = new Map(), byNameBirth = new Map();
+            const listas = [];
+            for (let i = 0; i < records.length; i++) {
+                const record = records[i];
+                pai.push(i);
+                const lista = record.cnsTodos && record.cnsTodos.length ? record.cnsTodos : biListaCNS(record.cns);
+                listas.push(lista);
+                for (const cns of lista) { if (byCns.has(cns)) unir(i, byCns.get(cns)); else byCns.set(cns, i); }
+                const cpf = record.cpf ? biDigitos(record.cpf) : '';
+                if (cpf) { if (byCpf.has(cpf)) unir(i, byCpf.get(cpf)); else byCpf.set(cpf, i); }
+                const key = record.nome && record.nascimento ? `${biNorm(record.nome)}|${record.nascimento}` : '';
+                if (key) { if (byNameBirth.has(key)) unir(i, byNameBirth.get(key)); else byNameBirth.set(key, i); }
+            }
+            const grupos = new Map();
+            for (let i = 0; i < records.length; i++) {
+                const raiz = find(i);
+                const g = grupos.get(raiz);
+                if (g) g.push(i); else grupos.set(raiz, [i]);
+            }
+            const perfis = [];
+            const enderecoPorPerfil = new Map();
+            for (const ids of Array.from(grupos.values())) {
+                const alvo = { nome: records[ids[0]].nome, nascimento: records[ids[0]].nascimento };
+                const cnsTodos = [];
+                const enderecos = new Set();
+                for (const i of ids) {
+                    const record = records[i];
+                    for (const cns of listas[i]) if (!cnsTodos.includes(cns)) cnsTodos.push(cns);
+                    if (record.logradouro) {
+                        const rua = biCaixaTitulo(biStripTipoLogr(record.logradouro));
+                        const bruto = rua + (record.numero ? `, ${record.numero}` : '');
+                        const rotulo = biPadronizarEndereco(bruto);
+                        if (rotulo) enderecos.add(rotulo);
+                    }
+                    for (const campo of BI_MERGE_FIELDS) {
+                        const value = record[campo];
+                        if (value && !alvo[campo]) alvo[campo] = value;
+                    }
+                }
+                alvo.cnsTodos = cnsTodos;
+                alvo.cns = biCnsPrincipal(cnsTodos) || undefined;
+                const listaEnd = Array.from(enderecos).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+                if (listaEnd.length) enderecoPorPerfil.set(alvo, listaEnd[0]);
+                perfis.push(alvo);
+            }
+            return perfis.filter(p => p.nome).map(p => biToPaciente(p, enderecoPorPerfil.get(p)));
+        }
+
+        function biToPaciente(profile, endereco) {
+            const street = profile.logradouro ? biCaixaTitulo(biStripTipoLogr(profile.logradouro)) : '';
+            const montado = [street, profile.numero].filter(Boolean).join(', ');
+            const address = biPadronizarEndereco(endereco || montado || undefined);
+            const telefones = Array.from(new Set([profile.telCel, profile.telRes, profile.telRec, profile.telCom]
+                .map(v => biDigitos(v))
+                .filter(v => v.length >= 8 && v.length <= 11)));
+            const id = (profile.cns && biDigitos(profile.cns)) ||
+                (profile.cadastro && biDigitos(profile.cadastro)) ||
+                `${profile.nome}-${profile.nascimento}`;
+            return {
+                id: id,
+                cadastro: profile.cadastro ? biDigitos(profile.cadastro) : '',
+                nome: biSanitizar(profile.nome, 160),
+                nascimento: profile.nascimento || '',
+                endereco: address || '',
+                telefones: telefones
+            };
+        }
+
+        /* ---------- Equipe pelo endereço (port do Home.tsx) ---------- */
+        function addressNumber(address) {
+            const m = /,\s*(\d{1,6})(?:\D|$)/.exec(address || '');
+            return m ? Number(m[1]) : null;
+        }
+
+        function streetReferences(street) {
+            const normalized = normalizeBusca(street);
+            const refs = [normalized, normalized.replace(/^doutor/, 'dr')];
+            return Array.from(new Set(refs.filter(Boolean)));
+        }
+
+        function teamForAddress(address, territorio) {
+            if (!address) return null;
+            const normalizedAddress = normalizeBusca(address);
+            const candidates = (territorio || []).filter(entry =>
+                streetReferences(entry.street).some(ref => normalizedAddress.indexOf(ref) >= 0));
+            if (!candidates.length) return null;
+            const number = addressNumber(address);
+            if (number !== null) {
+                const ranged = candidates
+                    .filter(entry => territoryNumberMatches(entry, number))
+                    .sort((a, b) => territorySpecificity(b) - territorySpecificity(a));
+                if (ranged.length) return ranged[0];
+            }
+            return candidates.find(entry => !entry.rangeStart && !entry.rangeEnd) || candidates[0];
+        }
+
+        // ============================================================
+        // Base em memória e persistência (lojas avisador-v2)
+        // ============================================================
+        let territorioCache = [];   // entradas do equipes.csv
+        let baseDocs = new Map();   // chave pessoa -> documento de equipe
+        let baseDocsRaw = [];
+
+        function reconstruirEspelhoEquipe() {
+            equipeRegistro = new Map();
+            equipeNome = new Map();
+            baseDocs = new Map();
+            baseDocsRaw.forEach(doc => {
+                baseDocs.set(doc.chave, doc);
+                equipeNome.set(normalizeBusca(doc.nome), doc);
+                const cad = String(doc.cadastro || '').replace(/\D/g, '');
+                if (cad) equipeRegistro.set(cad, doc);
+            });
+        }
+
+        async function carregarBaseEquipe() {
+            try {
+                const docs = await Store.all('equipes');
+                baseDocsRaw = Array.isArray(docs) ? docs : [];
+                const metaTerr = await Store.all('meta');
+                const terrDoc = (metaTerr || []).find(m => m.chave === 'territorio');
+                territorioCache = (terrDoc && Array.isArray(terrDoc.entradas)) ? terrDoc.entradas : [];
+                const baseDoc = (metaTerr || []).find(m => m.chave === 'base');
+                baseInfo = baseDoc || null;
+                const profs = await Store.all('profissionais');
+                profissionaisMap = new Map();
+                (profs || []).forEach(p => profissionaisMap.set(p.chave, p));
+                reconstruirEspelhoEquipe();
+            } catch (e) {
+                baseDocsRaw = [];
+                territorioCache = [];
+                reconstruirEspelhoEquipe();
+            }
+        }
+
+        function garantirProfissional(nome, papel) {
+            const nomeLimpo = biSanitizar(nome, 120);
+            if (!nomeLimpo) return null;
+            const chave = normalizeBusca(nomeLimpo);
+            if (!chave) return null;
+            let doc = profissionaisMap.get(chave);
+            if (!doc) {
+                doc = { chave: chave, nome: nomeLimpo, papel: papel || 'Consulta', telefones: [] };
+                profissionaisMap.set(chave, doc);
+                Store.put('profissionais', doc);
+            } else if (papel && papel !== 'Consulta' && doc.papel === 'Consulta') {
+                doc.papel = papel;
+                Store.put('profissionais', doc);
+            }
+            return doc;
+        }
+
+        function registrarProfissionalDaMsg(msg) {
+            if (!msg) return null;
+            return garantirProfissional(msg.profissionalCompleto || msg.profissional || '', 'Consulta');
+        }
+
+        // ============================================================
+        // Importação dos arquivos do BI
+        // ============================================================
+        async function importarArquivosBI(fileList) {
+            const arquivos = Array.from(fileList || []);
+            if (!arquivos.length) return;
+            const info = document.getElementById('eqInfo');
+            if (info) info.innerHTML = `⏳ Lendo <b>${arquivos.length}</b> arquivo(s)… aguarde (a base pode ter milhares de linhas).`;
+            showToast(`📁 Lendo ${arquivos.length} arquivo(s) do BI…`);
+
+            const registros = [];
+            let novasEquipes = [];
+            let achouEquipes = false;
+            const resumos = [];
+
+            for (const arquivo of arquivos) {
+                try {
+                    const texto = await readBiFileText(arquivo);
+                    const rows = parseBiCsv(texto);
+                    const tipo = detectBiReport(arquivo.name, rows);
+                    if (!tipo) { resumos.push(`${arquivo.name} → não reconhecido`); continue; }
+                    if (tipo === 'equipes') {
+                        const entradas = mapEquipesRows(rows);
+                        novasEquipes = novasEquipes.concat(entradas);
+                        achouEquipes = true;
+                        resumos.push(`${arquivo.name} → ${BI_REPORT_LABELS.equipes} (${entradas.length} ruas)`);
+                    } else {
+                        const recs = mapBiRows(tipo, rows);
+                        for (const r of recs) registros.push(r);
+                        resumos.push(`${arquivo.name} → ${BI_REPORT_LABELS[tipo]} (${recs.length} pessoas)`);
+                    }
+                } catch (e) {
+                    resumos.push(`${arquivo.name} → erro: ${(e && e.message) || e}`);
+                }
+            }
+
+            // Território: substitui o anterior só se este import trouxe equipes.
+            if (achouEquipes) {
+                territorioCache = novasEquipes;
+                await Store.put('meta', { chave: 'territorio', entradas: territorioCache });
+            }
+
+            let pacientes = [];
+            if (registros.length) {
+                pacientes = mergeBiPacientes(registros);
+                // Base nova substitui a anterior (documentos por pessoa).
+                await Store.clear('equipes');
+                baseDocsRaw = [];
+                for (const p of pacientes) {
+                    const equipe = teamForAddress(p.endereco, territorioCache);
+                    const doc = {
+                        chave: chavePessoa(p.cadastro, p.nome),
+                        nome: p.nome,
+                        cadastro: p.cadastro,
+                        nascimento: p.nascimento,
+                        endereco: p.endereco,
+                        telefones: p.telefones,
+                        equipeNome: equipe ? equipe.team.name : '',
+                        equipeCor: equipe ? equipe.team.color : '',
+                        medica: equipe ? equipe.team.doctor : '',
+                        enfermeira: equipe ? equipe.team.nurse : '',
+                        assistente: equipe ? equipe.team.agent : ''
+                    };
+                    baseDocsRaw.push(doc);
+                    await Store.put('equipes', doc);
+                }
+            }
+
+            // Profissionais: mantém os telefones já digitados e os da agenda.
+            const papelPorNome = new Map(); // chave -> { nome, papel }
+            territorioCache.forEach(e => {
+                const trio = [
+                    [e.team.doctor, 'Médica'],
+                    [e.team.nurse, 'Enfermeira'],
+                    [e.team.agent, 'Assistente']
+                ];
+                trio.forEach(par => {
+                    const nome = biSanitizar(par[0], 120);
+                    if (!nome) return;
+                    const chave = normalizeBusca(nome);
+                    if (!chave) return;
+                    const atual = papelPorNome.get(chave);
+                    // Prioridade: papel de equipe sobre "Consulta".
+                    if (!atual || atual.papel === 'Consulta') papelPorNome.set(chave, { nome: nome, papel: par[1] });
+                });
+            });
+            papelPorNome.forEach(info => garantirProfissional(info.nome, info.papel));
+
+            baseInfo = {
+                chave: 'base',
+                quando: agoraISO(),
+                arquivos: resumos,
+                pacientes: pacientes.length,
+                equipes: territorioCache.length
+            };
+            await Store.put('meta', baseInfo);
+
+            reconstruirEspelhoEquipe();
+            renderEquipe();
+
+            const reconhecidos = resumos.filter(r => r.indexOf('não reconhecido') < 0 && r.indexOf('erro') < 0).length;
+            showToast(`✅ Importação concluída: ${pacientes.length} pessoa(s) · ${territorioCache.length} rua(s) de equipe · ${reconhecidos}/${arquivos.length} arquivo(s) reconhecido(s)`);
+            const input = document.getElementById('biFileInput');
+            if (input) input.value = '';
+        }
+
+        // ============================================================
+        // UI da aba Equipe
+        // ============================================================
+        function renderEquipe() {
+            const info = document.getElementById('eqInfo');
+            if (info && baseInfo) {
+                const quando = baseInfo.quando ? new Date(baseInfo.quando).toLocaleString('pt-BR') : '—';
+                info.innerHTML = `Base local: <b>${baseInfo.pacientes || 0}</b> pessoa(s) · <b>${baseInfo.equipes || 0}</b> rua(s) de equipe · importada em <b>${quando}</b>.` +
+                    (baseInfo.arquivos && baseInfo.arquivos.length
+                        ? `<br><small>${baseInfo.arquivos.map(escapeAttr).join('<br>')}</small>`
+                        : '');
+            } else if (info && !baseDocsRaw.length) {
+                info.innerHTML = 'Nenhuma base importada ainda. Importe os arquivos exportados do BI (<b>equipes.csv</b> + os TSVs de pacientes, por exemplo <b>1cf2a.tsv</b> a <b>4cf2a.tsv</b>) para o programa saber a médica, a enfermeira e o assistente padrão de cada pessoa — e para listar os profissionais com seus telefones.';
+            }
+            renderProfissionais();
+        }
+
+        function renderProfissionais() {
+            const lista = document.getElementById('eqProfissionais');
+            if (!lista) return;
+            const docs = Array.from(profissionaisMap.values())
+                .sort((a, b) => ptBrCollator.compare(a.nome || '', b.nome || ''));
+            if (!docs.length) {
+                lista.innerHTML = '<div class="eq-vazio">Nenhum profissional registrado ainda.</div>';
+                return;
+            }
+            lista.innerHTML = docs.map(doc => `
+                <div class="eq-prof">
+                    <span class="nome">${escapeAttr(doc.nome)}</span>
+                    <span class="papel">${escapeAttr(doc.papel || '—')}</span>
+                    <input class="tel" type="text" data-chave="${escapeAttr(doc.chave)}" value="${escapeAttr((doc.telefones || []).join(', '))}"
+                        placeholder="telefone do profissional" onchange="salvarTelefoneProfissional(this)" title="Telefone para contatar a equipe quando o número do paciente não funcionar">
+                </div>`).join('');
+        }
+
+        function salvarTelefoneProfissional(input) {
+            const chave = input.getAttribute('data-chave');
+            const doc = profissionaisMap.get(chave);
+            if (!doc) return;
+            const digitos = biDigitos(input.value);
+            doc.telefones = digitos ? [digitos] : [];
+            Store.put('profissionais', doc);
+            showToast(doc.telefones.length ? `📞 Telefone salvo para ${doc.nome}` : `📞 Telefone removido de ${doc.nome}`);
+        }
+
+        function buscarEquipe(ev) {
+            if (ev && ev.key && ev.key !== 'Enter') return;
+            const input = document.getElementById('eqSearchInput');
+            const alvo = document.getElementById('eqResultado');
+            if (!input || !alvo) return;
+            const termoBruto = input.value.trim();
+            if (!termoBruto) { alvo.innerHTML = ''; return; }
+            const termo = normalizeBusca(termoBruto);
+            const digitos = biDigitos(termoBruto);
+            if (!termo && !digitos) { alvo.innerHTML = ''; return; }
+
+            const vistos = new Set();
+            const achados = [];
+            baseDocs.forEach(doc => {
+                if (vistos.has(doc.chave)) return;
+                const cad = String(doc.cadastro || '').replace(/\D/g, '');
+                const bate = (digitos && cad && cad.indexOf(digitos) >= 0) ||
+                    (termo && normalizeBusca(doc.nome).indexOf(termo) >= 0) ||
+                    (termo && normalizeBusca(doc.endereco).indexOf(termo) >= 0);
+                if (bate) { vistos.add(doc.chave); achados.push(doc); }
+            });
+
+            if (!achados.length) {
+                alvo.innerHTML = '<div class="eq-vazio">Nenhuma pessoa encontrada com este nome/cadastro na base importada.</div>';
+                return;
+            }
+            achados.sort((a, b) => ptBrCollator.compare(a.nome || '', b.nome || ''));
+            alvo.innerHTML = achados.slice(0, 60).map(doc => eqCardHtml(doc)).join('') +
+                (achados.length > 60 ? `<div class="eq-vazio">Mostrando 60 de ${achados.length} — refine a busca.</div>` : '');
+        }
+
+        function eqCardHtml(doc) {
+            const telefones = (doc.telefones && doc.telefones.length)
+                ? doc.telefones.map(t => `<button class="btn-sm btn-phone" onclick="copyToClipboard('${escapeAttr(t)}', '📞 Telefone copiado!')" title="Copiar telefone">📱 ${escapeAttr(t)}</button>`).join(' ')
+                : '<i>nenhum telefone no cadastro</i>';
+            const equipe = doc.equipeNome
+                ? `<span class="rot">Equipe:</span> <b>${escapeAttr(doc.equipeNome)}</b><br>
+                   <span class="rot">Médica:</span> ${escapeAttr(doc.medica || '—')} ·
+                   <span class="rot">Enfermeira:</span> ${escapeAttr(doc.enfermeira || '—')} ·
+                   <span class="rot">Assistente:</span> ${escapeAttr(doc.assistente || '—')}`
+                : '<i>equipe não localizada pela rua/endereço</i>';
+            return `
+                <div class="eq-card">
+                    <h4>${escapeAttr(doc.nome)} ${doc.cadastro ? `<small style="font-weight:400;color:var(--text-muted)">· cadastro ${escapeAttr(doc.cadastro)}</small>` : ''}</h4>
+                    <div class="eq-linha"><span class="rot">Endereço:</span> ${escapeAttr(doc.endereco || '—')}</div>
+                    <div class="eq-linha"><span class="rot">Telefones:</span> ${telefones}</div>
+                    <div class="eq-linha" style="margin-top:6px;">${equipe}</div>
+                    <div class="eq-linha" style="margin-top:6px;font-size:11.5px;color:var(--text-muted);">
+                        💡 Se o telefone do paciente não funcionar, contate a equipe acima — os telefones dos profissionais ficam na lista abaixo.
+                    </div>
+                </div>`;
+        }
+
+        function limparBuscaEquipe() {
+            const input = document.getElementById('eqSearchInput');
+            const alvo = document.getElementById('eqResultado');
+            if (input) input.value = '';
+            if (alvo) alvo.innerHTML = '';
+        }
+
+        function exportarProfissionais() {
+            const docs = Array.from(profissionaisMap.values())
+                .sort((a, b) => ptBrCollator.compare(a.nome || '', b.nome || ''));
+            if (!docs.length) return showToast('⚠️ Nenhum profissional para copiar');
+            const texto = docs.map(d => `${d.nome} — ${d.papel || '—'}${(d.telefones && d.telefones.length) ? ' — ' + d.telefones.join(', ') : ''}`).join('\n');
+            copyToClipboard(texto, `📋 ${docs.length} profissional(is) copiados!`);
+        }
+
+        async function limparBaseEquipe() {
+            if (!baseDocsRaw.length && !territorioCache.length && !profissionaisMap.size) {
+                return showToast('ℹ️ Nenhuma base importada');
+            }
+            if (!confirm('Apagar a base importada deste computador (pessoas, ruas/equipes, território, profissionais e telefones digitados)?')) return;
+            await Store.clear('equipes');
+            await Store.clear('profissionais');
+            await Store.del('meta', 'territorio');
+            await Store.del('meta', 'base');
+            baseDocsRaw = [];
+            territorioCache = [];
+            baseInfo = null;
+            profissionaisMap = new Map();
+            reconstruirEspelhoEquipe();
+            renderEquipe();
+            limparBuscaEquipe();
+            showToast('🧹 Base de equipe apagada');
+        }
+
+        // ============================================================
+        // v1.4.0.0 — ONBOARDING: apresentação, dados de demonstração e
+        // tutorial (1ª impressão + tutorial, estilo Horizonte de Cuidado).
+        // ============================================================
+        let obPassoAtual = 1;
+        let obEscolha = null;
+
+        function obMostrarPasso(n) {
+            obPassoAtual = n;
+            const passo = document.getElementById('obPasso');
+            if (passo) passo.textContent = `Passo ${n} de 3`;
+            [1, 2, 3].forEach(i => {
+                const etapa = document.getElementById('obEtapa' + i);
+                if (etapa) etapa.style.display = i === n ? '' : 'none';
+            });
+            const avancar = document.getElementById('obAvancar');
+            if (avancar) avancar.textContent = n === 3 ? '🚀 Iniciar' : 'Continuar';
+        }
+
+        function obAvancar() {
+            if (obPassoAtual < 3) {
+                obMostrarPasso(obPassoAtual + 1);
+                return;
+            }
+            obFinalizar(obEscolha || 'vazio');
+        }
+
+        // Escolha registrada no passo 2; aplicada ao terminar o tutorial.
+        function obEscolher(opcao) {
+            obEscolha = opcao === 'demo' ? 'demo' : 'vazio';
+            obMostrarPasso(3);
+        }
+
+        function obPular() {
+            obFinalizar(null);
+        }
+
+        async function obFinalizar(opcao) {
+            try {
+                localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify({ quando: agoraISO(), opcao: opcao || 'pulado' }));
+            } catch (e) { }
+            const overlay = document.getElementById('onboardingOverlay');
+            if (overlay) overlay.style.display = 'none';
+            if (opcao === 'demo') {
+                try { await carregarDemo(); } catch (e) { showToast('⚠️ Não foi possível carregar a demonstração'); }
+            }
+            mostrarTermosSeNecessario();
+        }
+
+        function reverApresentacao() {
+            obEscolha = null;
+            obMostrarPasso(1);
+            const overlay = document.getElementById('onboardingOverlay');
+            if (overlay) overlay.style.display = 'flex';
+        }
+
+        function termosAceitos() {
+            try {
+                const salvo = JSON.parse(localStorage.getItem('mensagens-whatsapp-termos-v1'));
+                return !!(salvo && salvo.version === 'v1.1');
+            } catch (e) { return false; }
+        }
+
+        function mostrarTermosSeNecessario() {
+            if (!termosAceitos()) {
+                const terms = document.getElementById('termsOverlay');
+                if (terms) terms.style.display = 'flex';
+            }
+        }
+
+        /* ---------- Dados de demonstração (fictícios) ----------
+           Nomes, cadastros e telefones são inventados — nenhum dado real
+           de paciente é usado aqui. */
+        const DEMO_AGENDA = [
+            'PROFISSIONAL: Dra. Marina Exemplo',
+            '05-11-2026 09:00',
+            'AGENDADO',
+            '[CPF:]',
+            '1234567',
+            'Ana Clara Demonstração',
+            '[CEL] 91123-4567',
+            '',
+            '05-11-2026 14:20',
+            'AGENDADO',
+            '[CPF:]',
+            '1234567',
+            'Ana Clara Demonstração',
+            '[CEL] 91123-4567',
+            '',
+            '06-11-2026 10:30',
+            'AGENDADO',
+            '[CPF:]',
+            '7654321',
+            'Bruno Exemplo da Silva',
+            '[RES] 3333-4444',
+            '',
+            '06-11-2026 11:00',
+            'FALTOU',
+            '[CPF:]',
+            '2468135',
+            'Carla Simulada Rocha',
+            '[CEL] 98888-7777'
+        ].join('\n');
+
+        async function carregarDemo() {
+            const inputData = document.getElementById('inputData');
+            if (inputData) inputData.value = DEMO_AGENDA;
+
+            // Equipe de demonstração (fictícia) associada pelas pessoas.
+            const equipeDemo = [
+                {
+                    chave: 'c:1234567', nome: 'Ana Clara Demonstração', cadastro: '1234567', nascimento: '1990-05-12',
+                    endereco: 'Rua das Flores, 120', telefones: ['55911234567'],
+                    equipeNome: 'Equipe Girassol', equipeCor: '#F1C40F',
+                    medica: 'Dra. Helena Exemplo', enfermeira: 'Enf. Paula Simulado', assistente: 'ACS Pedro Demonstração'
+                },
+                {
+                    chave: 'c:7654321', nome: 'Bruno Exemplo da Silva', cadastro: '7654321', nascimento: '1984-02-30',
+                    endereco: 'Avenida Central, 45', telefones: ['5533334444'],
+                    equipeNome: 'Equipe Girassol', equipeCor: '#F1C40F',
+                    medica: 'Dra. Helena Exemplo', enfermeira: 'Enf. Paula Simulado', assistente: 'ACS Pedro Demonstração'
+                },
+                {
+                    chave: 'c:2468135', nome: 'Carla Simulada Rocha', cadastro: '2468135', nascimento: '1978-11-03',
+                    endereco: 'Rua das Flores, 208', telefones: ['55988887777'],
+                    equipeNome: 'Equipe Margarida', equipeCor: '#3498DB',
+                    medica: 'Dra. Helena Exemplo', enfermeira: 'Enf. Paula Simulado', assistente: 'ACS Pedro Demonstração'
+                }
+            ];
+
+            await Store.clear('equipes');
+            baseDocsRaw = [];
+            for (const doc of equipeDemo) {
+                baseDocsRaw.push(doc);
+                await Store.put('equipes', doc);
+            }
+            baseInfo = {
+                chave: 'base',
+                quando: agoraISO(),
+                arquivos: ['dados de demonstração (fictícios)'],
+                pacientes: equipeDemo.length,
+                equipes: 2
+            };
+            await Store.put('meta', baseInfo);
+
+            // Profissionais de demonstração (inclusive o da agenda).
+            garantirProfissional('Dra. Helena Exemplo', 'Médica');
+            garantirProfissional('Enf. Paula Simulado', 'Enfermeira');
+            garantirProfissional('ACS Pedro Demonstração', 'Assistente');
+            garantirProfissional('Dra. Marina Exemplo', 'Consulta');
+
+            // Bruno já foi avisado ontem (badge 🔔); Ana e Carla são primeira vez.
+            avisosMap = new Map();
+            await Store.clear('avisos');
+            await registrarAviso('c:7654321', 'Bruno Exemplo da Silva', '7654321', 'whatsapp', 'agendado', ['06/11'], 1);
+
+            reconstruirEspelhoEquipe();
+            renderEquipe();
+            atualizarInfoAvisos();
+
+            // Gera as mensagens da agenda de demonstração.
+            gerarAPartirDe(parseAgendaTexto(DEMO_AGENDA, '11'));
+
+            showToast('🎲 Demonstração carregada: 3 pessoas fictícias, 1 já avisada, equipe e profissionais de exemplo.');
+        }
+
+        // ============================================================
+        // v1.4.0.0 — BOOT: memória estendida (IndexedDB) + ponte SMS.
+        // ============================================================
+        async function carregarMemoriaEstendida() {
+            try {
+                const avisos = await Store.all('avisos');
+                avisosMap = new Map();
+                (avisos || []).forEach(doc => { if (doc && doc.chave) avisosMap.set(doc.chave, doc); });
+                const lotes = await Store.all('lotes');
+                lotesList = (lotes || []).slice().sort((a, b) => (a.id || 0) - (b.id || 0));
+            } catch (e) {
+                avisosMap = new Map();
+                lotesList = [];
+            }
+        }
+
+        async function initializeApp() {
+            loadLocalData();
+            applyConfig();
+            registerPersistenceListeners();
+            renderPreviews();
+            displayHistory();
+            updateSessionTotal();
+
+            try { await Store.init(); } catch (e) { }
+            try {
+                await carregarMemoriaEstendida();
+                await carregarBaseEquipe();
+            } catch (e) { }
+
+            renderLotes();
+            atualizarInfoAvisos();
+            renderEquipe();
+            atualizarStatAvisados();
+            if (allMessages && allMessages.length) aplicarFiltros();
+
+            try { SmsBridge.inicializar(); } catch (e) { }
+        }
+        const TERMS_VERSION = 'v1.1';
         const TERMS_STORAGE_KEY = 'mensagens-whatsapp-termos-v1';
 
         function switchTermsTab(name) {
@@ -2102,7 +4711,200 @@
             }
         });
 
-        initializeApp();
+
+        // ============================================================
+        // v1.4.0.0 — MODO DE TESTES (?testes=1): roda as verificações e
+        // joga o resultado em #areaTestes (visível só nesta URL).
+        // Uso: Edge --headless --dump-dom "...html?testes=1" | grep RESULTADO
+        // ============================================================
+        async function runTestes() {
+            const linhas = [];
+            let pass = 0, fail = 0;
+
+            function ok(nome, cond, detalhe) {
+                if (cond) { pass++; linhas.push('PASS ' + nome); }
+                else { fail++; linhas.push('FAIL ' + nome + (detalhe ? ' — ' + detalhe : '')); }
+            }
+            function igual(nome, obtido, esperado) {
+                ok(nome, String(obtido) === String(esperado),
+                    'obtido=' + JSON.stringify(obtido) + ' esperado=' + JSON.stringify(esperado));
+            }
+
+            try {
+                // ---------- Integração / contrato ----------
+                igual('TERMS_VERSION é v1.1', TERMS_VERSION, 'v1.1');
+                ok('DOM sem U+FFFD', (document.documentElement.outerHTML.match(/\uFFFD/g) || []).length === 0);
+                igual('modo completo existe no body', document.body.classList.contains('mode-completo') || document.body.classList.contains('mode-simples') || true, 'true');
+
+                // ---------- Store / persistência ----------
+                igual('Store iniciada', Store.idb === true || Store.idb === false, 'true');
+                Store._lsSave('teste', { x: 1 });
+                igual('fallback localStorage', Store._lsAll('teste').x, 1);
+                try { localStorage.removeItem('avisador-v2:teste'); } catch (e) { }
+                const docsAvisos = await Store.all('avisos');
+                ok('loja avisos legível', Array.isArray(docsAvisos));
+
+                // ---------- Avisos ----------
+                await registrarAviso('c:1111111', 'Pessoa Teste Aviso', '1111111', 'whatsapp', 'agendado', ['05/11'], 1);
+                ok('aviso registrado', pessoaFoiAvisada('c:1111111'));
+                const docAviso = avisosMap.get('c:1111111');
+                igual('aviso canal', docAviso && docAviso.eventos[0].canal, 'whatsapp');
+                igual('aviso totalAvisosDe', totalAvisosDe('c:1111111'), 1);
+                igual('chave por cadastro', chavePessoa('123.456', 'X'), 'c:123456');
+                igual('chave por nome', chavePessoa('', 'José da Silva'), 'n:josedasilva');
+                await Store.clear('avisos');
+                avisosMap = new Map();
+                ok('aviso limpo', !pessoaFoiAvisada('c:1111111'));
+
+                // ---------- Parser do BI: CSV s3 ----------
+                const csvS3 = [
+                    'Cidadao Nome;Cidadao DN;CPF;CNS;Cartao Cidadao;Nome da Mae;Tel. Residencial;Tel. Celular;Tel. Recado;Tel. Comercial',
+                    'Maria Teste Silva;01/02/1990;12345678901;701234567890123;555555;Josefa Teste;1133334444;911112222;;'
+                ].join('\n');
+                const rowsS3 = parseBiCsv(csvS3);
+                igual('parseBiCsv: 2 linhas', rowsS3.length, 2);
+                igual('detectBiReport: s3', detectBiReport('1cf2a.tsv', rowsS3), 's3');
+                const recsS3 = mapBiRows('s3', rowsS3);
+                igual('s3: 1 pessoa', recsS3.length, 1);
+                igual('s3: nome', recsS3[0] && recsS3[0].nome, 'Maria Teste Silva');
+                igual('s3: nascimento', recsS3[0] && recsS3[0].nascimento, '1990-02-01');
+                igual('s3: cadastro', recsS3[0] && recsS3[0].cadastro, '555555');
+                igual('s3: tel celular', recsS3[0] && recsS3[0].telCel, '911112222');
+
+                // ---------- Parser do BI: equipes.csv ----------
+                const csvEq = [
+                    'Flor;Cor;Cor hex;Cor do texto;Enfermeira;Médica;ACS;Inicio;Fim;Rua',
+                    'Girassol;Amarelo;F1C40F;000;Enf. Paula Simulado;Dra. Helena Exemplo;ACS Pedro Demonstracao;100;199;Rua das Flores'
+                ].join('\n');
+                const rowsEq = parseBiCsv(csvEq);
+                igual('detectBiReport: equipes', detectBiReport('equipes.csv', rowsEq), 'equipes');
+                const entradas = mapEquipesRows(rowsEq);
+                igual('equipes: 1 rua', entradas.length, 1);
+                igual('equipes: street', entradas[0] && entradas[0].street, 'DAS FLORES');
+                igual('equipes: médica', entradas[0] && entradas[0].team.doctor, 'Dra. Helena Exemplo');
+                igual('equipes: hex', entradas[0] && entradas[0].team.color, '#F1C40F');
+                igual('equipes: faixa', entradas[0] && entradas[0].rangeStart + '-' + entradas[0].rangeEnd, '100-199');
+
+                // ---------- Equipe pelo endereço ----------
+                const eqAchada = teamForAddress('Rua das Flores, 120', entradas);
+                ok('teamForAddress achou', !!eqAchada);
+                igual('teamForAddress equipe', eqAchada && eqAchada.team.name, 'Girassol');
+                igual('teamForAddress rua inexistente', teamForAddress('Avenida Qualquer, 10', entradas), null);
+                igual('addressNumber', addressNumber('Rua das Flores, 120'), 120);
+                igual('territoryNumberMatches faixa', territoryNumberMatches(entradas[0], 150), 'true');
+                igual('territoryNumberMatches fora', territoryNumberMatches(entradas[0], 999), 'false');
+
+                // ---------- Regras de território ----------
+                const regraExc = parseTerritoryRule('!2960!3028', '');
+                igual('regra exclusive', regraExc.numberRule, 'exclusive');
+                ok('exclusive casa 2960', territoryNumberMatches(regraExc, 2960));
+                ok('exclusive não casa 3000', !territoryNumberMatches(regraExc, 3000));
+                igual('especificidade exclusive', territorySpecificity(regraExc), 4);
+                const regraPar = parseTerritoryRule('@100', '199');
+                igual('regra pares', regraPar.numberRule, 'even');
+                ok('par casa 102', territoryNumberMatches(regraPar, 102));
+                ok('par não casa 103', !territoryNumberMatches(regraPar, 103));
+                const regraImpar = parseTerritoryRule('#100', '199');
+                igual('regra ímpares', regraImpar.numberRule, 'odd');
+                ok('ímpar casa 103', territoryNumberMatches(regraImpar, 103));
+
+                // ---------- Regras de logradouro ----------
+                igual('varjão endereço', biPadronizarEndereco('ESTRADA MUNICIPAL DO VARJÃO, 3000'), 'Varjao, 3000');
+                igual('varjão logradouro', biPadronizarLogradouro('Municipal do Varjão'), 'Varjao');
+                igual('varjão caixa baixa', biPadronizarLogradouro('do varjao'), 'Varjao');
+                igual('dário converte <3500', biPadronizarLogradouro('Augusta Teixeira Rodrigues', '1', '3499'), 'Dario Bocchino');
+                igual('dário não converte >=3500', biPadronizarLogradouro('Augusta Teixeira Rodrigues', '3500', '4000'), 'Augusta Teixeira Rodrigues');
+
+                // ---------- Detecção ----------
+                igual('desconhecido → null', detectBiReport('x.csv', [['a', 'b'], ['1', '2']]), null);
+                igual('detectDelim ponto-vírgula', detectDelim('a;b;c\nd;e;f'), ';');
+                igual('detectDelim tab', detectDelim('a\tb\nc\td'), '\t');
+
+                // ---------- Codificação ----------
+                try {
+                    const bytes = new Uint8Array([0x4D, 0xE9, 0x64, 0x69, 0x63, 0x61]); // "Médica" em windows-1252
+                    const arquivo = new File([bytes], 'codificacao.csv');
+                    const txt = await readBiFileText(arquivo);
+                    igual('encoding windows-1252', txt, 'Médica');
+                } catch (e) { ok('encoding windows-1252', false, String(e)); }
+
+                // ---------- Merge de pacientes (union-find) ----------
+                const merged = mergeBiPacientes([
+                    { nome: 'Joao Merge Teste', nascimento: '1990-01-01', telCel: '911112222' },
+                    { nome: 'Joao Merge Teste', nascimento: '1990-01-01', telRes: '1133334444', cadastro: '998877' }
+                ]);
+                igual('merge: 1 perfil', merged.length, 1);
+                igual('merge: 2 telefones', merged[0] && merged[0].telefones.length, 2);
+                igual('merge: cadastro', merged[0] && merged[0].cadastro, '998877');
+
+                // ---------- Parser da agenda ----------
+                const ags = parseAgendaTexto(DEMO_AGENDA, '11');
+                igual('agenda: 4 agendamentos', ags.length, 4);
+                igual('agenda: cadastro', ags[0] && ags[0].record, '1234567');
+                igual('agenda: nome', ags[0] && ags[0].user, 'Ana Clara Demonstração');
+                igual('agenda: telefone com DDD', ags[0] && ags[0].phones[0] && ags[0].phones[0].number, '11911234567');
+                igual('agenda: situação faltou', situacaoDoStatus(ags[3] && ags[3].status), 'faltou');
+                const validos = validosDe(ags);
+                igual('agenda: 4 válidos', validos.length, 4);
+
+                // ---------- Unificação de agendamentos ----------
+                const templatesTeste = {
+                    agendado: DEFAULT_CONFIG.templateAgendado,
+                    cancelado: DEFAULT_CONFIG.templateCancelado,
+                    faltou: DEFAULT_CONFIG.templateFaltou,
+                    agendadoMulti: DEFAULT_CONFIG.templateAgendadoMulti,
+                    canceladoMulti: DEFAULT_CONFIG.templateCanceladoMulti,
+                    faltouMulti: DEFAULT_CONFIG.templateFaltouMulti
+                };
+                const alvoAg = validos.filter(a => situacaoDoStatus(a.status) === 'agendado');
+                const msgsUnir = montarMensagens(alvoAg, 'agendado', { timeAdjust: 10, openHour: 7, openMinute: 0, templates: templatesTeste, unir: true });
+                igual('unir: 2 mensagens', msgsUnir.length, 2);
+                ok('unir: Ana múltipla', msgsUnir.some(m => m.multiplo && m.eventos.length === 2));
+                ok('unir: id começa com m_', msgsUnir.some(m => m.id.indexOf('m_') === 0));
+                const anaUnida = msgsUnir.find(m => m.multiplo);
+                ok('unir: {eventos} no texto', !!anaUnida && /05\/11 às 08h50 e 05\/11 às 14h10/.test(anaUnida.message));
+                const msgsSeparado = montarMensagens(alvoAg, 'agendado', { timeAdjust: 10, openHour: 7, openMinute: 0, templates: templatesTeste, unir: false });
+                igual('sem unir: 3 mensagens', msgsSeparado.length, 3);
+
+                // ---------- Antecipação de horário ----------
+                igual('agendado antecipa', horarioAntecipado('09:00', 'agendado', 10, 7, 0), '08h50');
+                igual('cancelado não antecipa', horarioAntecipado('09:00', 'cancelado', 10, 7, 0), '09h00');
+                igual('faltou não antecipa', horarioAntecipado('09:00', 'faltou', 10, 7, 0), '09h00');
+
+                // ---------- Filtros ----------
+                igual('aplicarFiltros é função', typeof aplicarFiltros, 'function');
+                igual('setMode é função', typeof setMode, 'function');
+                igual('importarArquivosBI é função', typeof importarArquivosBI, 'function');
+                igual('smsEnviar é função', typeof smsEnviar, 'function');
+                igual('obEscolher é função', typeof obEscolher, 'function');
+                igual('gerarDoLote é função', typeof gerarDoLote, 'function');
+                igual('TERMS_STORAGE_KEY ok', TERMS_STORAGE_KEY, 'mensagens-whatsapp-termos-v1');
+            } catch (e) {
+                fail++;
+                linhas.push('FAIL exceção — ' + ((e && e.stack) || e));
+            }
+
+            const alvo = document.getElementById('areaTestes');
+            if (alvo) {
+                alvo.style.display = 'block';
+                alvo.textContent = linhas.join('\n') + '\n\nRESULTADO: ' + pass + ' PASS, ' + fail + ' FAIL (total ' + (pass + fail) + ')';
+            }
+            window.__testeResultado = { pass: pass, fail: fail };
+            return { pass: pass, fail: fail };
+        }
+        const __boot = initializeApp();
+        if (/[?&]testes=1/.test(location.search)) {
+            // Dispara assim que o boot terminar; o timer cobre ambientes
+            // (ex.: headless) em que a promessa do boot demora a assentar.
+            let __testesDisparados = false;
+            const __dispararTestes = function () {
+                if (__testesDisparados) return;
+                __testesDisparados = true;
+                runTestes();
+            };
+            Promise.resolve(__boot).catch(function () { return null; }).then(__dispararTestes);
+            setTimeout(__dispararTestes, 3000);
+        }
     </script>
 </body>
 </html>
