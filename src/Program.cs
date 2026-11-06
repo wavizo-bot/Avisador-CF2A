@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -99,12 +102,23 @@ namespace wavizo.AvisadorCF2A
         private const string HtmlFileName = "FullAutoMensagensWhatsapp_v7.html";
         private const string WebView2RuntimeUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
 
+        // Ponte local usada pela extensão PEC (Chrome/Edge) para entregar a
+        // agenda sem passar pela área de transferência. Fica só em loopback.
+        private const int PecPort = 47831;
+        private const int PecLimiteBytes = 4 * 1024 * 1024;
+
         private static readonly Color BrandColor = Color.FromArgb(0x2A, 0x52, 0x98);
 
         private readonly WebView2 webView;
         private CoreWebView2Environment webViewEnvironment;
         private bool shuttingDown;
         private readonly string packageVersion;
+
+        private TcpListener pecListener;
+        private Thread pecThread;
+        private volatile bool pecRunning;
+        private bool paginaPronta;
+        private string pendentePec;
 
         public MainForm()
         {
@@ -185,6 +199,7 @@ namespace wavizo.AvisadorCF2A
             core.ProcessFailed += OnProcessFailed;
             core.WebMessageReceived += OnWebMessageReceived;
 
+            IniciarPontePec();
             core.Navigate("https://" + VirtualHostName + "/" + HtmlFileName);
         }
 
@@ -285,6 +300,332 @@ namespace wavizo.AvisadorCF2A
             {
                 ProcessarComandoPonte(message);
             }
+        }
+
+        // ============================================================
+        // v1.4.2 — PONTE LOCAL DA EXTENSÃO PEC
+        // A extensão do Chrome/Edge faz POST http://127.0.0.1:47831/pec/import
+        // com o texto da agenda. O host injeta o texto no campo #inputData e
+        // dispara a geração das mensagens, sem copiar/colar.
+        // ============================================================
+        private void IniciarPontePec()
+        {
+            if (pecListener != null)
+            {
+                return;
+            }
+
+            try
+            {
+                pecListener = new TcpListener(IPAddress.Loopback, PecPort);
+                pecListener.Start();
+                pecRunning = true;
+                pecThread = new Thread(LoopPontePec);
+                pecThread.IsBackground = true;
+                pecThread.Name = "PontePEC";
+                pecThread.Start();
+            }
+            catch (Exception)
+            {
+                pecListener = null;
+                pecRunning = false;
+            }
+        }
+
+        private void LoopPontePec()
+        {
+            while (pecRunning)
+            {
+                TcpClient cliente = null;
+                try
+                {
+                    cliente = pecListener.AcceptTcpClient();
+                    cliente.ReceiveTimeout = 5000;
+                    using (NetworkStream fluxo = cliente.GetStream())
+                    {
+                        AtenderPontePec(fluxo);
+                    }
+                }
+                catch (Exception)
+                {
+                    // Porta fechada no encerramento ou requisição incompleta:
+                    // o próximo laço recomeça.
+                }
+                finally
+                {
+                    if (cliente != null)
+                    {
+                        try { cliente.Close(); } catch (Exception) { }
+                    }
+                }
+            }
+        }
+
+        private void AtenderPontePec(NetworkStream fluxo)
+        {
+            byte[] buffer = new byte[8192];
+            MemoryStream recebido = new MemoryStream();
+            int fimCabecalho = -1;
+
+            while (fimCabecalho < 0 && recebido.Length < 65536)
+            {
+                int lido = fluxo.Read(buffer, 0, buffer.Length);
+                if (lido <= 0)
+                {
+                    return;
+                }
+                recebido.Write(buffer, 0, lido);
+                fimCabecalho = EncontrarFimCabecalho(recebido.GetBuffer(), (int)recebido.Length);
+            }
+
+            if (fimCabecalho < 0)
+            {
+                ResponderPonte(fluxo, 400, "{\"ok\":false,\"erro\":\"cabecalho invalido\"}");
+                return;
+            }
+
+            byte[] dados = recebido.ToArray();
+            string cabecalho = Encoding.ASCII.GetString(dados, 0, fimCabecalho);
+            string[] linhas = cabecalho.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+
+            string metodo = "GET";
+            string caminho = "/";
+            if (linhas.Length > 0)
+            {
+                string[] partes = linhas[0].Split(' ');
+                if (partes.Length > 0)
+                {
+                    metodo = partes[0].ToUpperInvariant();
+                }
+                if (partes.Length > 1)
+                {
+                    caminho = partes[1];
+                }
+            }
+
+            Dictionary<string, string> headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 1; i < linhas.Length; i++)
+            {
+                int separador = linhas[i].IndexOf(':');
+                if (separador > 0)
+                {
+                    string nome = linhas[i].Substring(0, separador).Trim();
+                    string valor = linhas[i].Substring(separador + 1).Trim();
+                    headers[nome] = valor;
+                }
+            }
+
+            string origem = headers.ContainsKey("Origin") ? headers["Origin"] : null;
+            if (!OrigemPecPermitida(origem))
+            {
+                ResponderPonte(fluxo, 403, "{\"ok\":false,\"erro\":\"origem nao autorizada\"}");
+                return;
+            }
+
+            if (string.Equals(metodo, "OPTIONS", StringComparison.Ordinal))
+            {
+                ResponderPonte(fluxo, 204, string.Empty);
+                return;
+            }
+
+            if (string.Equals(metodo, "GET", StringComparison.Ordinal) &&
+                caminho.StartsWith("/pec/ping", StringComparison.OrdinalIgnoreCase))
+            {
+                ResponderPonte(fluxo, 200, "{\"ok\":true,\"app\":\"Avisador CF2A\",\"porta\":" + PecPort + "}");
+                return;
+            }
+
+            if (!string.Equals(metodo, "POST", StringComparison.Ordinal) ||
+                !caminho.StartsWith("/pec/import", StringComparison.OrdinalIgnoreCase))
+            {
+                ResponderPonte(fluxo, 404, "{\"ok\":false,\"erro\":\"rota desconhecida\"}");
+                return;
+            }
+
+            int tamanhoCorpo = 0;
+            if (headers.ContainsKey("Content-Length"))
+            {
+                int.TryParse(headers["Content-Length"], out tamanhoCorpo);
+            }
+
+            if (tamanhoCorpo <= 0 || tamanhoCorpo > PecLimiteBytes)
+            {
+                ResponderPonte(fluxo, 413, "{\"ok\":false,\"erro\":\"tamanho invalido\"}");
+                return;
+            }
+
+            int inicioCorpo = fimCabecalho + 4;
+            int jaRecebido = dados.Length - inicioCorpo;
+            if (jaRecebido > tamanhoCorpo)
+            {
+                jaRecebido = tamanhoCorpo;
+            }
+            if (jaRecebido < 0)
+            {
+                jaRecebido = 0;
+            }
+
+            MemoryStream corpo = new MemoryStream(tamanhoCorpo);
+            corpo.Write(dados, inicioCorpo, jaRecebido);
+            while (corpo.Length < tamanhoCorpo)
+            {
+                int restante = tamanhoCorpo - (int)corpo.Length;
+                int lido = fluxo.Read(buffer, 0, Math.Min(buffer.Length, restante));
+                if (lido <= 0)
+                {
+                    break;
+                }
+                corpo.Write(buffer, 0, lido);
+            }
+
+            string texto = Encoding.UTF8.GetString(corpo.ToArray());
+            if (string.IsNullOrWhiteSpace(texto))
+            {
+                ResponderPonte(fluxo, 400, "{\"ok\":false,\"erro\":\"texto vazio\"}");
+                return;
+            }
+
+            bool entregue = EnfileirarAgendaPec(texto);
+            ResponderPonte(
+                fluxo,
+                200,
+                "{\"ok\":" + (entregue ? "true" : "false") +
+                ",\"recebidos\":" + texto.Length + "}");
+        }
+
+        private static bool OrigemPecPermitida(string origem)
+        {
+            // A extensão do Chrome/Edge chega como chrome-extension://<id>.
+            // Sites comuns chegam como http(s):// e são recusados, o que
+            // impede um site malicioso de postar na porta local.
+            if (string.IsNullOrEmpty(origem))
+            {
+                return true;
+            }
+            return origem.StartsWith("chrome-extension://", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool EnfileirarAgendaPec(string texto)
+        {
+            if (shuttingDown)
+            {
+                return false;
+            }
+
+            try
+            {
+                BeginInvoke(new Action<string>(ReceberAgendaPec), texto);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private void ReceberAgendaPec(string texto)
+        {
+            if (shuttingDown)
+            {
+                return;
+            }
+
+            if (!paginaPronta || webView == null || webView.CoreWebView2 == null)
+            {
+                pendentePec = texto;
+                return;
+            }
+
+            AplicarAgendaPec(texto);
+        }
+
+        private void AplicarAgendaPec(string texto)
+        {
+            try
+            {
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    WindowState = FormWindowState.Normal;
+                }
+                Show();
+                Activate();
+                BringToFront();
+
+                // O texto entra no mesmo campo que o usuário usaria para colar
+                // e a geração roda como se ele tivesse clicado em "Gerar".
+                string script =
+                    "(function(){try{" +
+                    "var t=\"" + EscapearJson(texto) + "\";" +
+                    "var el=document.getElementById('inputData');" +
+                    "if(!el)return 'sem-campo';" +
+                    "el.value=t;" +
+                    "el.dispatchEvent(new Event('input',{bubbles:true}));" +
+                    "if(typeof generateMessages==='function')generateMessages();" +
+                    "if(typeof switchTab==='function')switchTab('messages');" +
+                    "if(typeof showToast==='function')showToast('📥 Agenda recebida da extensão PEC — mensagens geradas.');" +
+                    "return 'ok';" +
+                    "}catch(e){return 'erro:'+e.message;}})()";
+                webView.CoreWebView2.ExecuteScriptAsync(script);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void AplicarAgendaPendente()
+        {
+            if (string.IsNullOrEmpty(pendentePec))
+            {
+                return;
+            }
+
+            string texto = pendentePec;
+            pendentePec = null;
+            AplicarAgendaPec(texto);
+        }
+
+        private static int EncontrarFimCabecalho(byte[] dados, int tamanho)
+        {
+            for (int i = 0; i <= tamanho - 4; i++)
+            {
+                if (dados[i] == 13 && dados[i + 1] == 10 &&
+                    dados[i + 2] == 13 && dados[i + 3] == 10)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private static void ResponderPonte(NetworkStream fluxo, int status, string corpo)
+        {
+            byte[] conteudo = Encoding.UTF8.GetBytes(corpo ?? string.Empty);
+            string motivo = "OK";
+            if (status == 204) motivo = "No Content";
+            else if (status == 400) motivo = "Bad Request";
+            else if (status == 403) motivo = "Forbidden";
+            else if (status == 404) motivo = "Not Found";
+            else if (status == 413) motivo = "Payload Too Large";
+
+            StringBuilder cabecalho = new StringBuilder();
+            cabecalho.Append("HTTP/1.1 ").Append(status).Append(' ').Append(motivo).Append("\r\n");
+            cabecalho.Append("Content-Type: application/json; charset=utf-8\r\n");
+            cabecalho.Append("Access-Control-Allow-Origin: *\r\n");
+            cabecalho.Append("Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n");
+            cabecalho.Append("Access-Control-Allow-Headers: Content-Type\r\n");
+            cabecalho.Append("Access-Control-Allow-Private-Network: true\r\n");
+            cabecalho.Append("Access-Control-Max-Age: 86400\r\n");
+            cabecalho.Append("Cache-Control: no-store\r\n");
+            cabecalho.Append("Connection: close\r\n");
+            cabecalho.Append("Content-Length: ").Append(conteudo.Length).Append("\r\n\r\n");
+
+            byte[] bytesCabecalho = Encoding.ASCII.GetBytes(cabecalho.ToString());
+            fluxo.Write(bytesCabecalho, 0, bytesCabecalho.Length);
+            if (conteudo.Length > 0)
+            {
+                fluxo.Write(conteudo, 0, conteudo.Length);
+            }
+            fluxo.Flush();
         }
 
         private void ProcessarComandoPonte(string message)
@@ -549,7 +890,9 @@ namespace wavizo.AvisadorCF2A
                 .Replace("\"", "\\\"")
                 .Replace("\r", "\\r")
                 .Replace("\n", "\\n")
-                .Replace("\t", "\\t");
+                .Replace("\t", "\\t")
+                .Replace("\u2028", "\\u2028")
+                .Replace("\u2029", "\\u2029");
         }
 
         private static string ExtrairTextoJson(string json, string campo)
@@ -634,24 +977,43 @@ namespace wavizo.AvisadorCF2A
 
         private void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            if (shuttingDown || !e.IsSuccess || string.IsNullOrEmpty(packageVersion))
+            if (shuttingDown || !e.IsSuccess)
             {
                 return;
             }
 
-            try
+            paginaPronta = true;
+
+            if (!string.IsNullOrEmpty(packageVersion))
             {
-                webView.CoreWebView2.ExecuteScriptAsync(
-                    "window.aplicarVersao && window.aplicarVersao('" + packageVersion + "');");
+                try
+                {
+                    webView.CoreWebView2.ExecuteScriptAsync(
+                        "window.aplicarVersao && window.aplicarVersao('" + packageVersion + "');");
+                }
+                catch (Exception)
+                {
+                }
             }
-            catch (Exception)
-            {
-            }
+
+            AplicarAgendaPendente();
         }
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             shuttingDown = true;
+            pecRunning = false;
+            try
+            {
+                if (pecListener != null)
+                {
+                    pecListener.Stop();
+                }
+            }
+            catch (Exception)
+            {
+            }
+
             try
             {
                 if (webView != null)
